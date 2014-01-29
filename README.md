@@ -2,19 +2,19 @@ _*I do apologize for using the name Server, but I did not feel like changing my 
 
 ## Dictionary
 
-__NPC__ = Non-Player Character (A bot.)
+__NPC__ = Non-Player Character (A bot.)<br />
 __MOB__ = Monster (Usually combat NPC.)
 
 __Text Client__ = MUD style.
 
-__TARGET__    - An world creation. An object, like a chair, or a living object, like a cow.
-__WORLD__     - The actual server-side world Object(), that holds relevant world data in ready-access mode.
-__DB__        - The MongoDB that holds all the world data, as storage, for access by the WORLD.
+__TARGET__    - An world creation. An object, like a chair, or a living object, like a cow.<br />
+__WORLD__     - The actual server-side world Object(), that holds relevant world data in ready-access mode.<br />
+__DB__        - The MongoDB that holds all the world data, as storage, for access by the WORLD.<br />
 
-__USER__      - Lowest access client. Unregistered in the world, and has no saved data.
-__PLAYER__    - A registered USER. Saved data.
-__MASTER__    - A PLAYER with access to modify certain world aspects, such as TARGET details.
-__BUILDER__   - A MASTER with access to create and destroy world TARGETS.
+__USER__      - Lowest access client. Unregistered in the world, and has no saved data.<br />
+__PLAYER__    - A registered USER. Saved data.<br />
+__MASTER__    - A PLAYER with access to modify certain world aspects, such as TARGET details.<br />
+__BUILDER__   - A MASTER with access to create and destroy world TARGETS.<br />
 __GOD__       - A developer with full access rights, with abilities that are game-unrelated, such as reloading code modules.
 
 # Node World
