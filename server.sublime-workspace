@@ -1,0 +1,963 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"creatio",
+				"creationFunctions"
+			],
+			[
+				"avail",
+				"availableHand"
+			],
+			[
+				"ava",
+				"availableHand"
+			],
+			[
+				"items",
+				"itemsChecker"
+			],
+			[
+				"low",
+				"toLowerCase"
+			],
+			[
+				"split",
+				"splitField"
+			],
+			[
+				"spli",
+				"splitField"
+			],
+			[
+				"comm",
+				"commandExists"
+			],
+			[
+				"confi",
+				"configureWorld"
+			],
+			[
+				"toca",
+				"toUpperCase"
+			],
+			[
+				"property",
+				"propertyName"
+			],
+			[
+				"original",
+				"originalObj"
+			],
+			[
+				"successful",
+				"successfully"
+			],
+			[
+				"targe",
+				"targetsdb"
+			],
+			[
+				"cmd",
+				"cmdArray"
+			],
+			[
+				"char",
+				"charAt"
+			],
+			[
+				"user",
+				"Username"
+			],
+			[
+				"sess",
+				"session"
+			],
+			[
+				"fix",
+				"fixedUsername"
+			],
+			[
+				"capi",
+				"Capitalize"
+			],
+			[
+				"session",
+				"sessionSave"
+			],
+			[
+				"cook",
+				"cookieParser"
+			],
+			[
+				"ses",
+				"sessioID"
+			],
+			[
+				"par",
+				"parseSignedCookie"
+			],
+			[
+				"ke",
+				"keyCode"
+			],
+			[
+				"cur",
+				"curCommandIndex"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "server.js",
+			"settings":
+			{
+				"buffer_size": 10224,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "commands.js",
+			"settings":
+			{
+				"buffer_size": 68192,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "playerFunctions.js",
+			"settings":
+			{
+				"buffer_size": 19348,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "creationFunctions.js",
+			"settings":
+			{
+				"buffer_size": 13890,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "operations.js",
+			"settings":
+			{
+				"buffer_size": 14915,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "backupcode.js",
+			"settings":
+			{
+				"buffer_size": 9289,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "codeguide",
+			"settings":
+			{
+				"buffer_size": 3234,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "codenotes",
+			"settings":
+			{
+				"buffer_size": 39,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views/index.html",
+			"settings":
+			{
+				"buffer_size": 5972,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "routes/index.js",
+			"settings":
+			{
+				"buffer_size": 113,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 311.0,
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Disable Package"
+			],
+			[
+				"node",
+				"Nodejs::Default File Settings"
+			]
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 176.0,
+		"history":
+		[
+			"ls",
+			".h",
+			"h",
+			"-help",
+			"--help",
+			"help",
+			"PackageResourceViewer: View Package Resource",
+			"PackageResourceViewer: Open Resource",
+			"PackageResourceViewer",
+			"open resource Default.package-sublime",
+			"open resource",
+			"PackageResourceViewer: Open Resource",
+			"which node",
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Phuein/Desktop/Server/package.json",
+		"/C/Users/Phuein/Desktop/Server/commandFunctions.js",
+		"/C/Users/Phuein/Desktop/gamenotes.txt",
+		"/C/Users/Phuein/Desktop/Server/commands.js",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/Phuein/Desktop/Server/codeguide.txt",
+		"/C/Users/Phuein/Downloads/VMware Workstation 10.0.1 Build 1379776/keys.txt",
+		"/C/Users/Phuein/Downloads/VMware Workstation 10.0.1 Build 1379776/VMware10.0.1-1379776.txt",
+		"/C/Users/Phuein/Desktop/Server/operations.js",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/Phuein/Desktop/Server/app.js",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Phuein/Downloads/joomla/htaccess.txt",
+		"/C/Users/Phuein/AppData/Local/Temp/fz3temp-1/.htaccess",
+		"/C/Users/Phuein/Downloads/joomla/README.txt",
+		"/C/Users/Phuein/AppData/Local/Temp/fz3temp-1/wp-settings.php",
+		"/C/Users/Phuein/AppData/Local/Temp/fz3temp-1/wp-config.php",
+		"/C/Users/Phuein/Downloads/facebookall.1.4/facebookall/readme.txt",
+		"/C/Program Files (x86)/ActiveState Komodo IDE 8/LICENSE.txt",
+		"/C/Users/Phuein/Downloads/ActiveState Komodo IDE 8.5.3.83298+Keymaker-BEAN/readme.txt",
+		"/C/Users/Phuein/Downloads/ActiveState Komodo IDE 8.5.3.83298+Keymaker-BEAN/KeyGen/ActiveState.lic",
+		"/C/Users/Phuein/Downloads/VideoPad Video Editor Pro 3.14+Crack-casper/readme.txt",
+		"/C/Users/Phuein/AppData/Local/Temp/7zO2E3D.tmp/index.js",
+		"/C/Users/Phuein/Downloads/Blue Jasmine 2013 WEBRIP. Jaybob/Important October 22, 2012 Please Read.txt",
+		"/C/Users/Phuein/Downloads/Blue.Jasmine.2013.DVDRip/ReadMe.txt",
+		"/C/Users/Phuein/Documents/SublimeTextBackups/2013-12-17/C/Users/Phuein/Desktop/Server/app_232319.js",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Installed Packages/Monokai Extended Bright.tmTheme",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/Monokaified.tmTheme",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/Monokai Extended Bright.tmTheme",
+		"/C/Users/Phuein/AppData/Local/Temp/7zOAAFB.tmp/Monokai Extended Bright.tmTheme",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Installed Packages/Monokai Extended.sublime-package",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/Monokai.tmTheme",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/PackageResourceViewer/README.md",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/PackageResourceViewer.sublime-settings",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/PackageResourceViewer/PackageResourceViewer.sublime-settings",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/theme_tweaker.sublime-settings",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/ThemeTweaker/theme_tweaker.sublime-settings",
+		"/C/Program Files/Sublime Text 3/Packages/Theme - Default.sublime-package",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/Distraction Free.sublime-settings",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/JavaScript.sublime-settings",
+		"/C/Users/Phuein/Desktop/Server/routes/user.js",
+		"/C/Users/Phuein/Desktop/Server/node_modules/connect/Readme.md",
+		"/C/Users/Phuein/Desktop/Server/node_modules/connect/index.js",
+		"/C/Users/Phuein/Desktop/Server/routes/index.js",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/Nodejs/Nodejs.sublime-settings",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Installed Packages/Nodejs.sublime-package",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/Nodejs.sublime-settings",
+		"/C/Users/Phuein/Desktop/cleaninglady.txt",
+		"/C/Users/Phuein/Desktop/notes.txt",
+		"/C/Users/Phuein/Desktop/Server/test/app.js",
+		"/C/Users/Phuein/Desktop/Server/test/package.json",
+		"/C/Users/Phuein/Desktop/Server/test/public/stylesheets/style.css",
+		"/C/Program Files/nodejs/node_modules/npm/html/doc/cli/npm-uninstall.html",
+		"/C/Users/Phuein/Desktop/Server/server.js",
+		"/C/Users/Phuein/Desktop/Server/views/index.jade",
+		"/C/Users/Phuein/Desktop/Server/public/index.html",
+		"/C/Users/Phuein/Desktop/Server/test/routes/index.js",
+		"/C/Users/Phuein/Desktop/Server/test/views/index.jade",
+		"/C/Users/Phuein/Desktop/Server/public/js/socket.io/index.js",
+		"/C/Users/Phuein/Desktop/Server/node_modules/socket.io/index.js",
+		"/C/Users/Phuein/Desktop/Server/public/js/socket.io/lib/socket.io.js",
+		"/C/Users/Phuein/Desktop/Server/public/js/socket.io/package.json",
+		"/C/Users/Phuein/Desktop/Server/public/js/socketio/socket.io.js",
+		"/C/Users/Phuein/Desktop/Server/public/js/socket.io.js",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/AutoBackups (Windows).sublime-settings",
+		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/AutoBackups/AutoBackups (Windows).sublime-settings"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"availableHand",
+			"holdTarget",
+			"user.room.position",
+			"substring",
+			"locateItem(",
+			"locateItem",
+			"command.",
+			"Type(",
+			"operations.",
+			".remove",
+			"commands",
+			"(!user.player.worn)",
+			"(user.player.worn)",
+			"capFirst",
+			"caseUsername",
+			"updateObj",
+			" in ",
+			"operations",
+			"updateObj",
+			"stringifyTarget",
+			"directionToPosition",
+			"updateObject",
+			"dottedToObject",
+			"stringifyPosition",
+			"toType",
+			"capFirst",
+			".capitalize",
+			"handleCommands('commands'",
+			"1",
+			"2",
+			".capitalize",
+			"removeTarget",
+			"remove",
+			"'['",
+			"differentUsername",
+			"world.users",
+			"world.watch",
+			"/(?!account).username/",
+			"/(^account).username/g",
+			"/(^account).username/",
+			"world.watch",
+			"playerObject",
+			"socket",
+			"updateUser",
+			"world.watch",
+			"user.rooms.current",
+			"$exists",
+			"lastinstance",
+			"= {}",
+			"$exists",
+			"$exists'",
+			"$exists",
+			"+ '.' +",
+			"stringifyTarget(target)",
+			"+ '.' +",
+			"fixUsername",
+			"world.watch",
+			"parseObject",
+			"weight",
+			"size",
+			"stringPosition",
+			"new",
+			"fold",
+			"theme",
+			"strCoords",
+			"'x'",
+			"str",
+			"updateUser",
+			"user",
+			"session",
+			"function(",
+			"function (",
+			"function",
+			"current.play",
+			"players.length",
+			"options",
+			".watch",
+			".players",
+			"world.users",
+			"].socket",
+			".socket",
+			".players[",
+			"var strO",
+			"world.users",
+			"roomsdb",
+			"world.maps",
+			"playerObject",
+			"player",
+			"indexOf",
+			"db.",
+			"listen",
+			"Add to changed",
+			"ensur",
+			"mapID",
+			"{'username':",
+			"{ 'username':",
+			"{ 'user",
+			"'sort'",
+			"players",
+			"user.rooms.current.mapID",
+			"loadRoom(",
+			"createRoom(",
+			"user.rooms.current",
+			"processRoom(user",
+			"applyRoom",
+			".find",
+			"console.log(err)",
+			"watch",
+			"load",
+			"count()",
+			"player.username",
+			"account.name",
+			"user.name",
+			"console.log",
+			".capitalize",
+			" username ",
+			"collection",
+			"express",
+			"createServer"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"strTarget",
+			"strPos",
+			"user.room",
+			"caseUsername",
+			"dottedToObject",
+			"stringPosition",
+			"function ("
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "server.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10224,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7106,
+								7106
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1006.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "commands.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 68192,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								960,
+								960
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 338.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "playerFunctions.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 19348,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								18938,
+								18938
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "creationFunctions.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13890,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								13249,
+								13249
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "operations.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14915,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								134,
+								134
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "backupcode.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9289,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1102,
+								1102
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "codeguide",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3234,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 123.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 7,
+					"file": "codenotes",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 39,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								33,
+								33
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "views/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5972,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2952,
+								2952
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "routes/index.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 113,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								105,
+								105
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.772327964861,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 124.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 118.0
+	},
+	"project": "server.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 1
+	}
+}

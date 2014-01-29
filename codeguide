@@ -1,0 +1,140 @@
+///////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////----------- Test Game -----------\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+Last Update:		December 22, 2013
+
+Version:			0.1
+
+///////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+////////////////////////////----Developer Notes----\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+COMMANDS - By access level (user, player, master, builder, god.)
+
+    say
+    tell
+    move
+    emote
+    look
+    rename
+    login
+    register
+    help
+
+    wear
+    remove
+    email
+    hold
+    drop
+    examine
+    offer
+    cancel
+    accept
+
+    modify
+
+    create
+    destroy
+
+    set
+    resetworld
+    reloadcommands
+
+DATA - Most used objects.
+
+    db
+      usersdb
+      targetsdb
+      mapsdb                - This holds the rooms, as well.
+      worlddb               - World configuration.
+
+    world
+      maps
+        [0]                 - Map's '_id'.
+          name
+          description
+          rooms
+            ['0x0y0z']          - Each map holds all its' rooms.
+              map
+              position            - { 'x': 0, 'y': 0, 'z': 0 }
+              targets             - [0]
+              title
+              description
+              commands            - []
+              exits               - []
+      users
+        [username]          - [user.account.username] - refers to the user object.
+      targets
+        [0]
+          [0]                 - Target '_id' & 'instance'.
+            name
+            pre
+            post
+            description
+            position              - {}
+            commands              - []
+            size                  - []
+            weight                - []
+      changed
+        users               - []
+        targets             - []
+        rooms               - []
+        maps                - []
+      watch             - {} calls children with [].
+        '0x0y0z'            - Room.
+        '0'                 - Map.
+
+    user
+      account             - Account registration and usage information.
+        username
+        password
+        email
+        registered
+        lastonline
+      player              - Player details, state, location and equipment.
+        name
+        map
+        position
+        description
+        pre
+        post
+        worn                - Holds all the worn items, as objects.
+          head
+          face
+          neck
+          shoulders
+          arms                  - Arms + Hands.
+          hands                 - Special case, things that are held for usage.
+            left
+            right
+          fingers
+          torso
+          back
+          waist
+          loins
+          legs
+          shins
+          feet
+      socket
+      room                - The current room.
+      name                - user.player.name or fullName().
+
+    io
+      socket
+        emit                - Normally 'message'.
+        broadcast           - Emit to all, except self.
+        send                - Unused.
+      sockets             - All available socket connections.
+        emit
+
+
+
+
+
+
+
+
+___________________________________________________________________________________________________________________________

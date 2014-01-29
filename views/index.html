@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="/public/javascripts/jquery-1.10.2.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<meta charset="utf-8" />
+<title>Game Test.</title>
+<style>
+  html {
+    height: 98%;
+    overflow: auto;
+  }
+  body {
+    height: 98%;
+    overflow: auto; 
+  }
+
+  #output {
+  	resize: none;
+    border: 1px solid #ccc;
+    overflow-y: scroll;
+  	padding: 0;
+  	width: 99%;
+    height: 90%;
+    font-size: 14px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  #inputdiv {
+    width: 99%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  #input {
+  	padding: 0;
+  	width: 100%;
+  }
+</style>
+</head>
+<body>
+<!-- MAIN SCRIPT -->
+<script>
+
+//*** SOCKET.IO ***//
+  var socket = io.connect('http://localhost', {
+    // 'connect timeout': 60, // Close connection from client-side if idle for # seconds.
+    'reconnect': false // Socket-only reconnect does not send headers, and the server enjoys that session data.
+  });
+  
+  socket.on('connect', function () {
+    // Enable input box when connection open.
+    $('#input').prop('disabled', false);
+    $('#input').prop('placeholder', "Enter text here...");
+    $('#input').focus();
+    
+    // Attempt to send login command from saved cookie.
+    if (document.cookie) {
+      var cookieValue = document.cookie.match('(^|;) ?' + 'login' + '=([^;]*)(;|$)');
+      if (cookieValue[2]) {
+        socket.emit('message', cookieValue[2]);
+      }
+    }
+    
+    socket.on('message', function (message) {
+      appendOutput(message);
+    });
+    
+    socket.on('connect_error', function (err) {
+      appendOutput('<i>Could not connect to server. Please, refresh the website!</i>');
+    });
+    
+    socket.on('disconnect', function () {
+      appendOutput('<i>Lost connection to server. Please, refresh the website!</i>');
+      
+      // Disable input box when connection open.
+      $('#input').prop('disabled', true);
+      $('#input').prop('placeholder', "Not connected to server...");
+      $('#input').blur();
+    });
+  });
+
+  socket.on('error', function (err) {
+    console.log(err);
+  });
+// *** //
+
+// Add Timestamp to messages. Scroll down.
+function appendOutput(message) {
+  var curDate = new Date();
+  // Make sure the format is HH:MM:SS.
+  var curTime = ( curDate.getHours() < 10 ? '0' + curDate.getHours() : curDate.getHours() ) + ':' + 
+      ( curDate.getMinutes() < 10 ? '0' + curDate.getMinutes() : curDate.getMinutes() ) + ':' + 
+      ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
+  $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + message + '<br />');
+  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
+}
+
+// Interrupt user leaving only if connected to server.
+$(window).on('beforeunload', function() {
+  if (socket.socket.connected) {
+    return 'Leave Test Game?';
+  }
+});
+
+// General Variables
+var sentCommands = [""]; // First command is an empty line.
+var curCommandIndex = 0;
+
+//*** COMMAND HISTORY ***//
+  // Using Up or Down arrow keys with input textbox to scroll through command history.
+  function commandHistory(e) {
+      if (e.which == 38) { // Up Key - Go back in history.
+        e.preventDefault(); // Don't let the cursor jump around.
+
+        if (curCommandIndex > 0) {
+          $('#input').val(sentCommands[curCommandIndex-1]);
+          curCommandIndex -= 1;
+        }
+      }
+      if (e.which == 40) { // Down Key - Go forward in history.
+        e.preventDefault(); // Don't let the cursor jump around.
+
+        if (curCommandIndex < sentCommands.length) {
+          $('#input').val(sentCommands[curCommandIndex+1] || ""); // Last press clears the textbox.
+          curCommandIndex += 1;
+        }
+      }
+  }
+// *** //
+
+//*** FOCUS & UNFOCUS & CLEAR ***//
+  // Set focus to input box on window returned focus.
+  $(window).focus(function() {
+    if (document.activeElement && document.activeElement.id != 'input') {
+      $('#input').focus();
+    }
+  });
+
+  // Handle keypresses. MAYBE CHANGE TO e.which THAT WORKS WITH MOUSE FOR JQUERY.
+  $(document).keydown(function(e) {
+    // Space key to gain focus, only if it doesn't already have the focus.
+    if (document.activeElement && document.activeElement.id != 'input') {
+      if ( e.keyCode == 32 ) {
+         e.preventDefault();
+         $('#input').focus();
+      }
+      
+      // Or Escape to empty input, when without focus.
+      if ( e.keyCode == 27 ) {
+         e.preventDefault();
+         $('#input').val(''); // Empty input.
+      }
+    }
+    
+    // Escape to lose focus, if already has focus.
+    if (document.activeElement && document.activeElement.id == 'input') {
+      if ( e.keyCode == 27 ) {
+         e.preventDefault();
+         $('#input').blur();
+      }
+    }
+  });
+// *** //
+
+</script>
+<!-- END OF SCRIPT -->
+<div id="output"></div>
+<div id="inputdiv">
+<form action="/" id="inputform" method="POST">
+  <input disabled autofocus placeholder="Connecting to server. Please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
+</form>
+</div>
+<script>
+// Send user input to server by Socket.
+$('form').on('submit',function(e) {
+    e.preventDefault(); // Stop regular form submission.
+    
+    var inputvalue = $('input[id=input]').val();    
+    
+    socket.emit('message', inputvalue);
+    sentCommands[sentCommands.length] = $('#input').val(); // Memorize commands into array.
+    curCommandIndex = sentCommands.length; // Store the latest command index position for history scroll.
+    
+    // Save last login command for cookie.
+    if ($('#input').val().search('login') == 1) {
+      var path = '';
+      
+      var expires = new Date();
+      expires.setTime(expires.getTime() + (7 * 24 * 60 * 60 * 1000)); // Days, Hours, Minutes, Seconds, Milliseconds. Default 7 days.
+      
+      document.cookie = 'login' + "=" + $('#input').val() + ';path=' + path + ';expires=' + expires.toUTCString();
+    }
+    
+    $('#input').val(''); // Empty input.
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
