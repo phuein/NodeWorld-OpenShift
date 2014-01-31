@@ -1,5 +1,3 @@
-###### _* I do apologize for using the name Server, but I did not feel like changing my MongoDB setup._
-
 ##### * This project is saved using Sublime Text 3, and has the Project and Workspaces files for it.
 
 ## Dictionary
