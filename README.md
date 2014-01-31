@@ -65,3 +65,11 @@ __VI.__   For the sake of developers, for now all command requests by clients - 
       JS functions, are encapsulated in a domain, with its' own exception catcher. This works together
       with the 'reloadcommands' command.
 
+
+For more information or just to chat, you can contact me at:
+
+phuein@gmail.com
+
+SKYPE: Phuein
+
+FACEBOOK: Assaf Koss
