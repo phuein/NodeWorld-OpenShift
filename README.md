@@ -7,7 +7,7 @@ __MOB__ = Monster (Usually combat NPC.)
 
 __Text Client__ = MUD style.
 
-__TARGET__    - An world creation. An object, like a chair, or a living object, like a cow.<br />
+__TARGET__    - A world creation. An object, like a chair, or a living object, like a cow.<br />
 __WORLD__     - The actual server-side world Object(), that holds relevant world data in ready-access mode.<br />
 __DB__        - The MongoDB that holds all the world data, as storage, for access by the WORLD.<br />
 
