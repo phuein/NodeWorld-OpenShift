@@ -19,7 +19,7 @@
     eval('var ' + opName + ' = ' + operations[opName] + ';');
   }
   
-  var creationFunctions = require('./creationFunctions.js');
+  var creationFunctions = require('./adminFunctions.js');
   
   // Have a local variable referring to each function.
   for (var functionName in creationFunctions) {
@@ -1249,7 +1249,7 @@ commands.player = {
     
     // Accept first available offer.
     acceptItems(user, cmdArray[1]);
-  }
+  },
   /*  Accept an offer of items from a target or player,
    *  either by index, or the first (lowest index) available offer!
    */
@@ -1725,7 +1725,7 @@ commands.user = {
             'legs'             :     {},
             'shins'            :     {},
             'feet'             :     {}
-          }
+          },
           'offers'      :   []               // Offers I made to others.
         }
       }, function (err) {

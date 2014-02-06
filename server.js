@@ -202,6 +202,7 @@ io.sockets.on('connection', function (socket) {
   // Server is closed.
   if (serverClosed) {
     // Kick socket.
+    socket.emit('message', '<b>Server is closed!</b>');
     socket.disconnect();
     console.log('Connection attempt: Server closed!');
   }
