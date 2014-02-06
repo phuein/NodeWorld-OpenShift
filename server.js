@@ -37,8 +37,24 @@
   var server = http.createServer(app);
   io = require('socket.io').listen(server, {
     // Socket Server Options.
-    'log level': 2
+    'log level'   :   1,                     // Recommended 1 for production.
+    'transports'  :   ['websocket']          // 'websocket' only for openshift.
   });
+  
+  // Recomended settings for production.
+  io.enable('browser client minification');  // send minified client
+  io.enable('browser client etag');          // apply etag caching logic based on version number
+  io.enable('browser client gzip');          // gzip the file
+  
+  /* Enable all transports.
+  io.set('transports', [
+    'websocket',
+    'flashsocket',
+    'htmlfile',
+    'xhr-polling',
+    'jsonp-polling'
+  ]);
+  */
   
   // World Functionality Modules.
   command = require('./commands.js');
