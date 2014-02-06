@@ -115,7 +115,7 @@
 			"file": "server.js",
 			"settings":
 			{
-				"buffer_size": 10224,
+				"buffer_size": 10280,
 				"line_ending": "Windows"
 			}
 		},
@@ -123,7 +123,7 @@
 			"file": "commands.js",
 			"settings":
 			{
-				"buffer_size": 68192,
+				"buffer_size": 68268,
 				"line_ending": "Windows"
 			}
 		},
@@ -136,7 +136,7 @@
 			}
 		},
 		{
-			"file": "creationFunctions.js",
+			"file": "adminFunctions.js",
 			"settings":
 			{
 				"buffer_size": 13890,
@@ -163,7 +163,7 @@
 			"file": "codeguide",
 			"settings":
 			{
-				"buffer_size": 3234,
+				"buffer_size": 3537,
 				"line_ending": "Windows"
 			}
 		},
@@ -171,7 +171,7 @@
 			"file": "codenotes",
 			"settings":
 			{
-				"buffer_size": 39,
+				"buffer_size": 33,
 				"line_ending": "Windows"
 			}
 		},
@@ -179,7 +179,7 @@
 			"file": "views/index.html",
 			"settings":
 			{
-				"buffer_size": 5972,
+				"buffer_size": 5926,
 				"line_ending": "Unix"
 			}
 		},
@@ -242,6 +242,8 @@
 	"file_history":
 	[
 		"/C/Users/Phuein/Desktop/Server/package.json",
+		"/C/Users/Phuein/Desktop/Server/README.md",
+		"/C/Users/Phuein/Desktop/Server/creationFunctions.js",
 		"/C/Users/Phuein/Desktop/Server/commandFunctions.js",
 		"/C/Users/Phuein/Desktop/gamenotes.txt",
 		"/C/Users/Phuein/Desktop/Server/commands.js",
@@ -468,7 +470,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -477,15 +479,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10224,
+						"buffer_size": 10280,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7106,
-								7106
+								6549,
+								6549
 							]
 						],
 						"settings":
@@ -495,7 +497,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1006.0,
+						"translation.y": 540.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -506,15 +508,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 68192,
+						"buffer_size": 68268,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								960,
-								960
+								688,
+								688
 							]
 						],
 						"settings":
@@ -524,7 +526,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 338.0,
+						"translation.y": 3294.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -560,7 +562,7 @@
 				},
 				{
 					"buffer": 3,
-					"file": "creationFunctions.js",
+					"file": "adminFunctions.js",
 					"semi_transient": false,
 					"settings":
 					{
@@ -571,8 +573,8 @@
 						"selection":
 						[
 							[
-								13249,
-								13249
+								110,
+								110
 							]
 						],
 						"settings":
@@ -582,7 +584,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 135.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -651,15 +653,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3234,
+						"buffer_size": 3537,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								3292,
+								3292
 							]
 						],
 						"settings":
@@ -669,7 +671,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 123.0,
+						"translation.y": 359.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -677,7 +679,7 @@
 			]
 		},
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -686,7 +688,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 39,
+						"buffer_size": 33,
 						"regions":
 						{
 						},
@@ -714,15 +716,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5972,
+						"buffer_size": 5926,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2952,
-								2952
+								4735,
+								4735
 							]
 						],
 						"settings":
@@ -836,7 +838,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 4230.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -899,7 +901,7 @@
 		"cols":
 		[
 			0.0,
-			0.772327964861,
+			0.766471449488,
 			1.0
 		],
 		"rows":

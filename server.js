@@ -45,8 +45,8 @@
 // *** //
 
 //*** SERVER VARIABLES ***//
-  var ip = process.env.IP || '0.0.0.0';
-  var port = process.env.PORT || 3000;
+  var ip = '0.0.0.0';
+  var port = 8080;
   
   // var keyName = 'GameTest'; // Cookie name. Defaults to 'connect.sid'.
   // var secret = '6edthsej75en43g35u563t345'; // Cookie pass.
@@ -121,22 +121,29 @@
 // *** //
 
 //*** DATABASE OPEN CONNECTION & SOCKET LISTEN ***//
-  var MongoClient = require('mongodb').MongoClient
-    , Server = require('mongodb').Server;
+  var MongoClient = require('mongodb').MongoClient;
 
   db = {};
   usersdb = {};
   targetsdb = {};
   mapsdb = {};
   worlddb = {};
+  
+  var dbAddress = 'mongodb://127.0.0.1:27017/nodeworld';
+  
+  // if OPENSHIFT env variables are present, use the available connection info:
+  if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
+    dbAddress = 'mongodb://' + process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+    process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+    process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
+    process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
+    process.env.OPENSHIFT_APP_NAME;
+  }
 
-  var mongoClient = new MongoClient(new Server('localhost', 27017));
-  mongoClient.open(function (err, mongoClient) {
+  MongoClient.connect(dbAddress, function(err, db) {
     if (err) {
       console.log(err);
     }
-    
-    db = mongoClient.db("gametest");
     
     // Collections:
     usersdb     =   db.collection('users'),       // Registered players.
