@@ -1,3 +1,4 @@
 #!/bin/bash
+echo "test"
 cd $OPENSHIFT_REPO_DIR
 nohup node server.js
