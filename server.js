@@ -38,7 +38,7 @@
   io = require('socket.io').listen(server, {
     // Socket Server Options.
     'log level'   :   1,                     // Recommended 1 for production.
-    'transports'  :   ['websocket']          // 'websocket' only for openshift.
+    'transports'  :   ['xhr-polling']
   });
   
   // Recomended settings for production.
