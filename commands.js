@@ -677,6 +677,10 @@ var commands = {}; // WARNING: Global variable from server.js is named 'command'
 
 // Server control.
 commands.god = {
+  'test': function (user) {
+    user.socket.emit('message', 'TEST!!!!');
+  },
+  
   // set OBJECT.PROPERTY VALUE
   'set': function (user, cmdArray, cmdStr) {
     // List world.config if only 'set' is sent.
