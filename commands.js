@@ -47,12 +47,12 @@
     }
     
     world.config.size = ['tiny', 'small', 'large', 
-                         'big', 'huge', 'enormous'];              // Multiply about 10 times per step.
-                                                                  // With 'big' equaling an adult human male.
+                         'big', 'huge', 'enormous'];       // Multiply about 10 times per step.
+                                                           // With 'big' equaling an adult human male.
     
     world.config.weight = ['insignificant', 'very light', 'light', 
-                           'heavy', 'very heavy', 'massive'];         // Multiply about 10 times per step.
-                                                                      // With 'heavy' equaling an adult human male.
+                           'heavy', 'very heavy', 'massive']; // Multiply about 10 times per step.
+                                                              // With 'heavy' equaling an adult human male.
     
     world.config.emotes = {
       'lick': {
@@ -339,7 +339,8 @@
           console.log(err);
         }
         
-        world.changed.config = false; // Cleanup, even if requested without saveWorld(), because it saves all anyway.
+        world.changed.config = false; // Cleanup, even if requested without saveWorld(),
+                                      // because it saves all anyway.
       });
     }
   // *** //
@@ -378,9 +379,11 @@
       
       // Inform the user about the map's ID.
       if (mapObj['_id'] == 0) {
-        user.socket.emit('message', '<i><b>The first map of this world has been created successfully!</b></i>');
+        user.socket.emit('message', '<i><b>The first map of this world' +
+                                    ' has been created successfully!</b></i>');
       } else {
-        user.socket.emit('message', '<i><b>Map #' + mapObj['_id'] + ' has been created successfully.</b></i>');
+        user.socket.emit('message', '<i><b>Map #' + mapObj['_id'] +
+                                    ' has been created successfully.</b></i>');
       }
     });
   }
@@ -434,11 +437,14 @@
       
       // Inform the user of success.
       if (x == 0 && y == 0 && z == 0 && user.player.map == 0) {
-        user.socket.emit('message', '<i><b>The first room in this world has been created successfully!</b></i>');
+        user.socket.emit('message', '<i><b>The first room in this world' +
+                                    ' has been created successfully!</b></i>');
       } else if (x == 0 && y == 0 && z == 0) {
-        user.socket.emit('message', '<i><b>The first room in the map has been created successfully.</b></i>');
+        user.socket.emit('message', '<i><b>The first room in the map' +
+                                    ' has been created successfully.</b></i>');
       } else {
-        user.socket.emit('message', '<i><b>Room at ' + strPos + ' has been created successfully.</b></i>');
+        user.socket.emit('message', '<i><b>Room at ' + strPos +
+                                    ' has been created successfully.</b></i>');
       }
       
       processRoom(user, 'new'); // Apply room data.
@@ -518,7 +524,8 @@
       
       // Inform others in the last room.
       for (var i=0; i < world.watch[lastRoomStr].length; i++) {
-        world.watch[lastRoomStr][i].socket.emit('message', '<i>' + user.player.name + ' has moved away.</i>');
+        world.watch[lastRoomStr][i].socket.emit('message', '<i>' + user.player.name +
+                                                           ' has moved away.</i>');
       }
       
       // If new room map is different from old room map,
@@ -563,7 +570,8 @@
     }
     // Tell others I am here.
     for (var i=0; i < world.watch[strCoord].length; i++) {
-      world.watch[strCoord][i].socket.emit('message', '<i>Player ' + user.player.name + ' has appeared.</i>');
+      world.watch[strCoord][i].socket.emit('message', '<i>Player ' + user.player.name +
+                                                      ' has appeared.</i>');
     }
     
     // Update current room players array.
@@ -677,17 +685,14 @@ var commands = {}; // WARNING: Global variable from server.js is named 'command'
 
 // Server control.
 commands.god = {
-  'test': function (user) {
-    user.socket.emit('message', 'TEST!!!!');
-  },
-  
   // set OBJECT.PROPERTY VALUE
   'set': function (user, cmdArray, cmdStr) {
     // List world.config if only 'set' is sent.
     if (!cmdArray[1]) {
       user.socket.emit('message', '<pre><b>World configuration properties:</b><small>' + 
                       JSON.stringify(world.config, null, 2).replace(/\[|\]|{|}|,/gm, '')
-                      .replace(/^\s*\n/gm, '') + '</small></pre>To reset to default, do: ' + cmdChar + '<b>set reset</b>');
+                      .replace(/^\s*\n/gm, '') + '</small></pre>To reset to default, do: ' +
+                      cmdChar + '<b>set reset</b>');
       return;
     }
     
@@ -777,7 +782,7 @@ commands.builder = {
       'commands'      :   [],
       'size'          :   world.config.size[2],           // See configureWorld().
       'weight'        :   world.config.weight[2],         // ...
-      'worn'          :   {},                             // See 'registration' command for a full player scheme.
+      'worn'          :   {},                             // See 'registration' for a full scheme.
       'trade'         :   {
         'offers'          :   [],                                 // To a specific player or target.
         'requests'        :   []                                  // Open request for anyone.
@@ -785,7 +790,8 @@ commands.builder = {
     };
     
     // Get the target with the highest id value.
-    targetsdb.findOne({}, { fields: { '_id': 1 }, 'limit': 1 , 'sort': { '_id': -1 } }, function (err, doc) {
+    targetsdb.findOne({}, { fields: { '_id': 1 }, 'limit': 1 , 'sort': { '_id': -1 } },
+                      function (err, doc) {
       if (err) {
         console.log(err);
         user.socket.emit('message', '<i><b>Creation (counter) failed.</b></i>');
@@ -823,9 +829,9 @@ commands.builder = {
       
       // Inform all (including me) in the room about the new target.
       for (var i=0; i < world.watch[strCoord].length; i++) {
-        world.watch[strCoord][i].socket.emit('message', '<i><b>Creation #' + fullID + 
-                                                             ' has been successful.' + '<br />' + 
-                                                             'Its\' template can be changed through instance \'-1\'.</b></i>');
+        world.watch[strCoord][i].socket.emit('message',
+                '<i><b>Creation #' + fullID + ' has been successful.' + '<br />' + 
+                'Its\' template can be changed through instance \'-1\'.</b></i>');
       }
     })
   },
@@ -844,7 +850,8 @@ commands.builder = {
     // Parse target.
     var parsedTarget = parseTarget(cmdArray[1]);
     if (!parsedTarget) {
-      user.socket.emit('message', '<i>Target must be a numeric value, for example: ' + cmdChar + 'destroy 0.1</i>');
+      user.socket.emit('message', '<i>Target must be a numeric value, for example: ' +
+                                  cmdChar + 'destroy 0.1</i>');
       return;
     }
     
@@ -864,7 +871,7 @@ commands.builder = {
         // Inform all (including me) in the room about the removed target.
         for (var i=0; i < world.watch[strCoord].length; i++) {
           world.watch[strCoord][i].socket.emit('message', '<i><b>Creation ' + targetName
-                                                               + ' has been successfully destroyed.</b></i>');
+                                                          + ' has been successfully destroyed.</b></i>');
         }
         
         return;
@@ -896,7 +903,7 @@ commands.builder = {
           // Inform all (including me) in the room about the removed target.
           for (var i=0; i < world.watch[strCoord].length; i++) {
             world.watch[strCoord][i].socket.emit('message', '<i><b>Creation ' + targetName
-                                                                 + ' has been successfully destroyed.</b></i>');
+                                                          + ' has been successfully destroyed.</b></i>');
           }
           
           return;
@@ -904,7 +911,8 @@ commands.builder = {
       }
       
       // Target not found.
-      user.socket.emit('message', '<i><b>Target #' + idInst[0] + '.' + idInst[1] + ' was not found.</b></i>');
+      user.socket.emit('message', '<i><b>Target #' + idInst[0] + '.' +
+                                  idInst[1] + ' was not found.</b></i>');
       return;
     }
     
@@ -928,7 +936,7 @@ commands.builder = {
         // Inform all (including me) in the room about the removed target.
         for (var i=0; i < world.watch[strCoord].length; i++) {
           world.watch[strCoord][i].socket.emit('message', '<i><b>Creation ' + targetName
-                                                               + ' has been successfully destroyed.</b></i>');
+                                                          + ' has been successfully destroyed.</b></i>');
         }
         
         return;
@@ -936,7 +944,8 @@ commands.builder = {
     }
     
     // Otherwise, target was not found.
-    user.socket.emit('message', '<i><b>Target #' + idInst[0] + '.' + idInst[1] + ' was not found.</b></i>');
+    user.socket.emit('message', '<i><b>Target #' + idInst[0] + '.' + idInst[1] +
+                                ' was not found.</b></i>');
   },
   /*  Removes a target from current room, last one in targets by default,
    *  or instance, last one by default.
@@ -1311,9 +1320,10 @@ commands.user = {
     var targetUser = world.users[username];
     if (targetUser) {
       // Tell targret player.
-      targetUser.socket.emit('message', user.player.name + 
-                                ( user.player.name !=  user.account.username ? '(' + user.account.username + ')' : '' ) + 
-                                ' tells you: ' + cmdStr);
+      targetUser.socket.emit('message',
+              user.player.name + 
+              ( user.player.name !=  user.account.username ? '(' + user.account.username + ')' : '' ) + 
+              ' tells you: ' + cmdStr);
       // Show me the message.
       user.socket.emit('message', 'You tell ' + fullNameID(targetUser) + ': ' + cmdStr);
     } else {
@@ -1382,7 +1392,10 @@ commands.user = {
       return;
     }
     
-    // Options: curEmote.room.me/others, curEmote.self.me/others, curEmote.player.me/player/others, curEmote.target.me/others
+    // Options: curEmote.room.me/others
+    //          curEmote.self.me/others
+    //          curEmote.player.me/player/others
+    //          curEmote.target.me/others
     
     // Emote to the room at-large.
     if (!cmdArray[2]) {
@@ -1461,7 +1474,8 @@ commands.user = {
         var curUser = world.watch[strPos(user.player.position)][i];
         
         // Send with each user socket, except myself and emoteTarget player.
-        if (curUser.account.username != user.account.username && curUser.account.username != caseName(cmdArray[2])) {
+        if (curUser.account.username != user.account.username &&
+            curUser.account.username != caseName(cmdArray[2])) {
           curUser.socket.emit('message', curEmote.player.others.replace('USER1', user.player.name)
                                                                .replace('USER2', caseName(cmdArray[2])));
         }
@@ -1508,7 +1522,11 @@ commands.user = {
       }
       targets = ( !targets ? 'Nothing.' : targets.slice(0, -2) ); // Remove last ', '.
       
-      var description = ( !curRoom.description || curRoom.description == '' ? 'None.' : curRoom.description );
+      var description = 'None';
+      if (curRoom.description && curRoom.description != '') {
+        description = curRoom.description;
+      }
+      
       var commands = ( curRoom.commands.length == 0 ? 'None.' : curRoom.commands.join(', ') );
       var exits = ( curRoom.exits.length == 0 ? 'None.' : curRoom.exits.join(', ') );
       
@@ -1551,7 +1569,8 @@ commands.user = {
               break;
             
             case '[object Object]':
-              propertyData = '<pre style="font-size: 90%; display: inline;">' + JSON.stringify(curProperty, null, 2) + '</pre>';
+              propertyData = '<pre style="font-size: 90%; display: inline;">' +
+                              JSON.stringify(curProperty, null, 2) + '</pre>';
               break;
             
             default:
@@ -1688,7 +1707,8 @@ commands.user = {
       
       // Check if user is already registered.
       if (acct) {
-        user.socket.emit('message', '<i>The username ' + user.account.username + ' is already registered.</i>');
+        user.socket.emit('message', '<i>The username ' + user.account.username +
+                                                  ' is already registered.</i>');
         return;
       }
 
@@ -2026,7 +2046,8 @@ function loadTarget(user, idInstance, command, extra) {
         break;
       
       default:
-        console.log('loadTarget(' + user + ', ' + idInstance + ', ' + command + ', ' + extra + '): NO CASE MATCHED!');
+        console.log('loadTarget(' + user + ', ' + idInstance + ', ' + command +
+                                          ', ' + extra + '): NO CASE MATCHED!');
     }
   });
 }

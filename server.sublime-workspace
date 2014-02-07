@@ -115,7 +115,7 @@
 			"file": "server.js",
 			"settings":
 			{
-				"buffer_size": 10280,
+				"buffer_size": 11163,
 				"line_ending": "Windows"
 			}
 		},
@@ -123,7 +123,7 @@
 			"file": "commands.js",
 			"settings":
 			{
-				"buffer_size": 68268,
+				"buffer_size": 68806,
 				"line_ending": "Windows"
 			}
 		},
@@ -131,7 +131,7 @@
 			"file": "playerFunctions.js",
 			"settings":
 			{
-				"buffer_size": 19348,
+				"buffer_size": 19540,
 				"line_ending": "Windows"
 			}
 		},
@@ -144,10 +144,13 @@
 			}
 		},
 		{
+			"contents": "/*  \n *  Operations do minor calculations,\n *  have safeguards against unexpected arguments,\n *  and always return an expected result.\n */\n\n// Capitalize first letter of a string, and return the resulting string.\nfunction upperFirst(str) {\n  return str.charAt(0).toUpperCase() + str.slice(1);\n}\n\n// Shorthand for Object.prototype.toString.call()\n// Options: [object Array], [object String], [object Object], [object Number],\n//          [object Undefined], [object Date], [object Math], [object Null]\nfunction toType(obj) {\n  return Object.prototype.toString.call(obj);\n}\n\n// Takes a position object, for example: { 'x': 0, 'y': 0, 'z': 0 }\n// and convert it into a string of '0x0y0z', which is how rooms are refered to.\nfunction strPos(pos) {\n  return pos.x + 'x' + pos.y + 'y' + pos.z + 'z';\n}\n\n// Return a real object made from a dotted object notation \n// string 'object.property1.property2', optionally with a value for the last property.\n// Returns false if invalid string, such as '.property'.\nfunction objDotted(str, val) {\n  var makeObject = {};\n  var sortArr = [];\n  var dotSplit = str.split('.');\n  \n  // Must not start empty, such as '.property'.\n  if (dotSplit[0] == '') {\n    return false;\n  }\n  \n  // Otherwise, make an object.\n  if (dotSplit[1]) {\n    for (var i=0; i < dotSplit.length; i++) {\n      if (i == 0) {\n        sortArr[0] = {};\n        continue;\n      }\n      \n      // If not last property.\n      if (i != dotSplit.length - 1) {\n        sortArr[i-1][dotSplit[i]] = {};\n        sortArr[i] = sortArr[i-1][dotSplit[i]];\n      } else {\n        // Last one, then insert value.\n        sortArr[i-1][dotSplit[i]] = val;\n        makeObject[dotSplit[0]] = sortArr[0];\n        return makeObject;\n      }\n    }\n  } else {\n    // Nothing after the first dot.\n    makeObject[dotSplit[0]] = val;\n    return makeObject;\n  }\n}\n\n// Update existing properties, and create non-existing properties,\n// if upsert is requested. Recursively changes the original object,\n// returning nothing.\nfunction updateObj(originalObj, newObj, upsert) {\n  // Ascertain that upsert is defined.\n  if (upsert == undefined) {\n    var upsert = false;\n  }\n  \n  for (var propertyName in newObj) {\n    var curProperty = newObj[propertyName];\n    \n    // Update an existing property, or create a new one.\n    if (originalObj[property]) {\n      // Recursively copy Object and Array properties.\n      if (toType(curProperty) != '[object Array]' && toType(curProperty) != '[object Object]') {\n        updateObj(originalObj[property], curProperty, upsert);\n      }\n      \n      // Otherwise, just reference the value.\n      originalObj[property] = curProperty;\n    } else if (upsert){\n      // Create new property, only if upsert is requested.\n      originalObj[property] = curProperty;\n    }\n  }\n}\n\n// Copies Object & Array types recursively,\n// and directly references the value of any other object type.\nfunction copyObj(originalObj) {\n  var copiedObj;\n  \n  // Handle each object type case.\n  if (toType(originalObj) == '[object Object]') {\n    copiedObj = {};\n    \n    for (var propertyName in originalObj) {\n    var curProperty = originalObj[propertyName];\n    \n    // Recursively copy Object and Array properties.\n    if (toType(curProperty) == '[object Object]' || toType(curProperty) == '[object Array]') {\n      copiedObj[propertyName] = copyObj(curProperty);\n      continue;\n    }\n    \n    // Otherwise, just reference the value.\n    copiedObj[propertyName] = curProperty;\n  }\n  } else if (toType(originalObj) == '[object Array]') {\n    copiedObj = [];\n    \n    for (var i = 0; i < originalObj.length; i++) {\n      var curProperty = originalObj[i];\n      \n      // Recursively copy Object and Array properties.\n      if (toType(curProperty) == '[object Object]' || toType(curProperty) == '[object Array]') {\n        copiedObj[propertyName] = copyObj(curProperty);\n        continue;\n      }\n    \n      // Otherwise, just reference the value.\n      copiedObj[propertyName] = curProperty;\n    }\n  } else {\n    copiedObj = curProperty;\n  }\n  \n  return copiedObj;\n}\n\n// Locates a property insides an object, receiving a dotted string,\n// such as 'property.property.property', and returns an array with\n// the reference to its' parent and property name [parentRef, propetyName],\n// if it exists, or false, if not found.\nfunction hasProperty(obj, propertyStr) {\n  var splitField = propertyStr.split('.');\n  console.log(obj[splitField[0]]);\n  // Parent is obj, itself.\n  if (!splitField[1]) {\n    if (obj[splitField[0]] == undefined) return false;\n    \n    return [obj, splitField[0]];\n  }\n  \n  // Get last field in the string.\n  // Use an array to convert dotted string into object representation.\n  var objArray = [];\n  for (var i=0; i < splitField.length; i++) {\n    // First item.\n    if (i == 0) {\n      // Property not found.\n      if (obj[splitField[0]] == undefined) return false;\n      \n      objArray[0] = obj[splitField[0]];\n      continue;\n    }\n    \n    // Last item.\n    if (i == splitField.length - 1) {\n      objArray[i] = objArray[i-1][splitField[i]];\n      \n      // Last property doesn't exist.\n      if (objArray[i] == undefined) return false;\n      \n      return [objArray[i-1], splitField[i]];\n    }\n    \n    objArray[i] = objArray[i-1][splitField[i]];\n    \n    // Property not found.\n    if (objArray[i] == undefined) return false;\n  }\n}\n\n// First character is upper-case, while the rest are lower-case.\n// Returns re-cased name.\nfunction caseName(name) {\n  var casedName = name.toLowerCase(); // Lowercase the name string.\n  casedName = upperFirst(casedName); // Only first character.\n  return casedName;\n}\n\n// Target names (pre, post, name) and rooms titles must only contain letters,\n// optionally with spaces. First letter must be capital. Certains words must\n// always be lower-case, except the first word.\n// Returns the parsed name on success, or false on failure.\nfunction parseName(name) {\n  // Remove whitespaces from start and end.\n  name = name.trim();\n  // No more than one whitespace, at a time.\n  name = name.replace(/\\s+/g, ' ');\n  \n  // Only English alphabet and spaces allowed. Can't be only spaces.\n  if (name.search(/[^A-Za-z ]/) >= 0 || name == '') {\n    return false;\n  }\n  \n  // The following words must always be in lower-case.\n  var lcWords = ['a', 'an', 'the', 'for', 'and', 'nor', 'but', 'or', 'yet', 'so', \n                 'at', 'by', 'on', 'of', 'to', 'as', 'en', 'per', 'vs', 'via', 'de',\n                 'du', 'von', 'et', 'le', 'la', 'il', 'der', 'af', 'til', 'dit',\n                 'del', 'zu', 'und', 'di', 'av'];\n  \n  var nameArr = name.split(' ');\n  \n  for (var i=0; i < nameArr.length; i++) {\n    // First and last words must be treated as names.\n    if (i == 0 || i == nameArr.length-1) {\n      nameArr[i] = upperFirst(nameArr[i]);\n      continue;\n    }\n    \n    nameArr[i] = nameArr[i].toLowerCase();\n    \n    // Check against lcWords array.\n    if (lcWords.indexOf(nameArr[i]) >= 0) {\n      nameArr[i] = nameArr[i].toLowerCase();\n      continue;\n    }\n    \n    // Otherwise, treat as name.\n    nameArr[i] = upperFirst(nameArr[i]);\n  }\n  \n  name = nameArr.join(' ');\n  \n  return name;\n}\n\n// Returns the pre + name + post joined strings of a player or target,\n// without empty spaces, if any does not exist or is empty.\nfunction fullName(target) {\n  // Either a user or a target.\n  if (target.player) {\n    return (target.player.pre ? target.player.pre + ' ' : '') + target.player.name + \n                                (target.player.post ? ' ' + target.player.post : '');\n  } else {\n    return (target.pre ? target.pre + ' ' : '') + target.name + \n                                (target.post ? ' ' + target.post : '');\n  }\n}\n\n// Returns the fullName() + the strTarget() or + '[USERNAME]',\n// if the fullName() is different from the username, otherwise only the fullName() returns.\nfunction fullNameID(target) {\n  var result = fullName(target);\n  \n  // Either a user or a target.\n  if (target.player) {\n    var username = '';\n    if (result != target.account.username) {\n      username = ' [' + target.account.username + ']';\n    }\n    \n    result = result + username;\n  } else {\n    result = result + ' [' + strTarget(target) + ']';\n  }\n  \n  return result;\n}\n\n// Check that username is under the character limit,\n// and is only composed of a-z & A-Z letters.\n// Returns a message string on error, or false if no problem.\nfunction parseUsername(username) {\n  // Username size limit is 15 characters!\n  if (username.length > 15) {\n    return '<i>Username too long! Please, keep it under fifteen characters.</i>';\n  }\n\n  // Only English alphabet allowed.\n  if (username.search(/[^A-Za-z]/) >= 0) {\n    return '<i>Username must be one word, composed of English letters, only!</i>';\n  }\n\n  return false; // No problem.\n}\n\n// Converts a direction string to a position object.\n// For example: 'nw' returns { 'x': curPos.x - 1, 'y': curPos.y + 1, 'z': curPos.z }.\n// An unavailable option returns false.\nfunction posDir(curPos, dir) {\n  // Options: n, s, e, w | nw ,ne , sw, se | u, d\n  switch(dir) {\n    case 'n':\n      newPos = { 'x': curPos.x, 'y': curPos.y + 1, 'z': curPos.z };\n      break;\n    \n    case 's':\n      newPos = { 'x': curPos.x, 'y': curPos.y - 1, 'z': curPos.z };\n      break;\n    \n    case 'e':\n      newPos = { 'x': curPos.x + 1, 'y': curPos.y, 'z': curPos.z };\n      break;\n    \n    case 'w':\n      newPos = { 'x': curPos.x - 1, 'y': curPos.y, 'z': curPos.z };\n      break;\n    \n    case 'nw':\n      newPos = { 'x': curPos.x - 1, 'y': curPos.y + 1, 'z': curPos.z };\n      break;\n    \n    case 'ne':\n      newPos = { 'x': curPos.x + 1, 'y': curPos.y + 1, 'z': curPos.z };\n      break;\n    \n    case 'sw':\n      newPos = { 'x': curPos.x - 1, 'y': curPos.y - 1, 'z': curPos.z };\n      break;\n    \n    case 'se':\n      newPos = { 'x': curPos.x + 1, 'y': curPos.y - 1, 'z': curPos.z };\n      break;\n    \n    case 'u':\n      newPos = { 'x': curPos.x, 'y': curPos.y, 'z': curPos.z + 1 };\n      break;\n    \n    case 'd':\n      newPos = { 'x': curPos.x, 'y': curPos.y, 'z': curPos.z - 1 };\n      break;\n    \n    default:\n      return false;\n  }\n  \n  return newPos;\n}\n\n// Return the 'ID.INSTANCE' representation of a target.\nfunction strTarget(target) {\n  return target['_id'] + '.' + target.instance;\n}\n\n// Parses a string that represents a target,\n// so that it returns as 'ID.INSTANCE'.\n// Returns false if string is Not a Number.\nfunction parseTarget(target) {\n  if (isNaN(target)) {\n    return false;\n  }\n  \n  var idInst = target.split('.');\n  \n  // Default empty string (id or instance) to '0'.\n  if (idInst[0] == '') {\n    idInst[0] = '0';\n  }\n  if (!idInst[1] || idInst[1] == '') {\n    idInst[1] = '0';\n  }\n  var properTarget = idInst.join('.'); // Turn back into proper string.\n  \n  return properTarget;\n}\n\n// Verifies that a target has the 'worn' property filled,\n// and returns true if so, or false if not so.\nfunction verifyWearable(target) {\n  if (!target.worn || JSON.stringify(target.worn) == '{}') {\n    return false;\n  }\n  \n  // Otherwise.\n  return true;\n}\n\n// Assert if a location on an object (user, target, room, etc')\n// does't exist or is empty. Returns true if empty, or false otherwise.\nfunction locationEmpty(location) {\n  if (!location || JSON.stringify(location) == '{}' || JSON.stringify(location) == '[]') {\n    return true;\n  }\n  \n  // Otherwise.\n  return false;\n}\n\n// Update the world.users reference, and the basic user properties:\n// account, player, ['_id'], name.\nfunction updateUser(user, newUser) {\n  delete world.users[user.account.username]; // Clean up world.users.\n  \n  if (newUser['_id']) {\n    // Full user. Only the top properties are replaced,\n    // to keep the same reference for variable user.\n    user.account = newUser.account;\n    user.player = newUser.player;\n    user['_id'] = newUser['_id'];\n  } else {\n    // Only name.\n    user.account.username = newUser.account.username;\n    user.player.name = newUser.player.name;\n  }\n  \n  // Update extra properties.\n  user.name = fullName(user); // pre + name + post.\n  \n  // Update world.users reference.\n  world.users[user.account.username] = user;\n}\n\n// Returns a reference to an existing command, or false,\n// with optional access level, to restrict the search.\nfunction commandExists(cmd, access) {\n  // Search according to access level.\n  switch (access) {\n    case 'god':\n      for (var category in commands) {\n        var curCategory = commands[category];\n        \n        if (curCategory[cmd]) {\n          return curCategory[cmd];\n        }\n      }\n      break;\n    \n    case 'builder':\n      for (var category in commands) {\n        // Skip god commands.\n        if (category == 'god') {\n          continue;\n        }\n        \n        var curCategory = commands[category].descriptions;\n        \n        if (curCategory[cmd]) {\n          return curCategory[cmd];\n        }\n      }\n      break;\n    \n    case 'master':\n      for (category in commands) {\n        // Skip god and builder commands.\n        if (category == 'god' || category == 'builder') {\n          continue;\n        }\n        \n        var curCategory = commands[category].descriptions;\n        \n        if (curCategory[cmd]) {\n          return curCategory[cmd];\n        }\n      }\n      break;\n    \n    case 'player':\n      for (var category in commands) {\n        // Skip god, builder, and master commands.\n        if (category == 'god' || category == 'builder' || category == 'master') {\n          continue;\n        }\n        \n        var curCategory = commands[category].descriptions;\n        \n        if (curCategory[cmd]) {\n          return curCategory[cmd];\n        }\n      }\n      break;\n    \n    case 'user':\n      var curCategory = commands['user'];\n      \n      if (curCategory[cmd]) {\n        return curCategory[cmd];\n      }\n      break;\n    \n    default:\n      // Same as 'god', when no access argument.\n      for (var category in commands) {\n        var curCategory = commands[category];\n        \n        if (curCategory[cmd]) {\n          return curCategory[cmd];\n        }\n      }\n  }\n  \n  // Otherwise, command not found.\n  return false;\n}\n\n//*** EXPORTS ***//\n  exports.upperFirst        =   upperFirst;\n  exports.toType            =   toType;\n  exports.strPos            =   strPos;\n  exports.objDotted         =   objDotted;\n  exports.updateObj         =   updateObj;\n  exports.copyObj           =   copyObj;\n  exports.hasProperty       =   hasProperty;\n  exports.caseName          =   caseName;\n  exports.parseName         =   parseName;\n  exports.fullName          =   fullName;\n  exports.fullNameID        =   fullNameID;\n  exports.parseUsername     =   parseUsername;\n  exports.posDir            =   posDir;\n  exports.strTarget         =   strTarget;\n  exports.parseTarget       =   parseTarget;\n  exports.verifyWearable    =   verifyWearable;\n  exports.locationEmpty     =   locationEmpty;\n  exports.updateUser        =   updateUser;\n  exports.commandExists     =   commandExists;\n// *** //",
 			"file": "operations.js",
+			"file_size": 15443,
+			"file_write_time": 130362257086845224,
 			"settings":
 			{
-				"buffer_size": 14915,
+				"buffer_size": 14935,
 				"line_ending": "Windows"
 			}
 		},
@@ -163,7 +166,7 @@
 			"file": "codeguide",
 			"settings":
 			{
-				"buffer_size": 3537,
+				"buffer_size": 3538,
 				"line_ending": "Windows"
 			}
 		},
@@ -172,22 +175,6 @@
 			"settings":
 			{
 				"buffer_size": 33,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "views/index.html",
-			"settings":
-			{
-				"buffer_size": 5926,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "routes/index.js",
-			"settings":
-			{
-				"buffer_size": 113,
 				"line_ending": "Windows"
 			}
 		}
@@ -241,6 +228,21 @@
 	},
 	"file_history":
 	[
+		"/C/Users/Phuein/Desktop/DIY/package.json",
+		"/C/Users/Phuein/Desktop/DIY/server.js",
+		"/C/Users/Phuein/Desktop/DIY/commands.js",
+		"/C/Users/Phuein/AppData/Local/Temp/fz3temp-1/.htaccess",
+		"/C/Users/Phuein/Desktop/NodeWorld/server.js",
+		"/C/Users/Phuein/Desktop/DIY/views/index.html",
+		"/C/Users/Phuein/Desktop/DIY/routes/index.js",
+		"/C/Users/Phuein/Desktop/NodeWorldDIY/commands.js",
+		"/C/Users/Phuein/Desktop/NodeWorldDIY/views/index.html",
+		"/C/Users/Phuein/Desktop/NodeWorldDIY/server.js",
+		"/C/Users/Phuein/Desktop/NodeWorldDIY/package.json",
+		"/C/Users/Phuein/Desktop/NodeWorldDIY/deplist.txt",
+		"/C/Users/Phuein/Desktop/NodeWorld/commands.js",
+		"/C/Users/Phuein/Desktop/NodeWorld/package.json",
+		"/C/Users/Phuein/Desktop/NodeWorld/views/index.html",
 		"/C/Users/Phuein/Desktop/Server/package.json",
 		"/C/Users/Phuein/Desktop/Server/README.md",
 		"/C/Users/Phuein/Desktop/Server/creationFunctions.js",
@@ -257,7 +259,6 @@
 		"/C/Users/Phuein/Desktop/Server/app.js",
 		"/C/Users/Phuein/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/C/Users/Phuein/Downloads/joomla/htaccess.txt",
-		"/C/Users/Phuein/AppData/Local/Temp/fz3temp-1/.htaccess",
 		"/C/Users/Phuein/Downloads/joomla/README.txt",
 		"/C/Users/Phuein/AppData/Local/Temp/fz3temp-1/wp-settings.php",
 		"/C/Users/Phuein/AppData/Local/Temp/fz3temp-1/wp-config.php",
@@ -470,7 +471,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -479,15 +480,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10280,
+						"buffer_size": 11163,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6549,
-								6549
+								9900,
+								9900
 							]
 						],
 						"settings":
@@ -497,7 +498,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 540.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -508,15 +509,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 68268,
+						"buffer_size": 68806,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								688,
-								688
+								27973,
+								27973
 							]
 						],
 						"settings":
@@ -526,7 +527,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3294.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -537,15 +538,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 19348,
+						"buffer_size": 19540,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								18938,
-								18938
+								43,
+								43
 							]
 						],
 						"settings":
@@ -573,8 +574,8 @@
 						"selection":
 						[
 							[
-								110,
-								110
+								99,
+								99
 							]
 						],
 						"settings":
@@ -584,7 +585,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 135.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -595,15 +596,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 14915,
+						"buffer_size": 14935,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								134,
-								134
+								316,
+								316
 							]
 						],
 						"settings":
@@ -631,8 +632,8 @@
 						"selection":
 						[
 							[
-								1102,
-								1102
+								10,
+								10
 							]
 						],
 						"settings":
@@ -653,15 +654,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3537,
+						"buffer_size": 3538,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3292,
-								3292
+								203,
+								203
 							]
 						],
 						"settings":
@@ -671,7 +672,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 359.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -701,168 +702,7 @@
 						],
 						"settings":
 						{
-							"auto_name": "",
 							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "views/index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5926,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4735,
-								4735
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 4230.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "routes/index.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 113,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								105,
-								105
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -901,7 +741,7 @@
 		"cols":
 		[
 			0.0,
-			0.766471449488,
+			0.710834553441,
 			1.0
 		],
 		"rows":
@@ -955,7 +795,7 @@
 	"show_minimap": false,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 150.0,
 	"status_bar_visible": true,
 	"template_settings":

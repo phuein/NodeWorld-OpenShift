@@ -200,9 +200,10 @@ function parseName(name) {
   }
   
   // The following words must always be in lower-case.
-  var lcWords = ['a', 'an', 'the', 'for', 'and', 'nor', 'but', 'or', 'yet', 'so', 'at', 'by', 'on', 'of', 
-                 'to', 'as', 'en', 'per', 'vs', 'via', 'de', 'du', 'von', 'et', 'le', 'la', 'il', 'der', 'af', 
-                 'til', 'dit', 'del', 'zu', 'und', 'di', 'av'];
+  var lcWords = ['a', 'an', 'the', 'for', 'and', 'nor', 'but', 'or', 'yet', 'so', 
+                 'at', 'by', 'on', 'of', 'to', 'as', 'en', 'per', 'vs', 'via', 'de',
+                 'du', 'von', 'et', 'le', 'la', 'il', 'der', 'af', 'til', 'dit',
+                 'del', 'zu', 'und', 'di', 'av'];
   
   var nameArr = name.split(' ');
   

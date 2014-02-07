@@ -1,7 +1,7 @@
 /*  
- *  Game Test 0.1
+ *  Node World 0.1
  *  
- *  by Assaf Koss, 2013.
+ *  by Assaf Koss, 2014.
  *  
  *  This is an interactive virtual world game-server
  *  that saves to database, but queries it as little
@@ -145,7 +145,7 @@
   mapsdb = {};
   worlddb = {};
   
-  var dbAddress = 'mongodb://127.0.0.1:27017/nodeworld';
+  var dbAddress = 'mongodb://127.0.0.1:27017/nodeworld';  // db name is 'dyi' for production.
   
   // if OPENSHIFT env variables are present, use the available connection info:
   if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
@@ -162,11 +162,11 @@
     }
     
     // Collections:
-    usersdb     =   db.collection('users'),       // Registered players.
-    targetsdb   =   db.collection('targets'),     // Objects, NPCs, MOBs, Animals, Items, and the rest.
-    mapsdb      =   db.collection('maps');        // Maps in Text clients, and Zones in 2D & 3D clients.
-                                                  // Including Rooms in Text clients, and Areas in 2D & 3D clients.
-    worlddb     =   db.collection('world');       // World settings and configurations.
+    usersdb     =   db.collection('users'),     // Registered players.
+    targetsdb   =   db.collection('targets'),   // Objects, NPCs, MOBs, Animals, Items, and the rest.
+    mapsdb      =   db.collection('maps');      // Maps in Text clients, and Zones in 2D & 3D clients.
+                                                // Including Rooms (Text client) and Areas (2D & 3D clients).
+    worlddb     =   db.collection('world');     // World settings and configurations.
     
     // Ensure Indexes! Indexing on '_id' is both automatic and 'unique', already.
     usersdb.ensureIndex({ 'account.username': 1 }, 
@@ -296,8 +296,9 @@ io.sockets.on('connection', function (socket) {
   	// Default to chat message.
     // Show to all others.
   	socket.broadcast.emit('message', user.player.name + 
-                        ( user.player.name != user.account.username ? '(' + user.account.username + ')' : '' ) + 
-                        ': ' + message); // Prefix with player name.
+            ( user.player.name != user.account.username ? '(' + user.account.username + ')' : '' ) + 
+            ': ' + message); // Prefix with player name.
+    
     // Show me.
     socket.emit('message', 'You: ' + message);
   });

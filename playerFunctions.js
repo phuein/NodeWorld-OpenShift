@@ -102,7 +102,8 @@ function dropTarget(user, target) {
     // Add to changed list for DB update.
     targetMoved(user);
     
-    user.socket.emit('message', '<i>You remove ' + fullName(target) + ' from your ' + hand + ' hand.</i>');
+    user.socket.emit('message', '<i>You remove ' + fullName(target) + 
+                                ' from your ' + hand + ' hand.</i>');
   }
 }
 
@@ -182,7 +183,8 @@ function wearTarget(user, target) {
     // Add to changed list for DB update.
     targetMoved(user);
     
-    user.socket.emit('message', '<i>You wear ' + fullName(target) + ' over your ' + target.worn + '.</i>');
+    user.socket.emit('message', '<i>You wear ' + fullName(target) + ' over your ' +
+                                target.worn + '.</i>');
     return;
   }
   
@@ -207,7 +209,8 @@ function wearTarget(user, target) {
       // Add to changed list for DB update.
       targetMoved(user);
       
-      user.socket.emit('message', '<i>You wear ' + fullName(target) + ' over your ' + target.worn + '.</i>');
+      user.socket.emit('message', '<i>You wear ' + fullName(target) + ' over your ' +
+                                                   target.worn + '.</i>');
       return;
     }
   }
@@ -250,7 +253,8 @@ function removeTarget(user, target) {
         // Add to changed list for DB update.
         targetMoved(user);
         
-        user.socket.emit('message', '<i>You remove ' + fullName(target) + ' to your ' + hand + ' hand.</i>');
+        user.socket.emit('message', '<i>You remove ' + fullName(target) + ' to your ' +
+                                     hand + ' hand.</i>');
         return;
       }
       
@@ -524,7 +528,7 @@ function offerItems(user, target, items) {
         user.player.offers.push(offerObj);
         
         // Notify target about the offer.
-        var msg = 'the following items:<br />' + itemsDetails.join('<br />'); // Used if more than one item offered.
+        var msg = 'the following items:<br />' + itemsDetails.join('<br />'); // More than one item offered.
         curUser.socket.emit('message', '<b>' + fullNameID(user.player) + '</b> ' + ' offers to give you ' + 
                               (itemsDetails.length == 1 ? itemsDetails[0] : msg));
         
@@ -574,7 +578,8 @@ function cancelOffer(user, offer) {
   
   // Notify other user about the cancellation.
   if (removedItem.target.socket != undefined) {
-    removedItem.target.socket.emit('message', '<i>' + fullNameID(user) + ' has cancelled offer #' + offer + '.</i>');
+    removedItem.target.socket.emit('message', '<i>' + fullNameID(user) + ' has cancelled offer #' + 
+                                              offer + '.</i>');
   }
   
   user.socket.emit('message', '<i>Offer #' + offer + ' has been cancelled.</i>');
