@@ -1381,7 +1381,14 @@ commands.user = {
   // emote ACTION (TARGET)
   'emote': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<pre>' + JSON.stringify(world.config.emotes, 2) + '</pre>');
+      // Get a list of all available emotes.
+      var emotes = '';
+      for (var i=0; i < world.config.emotes.length; i++) {
+        emotes += world.config.emotes[i] + ', ';
+      }
+      emotes = emotes.slice(0, emotes.length-2);  // Remove last ', '
+      
+      user.socket.emit('message', '<i>' + emotes + '</i>');
       return;
     }
     
