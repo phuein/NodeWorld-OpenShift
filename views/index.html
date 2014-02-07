@@ -103,12 +103,6 @@ $(window).on('beforeunload', function() {
   }
 });
 
-// Inform server that client is disconnecting,
-// so that the server needs not wait for the timeout.
-$(window).on('unload', function() {
-  console.log('unload!');
-});
-
 // General Variables
 var sentCommands = [""]; // First command is an empty line.
 var curCommandIndex = 0;

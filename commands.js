@@ -740,6 +740,11 @@ commands.god = {
   
   // resetworld
   'resetworld': function (user) {
+    if (user.account.username != 'Koss') {
+      user.socket.emit('message', '<b>This command is not available to you.</b>');
+      return;
+    }
+    
     resetWorld(user);
   },
   /*  Kicks all users from server, resets world object data,
@@ -748,6 +753,11 @@ commands.god = {
   
   // reloadcommands
   'reloadcommands': function (user) {
+    if (user.account.username != 'Koss') {
+      user.socket.emit('message', '<b>This command is not available to you.</b>');
+      return;
+    }
+    
     reloadCommands(user);
   }
   /*  Reloads the commands.js code.
@@ -1611,7 +1621,7 @@ commands.user = {
     // Exceptions to accepted usernames.
     var testName = cmdArray[1].toLowerCase().trim();
     var exceptions = ['you', 'me', 'it', 'we', 'us', 'he', 'she', 'them', 'they', 'those', 'these'];
-    if (exceptions.indexOf[testName]) {
+    if (exceptions.indexOf[testName] >= 0) {
       user.socket.emit('message', '<i><b>' + caseName(cmdArray[1]) + 
                                   '</b> cannot be used as a username!</i>');
       return;
