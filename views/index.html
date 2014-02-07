@@ -42,9 +42,10 @@
 <body>
 <script>
 //*** SOCKET.IO ***//
+  // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
     // 'connect timeout': 60, // Close connection from client-side if idle for # seconds.
-    'reconnect': false // Socket-only reconnect does not send headers, and the server enjoys that session data.
+    'reconnect': false // Socket-only reconnect does not send headers, and the server needs http session data.
   });
   
   socket.on('connect', function () {
@@ -98,8 +99,14 @@ function appendOutput(message) {
 // Interrupt user leaving only if connected to server.
 $(window).on('beforeunload', function() {
   if (socket.socket.connected) {
-    return 'Leave Test Game?';
+    return 'Leave Node World?';
   }
+});
+
+// Inform server that client is disconnecting,
+// so that the server needs not wait for the timeout.
+$(window).on('unload', function() {
+  socket.disconnect;
 });
 
 // General Variables

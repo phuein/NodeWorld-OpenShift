@@ -1381,7 +1381,7 @@ commands.user = {
   // emote ACTION (TARGET)
   'emote': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'emote ACTION (TARGET)</i>');
+      user.socket.emit('message', '<pre>' + JSON.stringify(world.config.emotes, 2) + '</pre>');
       return;
     }
     
