@@ -1,8 +1,8 @@
 /*  
-*  Operations do minor calculations,
-*  have safeguards against unexpected arguments,
-*  and always return an expected result.
-*/
+ *  Operations do minor calculations,
+ *  have safeguards against unexpected arguments,
+ *  and always return an expected result.
+ */
 
 // Capitalize first letter of a string, and return the resulting string.
 function upperFirst(str) {
@@ -264,10 +264,15 @@ function fullNameID(target) {
   return result;
 }
 
-// Check that username is under the character limit,
+// Check that username is under or over the character limit,
 // and is only composed of a-z & A-Z letters.
 // Returns a message string on error, or false if no problem.
 function parseUsername(username) {
+  // Username must be at least two characters long!
+  if (username.length < 2) {
+    return '<i>Username too short! Please, keep it over one character.</i>';
+  }
+  
   // Username size limit is 15 characters!
   if (username.length > 15) {
     return '<i>Username too long! Please, keep it under fifteen characters.</i>';

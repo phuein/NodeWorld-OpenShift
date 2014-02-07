@@ -1388,7 +1388,8 @@ commands.user = {
       }
       emotes = emotes.slice(0, emotes.length-2);  // Remove last ', '
       
-      user.socket.emit('message', '<i>' + emotes + '</i>');
+      user.socket.emit('message', 'The emotes available to you are:<br />' +
+                                  '<i>' + emotes + '.</i>');
       return;
     }
     
@@ -1604,6 +1605,15 @@ commands.user = {
     // Make sure there is actually a name to change into.
     if (!cmdArray[1]) {
       user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'rename USERNAME</i>');
+      return;
+    }
+    
+    // Exceptions to accepted usernames.
+    var testName = cmdArray[1].toLowerCase().trim();
+    var exceptions = ['you', 'me', 'it', 'we', 'us', 'he', 'she', 'them', 'they', 'those', 'these'];
+    if (exceptions.indexOf[testName]) {
+      user.socket.emit('message', '<i><b>' + caseName(cmdArray[1]) + 
+                                  '</b> cannot be used as a username!</i>');
       return;
     }
 

@@ -110,6 +110,10 @@ $(window).on('unload', function() {
   socket.disconnect();
 });
 
+$(window).unload(function() {
+  alert("Bye now!");
+});
+
 // General Variables
 var sentCommands = [""]; // First command is an empty line.
 var curCommandIndex = 0;
