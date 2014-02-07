@@ -106,12 +106,7 @@ $(window).on('beforeunload', function() {
 // Inform server that client is disconnecting,
 // so that the server needs not wait for the timeout.
 $(window).on('unload', function() {
-  alert('disconnecting!');
-  socket.disconnect();
-});
-
-$(window).unload(function() {
-  alert("Bye now!");
+  console.log('unload!');
 });
 
 // General Variables
