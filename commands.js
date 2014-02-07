@@ -1383,8 +1383,8 @@ commands.user = {
     if (!cmdArray[1]) {
       // Get a list of all available emotes.
       var emotes = '';
-      for (var i=0; i < world.config.emotes.length; i++) {
-        emotes += world.config.emotes[i] + ', ';
+      for (emote in world.config.emotes) {
+        emotes += emote + ', ';
       }
       emotes = emotes.slice(0, emotes.length-2);  // Remove last ', '
       
