@@ -44,7 +44,7 @@
 //*** SOCKET.IO ***//
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
-    'sync disconnect on unload' : true,   // Send a disconnect packet to server when the browser unloads.
+    'sync disconnect on unload' : true,           // Send 'disconnect' to server when browser 'beforeunload'.
     'auto connect'              : true,           // Automatically establish connection on 'io.connect()'.
     'reconnect'                 : true,
     'reconnection limit'        : 60000,          // Maximum ms to wait between reconnection attempts.
@@ -130,10 +130,12 @@ function appendOutput(message) {
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
 }
 
+/*
 // Interrupt user leaving only if connected to server.
 $(window).on('beforeunload', function() {
   return 'Leave Node World?';
 });
+*/
 
 // General Variables
 var sentCommands = [""]; // First command is an empty line.

@@ -540,7 +540,7 @@ function randomName(name) {
   
   // Get a random number between min and max, including them.
   var min = 0;
-  var max = 10;
+  var max = 9;
   
   var prefix = prefixes[Math.floor(Math.random() * (max - min + 1)) + min];
   
