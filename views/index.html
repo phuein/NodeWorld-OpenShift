@@ -92,6 +92,7 @@
   // Check every second if connecting.
   var connectingDots = '...';
   function connectingCheck() {
+    console.log('socket.socket.connecting: ' + socket.socket.connecting);
     if (socket.socket.connecting) {
       $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
       connectingDots += '.';
@@ -106,6 +107,7 @@
   // Check every second if reconnecting.
   var reconnectingDots = '...';  
   function reconnectingCheck() {
+    console.log('socket.socket.reconnecting: ' + socket.socket.reconnecting);
     if (socket.socket.reconnecting) {
       $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
       reconnectingDots += '.';
@@ -130,9 +132,7 @@ function appendOutput(message) {
 
 // Interrupt user leaving only if connected to server.
 $(window).on('beforeunload', function() {
-  if (socket.socket.connected) {
-    return 'Leave Node World?';
-  }
+  return 'Leave Node World?';
 });
 
 // General Variables
