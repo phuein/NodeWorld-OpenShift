@@ -81,6 +81,7 @@
       $('#input').blur();
       
       var reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
+      socket.connect(); // Attempt connecting, again.
     });
   });
   
@@ -98,7 +99,7 @@
   }
   var connectingTimer = setInterval(connectingCheck(), 500); // Show the connecting status, first thing.
   
-  // Check every second if reconnecting.
+  // Check every second if reconnecting. Not valid for SocketIO 0.9, but only for 0.10!
   var reconnectingDots = '...';  
   function reconnectingCheck() {
     if (socket.socket.reconnecting) {
