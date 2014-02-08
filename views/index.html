@@ -85,7 +85,7 @@
       $('#input').prop('placeholder', "Not connected to server...");
       $('#input').blur();
       
-      var reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
+      reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
     });
   });
   
@@ -117,6 +117,7 @@
     // Stop checking when not connecting.
     clearInterval(reconnectingTimer);
   }
+  var reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
 // *** //
 
 // Add Timestamp to messages. Scroll down.
