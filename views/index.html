@@ -44,8 +44,13 @@
 //*** SOCKET.IO ***//
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
-    'sync disconnect on unload':  true,   // Send a disconnect packet to server when the browser unloads.
-    // 'auto connect': true               // Automatically establish connection on 'io.connect()'.
+    'sync disconnect on unload' : true,   // Send a disconnect packet to server when the browser unloads.
+    'auto connect'              : true,           // Automatically establish connection on 'io.connect()'.
+    'reconnect'                 : true,
+    'reconnection limit'        : 60000,          // Maximum ms to wait between reconnection attempts.
+    'reconnection delay'        : 5000,           // Multiplier to add for reconnection attempts.
+    'max reconnection attempts' : 30,             // After this emit 'reconnect_failed' event.
+    'connect timeout'           : 10000           // Wait this long in ms to abord connection attempt.
   });
   
   // On socket connected.
@@ -81,7 +86,6 @@
       $('#input').blur();
       
       var reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
-      socket.connect(); // Attempt connecting, again.
     });
   });
   
@@ -99,7 +103,7 @@
   }
   var connectingTimer = setInterval(connectingCheck(), 500); // Show the connecting status, first thing.
   
-  // Check every second if reconnecting. Not valid for SocketIO 0.9, but only for 0.10!
+  // Check every second if reconnecting.
   var reconnectingDots = '...';  
   function reconnectingCheck() {
     if (socket.socket.reconnecting) {
