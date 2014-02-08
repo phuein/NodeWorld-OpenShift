@@ -44,10 +44,11 @@
 //*** SOCKET.IO ***//
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
-    // 'connect timeout': 60, // Close connection from client-side if idle for # seconds.
-    'reconnect': false // Socket-only reconnect does not send headers, and the server needs http session data.
+    'sync disconnect on unload':  true,   // Send a disconnect packet to server when the browser unloads.
+    // 'auto connect': true                  // Automatically establish connection on 'io.connect()'.
   });
   
+  // On socket connected.
   socket.on('connect', function () {
     // Enable input box when connection open.
     $('#input').prop('disabled', false);
@@ -66,8 +67,9 @@
       appendOutput(message);
     });
     
-    socket.on('connect_error', function (err) {
-      appendOutput('<i>Could not connect to server. Please, refresh the website!</i>');
+    socket.on('error', function (err) {
+      console.log(err);
+      appendOutput('<b>Connection Error:</b><br />' + err + '<br />');
     });
     
     socket.on('disconnect', function () {
@@ -79,10 +81,8 @@
       $('#input').blur();
     });
   });
-
-  socket.on('error', function (err) {
-    console.log(err);
-  });
+  
+  console.log(socket);
 // *** //
 
 // Add Timestamp to messages. Scroll down.

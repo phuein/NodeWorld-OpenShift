@@ -37,9 +37,9 @@
   var server = http.createServer(app);
   io = require('socket.io').listen(server, {
     // Socket Server Options.
-    'close timout':   0,                     // Seconds to re-open the connection, after client disconnect.
-    'log level'   :   1,                     // Recommended 1 for production.
-    'transports'  :   ['xhr-polling']
+    // 'close timeout' :   0,                  // Seconds to re-open the connection, after client disconnect.
+    'log level'     :   1,                     // Recommended 1 for production.
+    'transports'    :   ['xhr-polling']
   });
   
   // Recomended settings for production.

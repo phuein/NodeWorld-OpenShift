@@ -1621,7 +1621,7 @@ commands.user = {
     // Exceptions to accepted usernames.
     var testName = cmdArray[1].toLowerCase().trim();
     var exceptions = ['you', 'me', 'it', 'we', 'us', 'he', 'she', 'them', 'they', 'those', 'these'];
-    if (exceptions.indexOf[testName] >= 0) {
+    if (exceptions.indexOf(testName) >= 0) {
       user.socket.emit('message', '<i><b>' + caseName(cmdArray[1]) + 
                                   '</b> cannot be used as a username!</i>');
       return;
