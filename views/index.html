@@ -50,8 +50,7 @@
     'reconnection limit'        : 60000,          // Maximum ms to wait between reconnection attempts.
     'reconnection delay'        : 5000,           // Multiplier to add for reconnection attempts.
     'max reconnection attempts' : 30,             // After this emit 'reconnect_failed' event.
-    'connect timeout'           : 10000,          // Wait this long in ms to abord connection attempt.
-    'try multiple transports'   : false           // Try all available transports after failing reconnect.
+    'connect timeout'           : 10000           // Wait this long in ms to abord connection attempt.
   });
   
   // On socket connected.
@@ -68,26 +67,26 @@
         socket.emit('message', cookieValue[2]);
       }
     }
+  });
+  
+  socket.on('message', function (message) {
+    appendOutput(message);
+  });
+  
+  socket.on('error', function (err) {
+    console.log(err);
+    appendOutput('<b>Connection Error:</b><br />' + err + '<br />');
+  });
+  
+  socket.on('disconnect', function () {
+    appendOutput('<i>Lost connection to server!</i>');
     
-    socket.on('message', function (message) {
-      appendOutput(message);
-    });
+    // Disable input box when connection open.
+    $('#input').prop('disabled', true);
+    $('#input').prop('placeholder', "Not connected to server...");
+    $('#input').blur();
     
-    socket.on('error', function (err) {
-      console.log(err);
-      appendOutput('<b>Connection Error:</b><br />' + err + '<br />');
-    });
-    
-    socket.on('disconnect', function () {
-      appendOutput('<i>Lost connection to server!</i>');
-      
-      // Disable input box when connection open.
-      $('#input').prop('disabled', true);
-      $('#input').prop('placeholder', "Not connected to server...");
-      $('#input').blur();
-      
-      reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
-    });
+    reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
   });
   
   // Check every second if connecting.
@@ -110,7 +109,6 @@
   // Check every second if reconnecting.
   var reconnectingDots = '...';  
   function reconnectingCheck() {
-    console.log('socket.socket.reconnecting: ' + socket.socket.reconnecting);
     if (socket.socket.reconnecting) {
       $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
       reconnectingDots += '.';
