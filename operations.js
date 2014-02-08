@@ -391,6 +391,15 @@ function locationEmpty(location) {
 // Update the world.users reference, and the basic user properties:
 // account, player, ['_id'], name.
 function updateUser(user, newUser) {
+  // Simple player name change, for registered user.
+  if (newUser.account == undefined) {
+    user.player.name = newUser.player.name;
+    user.name = fullName(user); // pre + name + post.
+    return;
+  }
+  
+  // Username & player name change for an unregistered user,
+  // or a case of successful login.
   delete world.users[user.account.username]; // Clean up world.users.
   
   if (newUser['_id']) {
@@ -400,7 +409,6 @@ function updateUser(user, newUser) {
     user.player = newUser.player;
     user['_id'] = newUser['_id'];
   } else {
-    // Only name.
     user.account.username = newUser.account.username;
     user.player.name = newUser.player.name;
   }
@@ -495,6 +503,61 @@ function commandExists(cmd, access) {
   return false;
 }
 
+// A random name generator, based on Prefix + middle + suffix.
+// Checks if username is already in world.users[], and recursively retries.
+// Optionally, check if argument name is one of the options,
+// and return true if so, or false if not so (this is for the rename command.)
+function randomName(name) {
+  // Each word must be 3 characters long, exactly.
+  var prefixes  = ['All', 'Bin', 'Kor', 'Lam', 'Dar', 'Sof', 'Arn', 'Men', 'Che', 'Tai'];
+  
+  // Each word must be 3 characters long, exactly.
+  var middles   = ['gen', 'shi', 'por', 'pon', 'lam', 'att', 'raa', 'arr', 'gar', 'fen'];
+  
+  // Each word must be 3 characters long, exactly.
+  var suffixes  = ['eus', 'nos', 'gos', 'kor', 'mis', 'mal', 'dar', 'she', 'ous', 'eos'];
+  
+  // In case of a name check, check against these options.
+  if (name) {
+    // No match, if not same length.
+    if (name.length != 9) {
+      return false;
+    }
+    
+    var prefix = name.substr(0, 3);
+    
+    var middle = name.substr(3, 3);
+    
+    var suffix = name.substr(6, 3);
+    
+    if (prefixes.indexOf(prefix) >= 0 && middles.indexOf(middle) >= 0 && 
+                                          suffixes.indexOf(suffix) >= 0) {
+      return true;  // Found a match!
+    }
+    
+    return false;   // Did not find a match.
+  }
+  
+  // Get a random number between min and max, including them.
+  var min = 0;
+  var max = 10;
+  
+  var prefix = prefixes[Math.floor(Math.random() * (max - min + 1)) + min];
+  
+  var middle = middles[Math.floor(Math.random() * (max - min + 1)) + min];
+  
+  var suffix = suffixes[Math.floor(Math.random() * (max - min + 1)) + min];
+  
+  var name = prefix + middle + suffix;
+  
+  // Must not be already in-use.
+  if (world.users[name]) {
+    name = randomName(); // Recursively, try again!
+  }
+  
+  return name;
+}
+
 //*** EXPORTS ***//
   exports.upperFirst        =   upperFirst;
   exports.toType            =   toType;
@@ -515,4 +578,5 @@ function commandExists(cmd, access) {
   exports.locationEmpty     =   locationEmpty;
   exports.updateUser        =   updateUser;
   exports.commandExists     =   commandExists;
+  exports.randomName        =   randomName;
 // *** //

@@ -1044,6 +1044,26 @@ commands.master = {
 
 // Registered users, only.
 commands.player = {
+  // email
+  'email': function (user) {
+    // Try the socket user object for the data.
+    if (user.account.email) {
+      user.socket.emit('message', '<i>eMail for user ' + user.account.username + 
+                        ' is: ' + user.account.email + '</i>');
+      return;
+    }
+  },
+  /*  Display email address.
+   */
+  
+  // logout
+  'logout': function (user) {
+    
+  },
+  /*  Logout from current logged-in user account,
+   *  and replace account.username, player.name with a randomName(), updating user.name.
+   */
+  
   // wear TARGET
   'wear': function (user, cmdArray) {
     if (!cmdArray[1]) {
@@ -1098,18 +1118,6 @@ commands.player = {
     }
   },
   /*  Remove a worn item and hold if possible, or drop to room.
-   */
-  
-  // email
-  'email': function (user) {
-    // Try the socket user object for the data.
-    if (user.account.email) {
-      user.socket.emit('message', '<i>eMail for user ' + user.account.username + 
-                        ' is: ' + user.account.email + '</i>');
-      return;
-    }
-  },
-  /*  Display email address.
    */
   
   // hold TARGET (HAND)
@@ -1610,20 +1618,20 @@ commands.user = {
   /*  Only 'look' shows the current room data.
   */
 
-  // rename USERNAME
+  // rename NAME
   'rename': function (user, cmdArray) {
     // Make sure there is actually a name to change into.
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'rename USERNAME</i>');
+      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'rename NAME</i>');
       return;
     }
     
-    // Exceptions to accepted usernames.
+    // Exceptions to accepted names.
     var testName = cmdArray[1].toLowerCase().trim();
     var exceptions = ['you', 'me', 'it', 'we', 'us', 'he', 'she', 'them', 'they', 'those', 'these'];
     if (exceptions.indexOf(testName) >= 0) {
       user.socket.emit('message', '<i><b>' + caseName(cmdArray[1]) + 
-                                  '</b> cannot be used as a username!</i>');
+                                  '</b> cannot be used as a name!</i>');
       return;
     }
 
@@ -1634,26 +1642,55 @@ commands.user = {
       return;
     }
 
-    // Returns a username with first letter uppercase and the rest lowercase.
-    var fixedUsername = caseName(cmdArray[1]);
+    // Returns a name with first letter uppercase and the rest lowercase.
+    var fixedName = caseName(cmdArray[1]);
     
     // Save old name to alert everyone of this change.
     var oldName = user.player.name;
-
-    // Check if username is already registered.
-    usersdb.findOne({ 'account.username': fixedUsername }, function (e, acct) {
-      if (acct) {
-        user.socket.emit('message', '<i>Username ' + fixedUsername + ' is already registered!</i>');
-        return;
-      }
+    
+    // Logged-in users only change their player.name & user.name.
+    if (user.account.access != 'user') {
+      user.player.name = fixedName;
+      user.name = fullName(user); // pre + name + post.
       
-      var newUser = {}; newUser.account = {}; newUser.player = {}; // Create new user object.
-      newUser.account.username = fixedUsername; // Assign new name...
-      newUser.player.name = fixedUsername;      // ...
+      var newUser = {};
+      newUser.player = {};
+      
+      newUser.player.name = fixedName;    // Assign new player name.
       
       updateUser(user, newUser); // Update!
       
-      user.socket.emit('message', '<i>You have changed your name to ' + user.player.name + '.</i>');
+      user.socket.emit('message', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
+      // And alert everyone about this...
+      user.socket.broadcast.emit('message', '<i><b>' + oldName + '</b> is now known as </i><b>' + 
+                                                                      user.player.name + '</b>.');
+      
+      return;
+    }
+    
+    // Check if username is not one of the available randomName() options.
+    if (randomName(fixedName)) {
+      user.socket.emit('message', '<i>' + fixedName + ' cannot be used as a username!</i>');
+      return;
+    }
+    
+    // Check if username is already registered.
+    usersdb.findOne({ 'account.username': fixedName }, function (e, acct) {
+      if (acct) {
+        user.socket.emit('message', '<i>Username ' + fixedName + ' is already registered!</i>');
+        return;
+      }
+      
+      // Unregistered users also change their account.username.
+      var newUser = {};
+      newUser.account = {}; newUser.player = {};
+      
+      newUser.account.username = fixedName; // Assign new name...
+      newUser.player.name = fixedName;      // ...
+      
+      updateUser(user, newUser); // Update!
+
+      user.socket.emit('message', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
       // And alert everyone about this...
       user.socket.broadcast.emit('message', '<i>' + oldName + ' is now known as ' + 
                                                           user.player.name + '.</i>');
@@ -2088,4 +2125,5 @@ function loadTarget(user, idInstance, command, extra) {
   
   exports.fullNameID      =   fullNameID;
   exports.strPos          =   strPos;
+  exports.randomName      =   randomName;
 // *** //

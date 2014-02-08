@@ -45,14 +45,14 @@
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
     'sync disconnect on unload':  true,   // Send a disconnect packet to server when the browser unloads.
-    // 'auto connect': true                  // Automatically establish connection on 'io.connect()'.
+    // 'auto connect': true               // Automatically establish connection on 'io.connect()'.
   });
   
   // On socket connected.
   socket.on('connect', function () {
     // Enable input box when connection open.
     $('#input').prop('disabled', false);
-    $('#input').prop('placeholder', "Enter text here...");
+    $('#input').prop('placeholder', 'Enter text here...');
     $('#input').focus();
     
     // Attempt to send login command from saved cookie.
@@ -73,16 +73,43 @@
     });
     
     socket.on('disconnect', function () {
-      appendOutput('<i>Lost connection to server. Please, refresh the website!</i>');
+      appendOutput('<i>Lost connection to server!</i>');
       
       // Disable input box when connection open.
       $('#input').prop('disabled', true);
       $('#input').prop('placeholder', "Not connected to server...");
       $('#input').blur();
+      
+      var reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
     });
   });
   
-  console.log(socket);
+  // Check every second if connecting.
+  var connectingDots = '...';
+  function connectingCheck() {
+    if (socket.socket.connecting) {
+      $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
+      connectingDots += '.';
+      return;
+    }
+    
+    // Stop checking when not connecting.
+    clearInterval(connectingTimer);
+  }
+  var connectingTimer = setInterval(connectingCheck(), 500); // Show the connecting status, first thing.
+  
+  // Check every second if reconnecting.
+  var reconnectingDots = '...';  
+  function reconnectingCheck() {
+    if (socket.socket.reconnecting) {
+      $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
+      reconnectingDots += '.';
+      return;
+    }
+    
+    // Stop checking when not connecting.
+    clearInterval(reconnectingTimer);
+  }
 // *** //
 
 // Add Timestamp to messages. Scroll down.

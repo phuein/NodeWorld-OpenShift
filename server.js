@@ -37,8 +37,8 @@
   var server = http.createServer(app);
   io = require('socket.io').listen(server, {
     // Socket Server Options.
-    // 'close timeout' :   0,                  // Seconds to re-open the connection, after client disconnect.
-    'log level'     :   1,                     // Recommended 1 for production.
+    // 'close timeout' :   60,               // Seconds to re-open the connection, after client disconnect.
+    'log level'     :   1,                   // Recommended 1 for production.
     'transports'    :   ['xhr-polling']
   });
   
@@ -233,11 +233,14 @@ io.sockets.on('connection', function (socket) {
   
 	// The user object that locally (per socket session) saves the logged-in user data from the DB.
 	var user = {
-		account: {},
-		player: { name: "Anonymous" + Math.floor((Math.random()*10000)+1) }
+		account : {},
+		player  : {}
 	};
-  user.account.username = user.player.name; // Default random name.
-  user.account.access = 'user'; // Default access level, for unregistered users.
+  
+  user.account.username    =  command.randomName();       // Get a random name.
+  user.player.name         =  user.account.username;      // ...
+  
+  user.account.access   = 'user'; // Default access level, for unregistered users.
   
 	// Use local object room to refer to the current loaded room.
 	user.room;
@@ -265,8 +268,9 @@ io.sockets.on('connection', function (socket) {
   // Inform everybody about the new user.
   user.socket.broadcast.emit('message', user.player.name +  ' has joined.');
   // Welcome the new user.
-  user.socket.emit('message', '<b>Welcome to Test Game, ' + user.player.name + '!</b><br />' + 
-                          'Please, use <b>' + cmdChar + 'help</b> to list all available commands.');
+  user.socket.emit('message', '<b>Welcome to Test Game!</b><br />' + 
+                      'Please, use <b>' + cmdChar + 'help</b> to list all available commands.<br />' +
+                      'You are now known as <b>' +  user.player.name + '</b>.');
 
   // Handle room and map loading, or creation, accordingly. Does a 'look', as well.
   command.loadRoom(user);
