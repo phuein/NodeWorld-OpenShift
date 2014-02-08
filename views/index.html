@@ -50,7 +50,8 @@
     'reconnection limit'        : 60000,          // Maximum ms to wait between reconnection attempts.
     'reconnection delay'        : 5000,           // Multiplier to add for reconnection attempts.
     'max reconnection attempts' : 30,             // After this emit 'reconnect_failed' event.
-    'connect timeout'           : 10000           // Wait this long in ms to abord connection attempt.
+    'connect timeout'           : 10000,          // Wait this long in ms to abord connection attempt.
+    'try multiple transports'   : false           // Try all available transports after failing reconnect.
   });
   
   // On socket connected.
@@ -92,15 +93,17 @@
   // Check every second if connecting.
   var connectingDots = '...';
   function connectingCheck() {
-    console.log('socket.socket.connecting: ' + socket.socket.connecting);
     if (socket.socket.connecting) {
       $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
       connectingDots += '.';
       return;
     }
     
-    // Stop checking when not connecting.
-    clearInterval(connectingTimer);
+    // Stop checking when connected.
+    if (socket.socket.connected) {
+      clearInterval(connectingTimer);
+      connectingDots = '...';
+    }
   }
   var connectingTimer = setInterval(connectingCheck(), 500); // Show the connecting status, first thing.
   
@@ -114,10 +117,13 @@
       return;
     }
     
-    // Stop checking when not connecting.
-    clearInterval(reconnectingTimer);
+    // Stop checking when connected.
+    if (socket.socket.connected) {
+      clearInterval(reconnectingTimer);
+      reconnectingDots = '...'; 
+    }
   }
-  var reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
+  var reconnectingTimer;
 // *** //
 
 // Add Timestamp to messages. Scroll down.
