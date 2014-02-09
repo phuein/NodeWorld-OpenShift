@@ -226,7 +226,7 @@ io.sockets.on('connection', function (socket) {
   // Server is closed.
   if (serverClosed) {
     // Kick socket.
-    socket.emit('message', '<b>Server is closed!</b>');
+    socket.emit('info', '<b>Server is closed!</b>');
     socket.disconnect();
     console.log('Connection attempt: Server closed!');
   }
@@ -246,8 +246,8 @@ io.sockets.on('connection', function (socket) {
 	user.room;
 
   // Default to 0,0,0 as first room.
-  if (!user.player.position) {
-    user.player.position = { 'x': 0, 'y': 0, 'z': 0 };
+  if (!user.player.room) {
+    user.player.room = { 'x': 0, 'y': 0, 'z': 0 };
   }
   
   // Default to 0 as first map.
@@ -304,7 +304,7 @@ io.sockets.on('connection', function (socket) {
   
   // When a client socket disconnects.
   socket.on('disconnect', function () {
-    var strCoord = command.strPos(user.player.position);
+    var strCoord = command.strPos(user.player.room);
     
     // Remove myself from the room's and map's watchers.
     world.watch[strCoord].splice(world.watch[strCoord].indexOf(user), 1);
@@ -321,7 +321,7 @@ io.sockets.on('connection', function (socket) {
     }
     
     // Inform all.
-    io.sockets.emit('message', command.fullNameID(user) + ' has left.');
+    io.sockets.emit('info', command.fullNameID(user) + ' has left.');
     
     delete world.users[user.account.username]; // Clean up the user reference from world object.
   });

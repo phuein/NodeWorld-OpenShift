@@ -1082,7 +1082,7 @@ commands.player = {
     
     // Copy player position.
     newUser.player.map = user.player.map;
-    newUser.player.room = user.player.room;
+    newUser.player.room = copyObj(user.player.room);    // { 'x': X, 'y': Y, 'z': Z }
     
     newUser.account.access = 'user';            // Reset access level.
     
@@ -1879,7 +1879,7 @@ commands.user = {
         'player': {
           'name'        :   user.player.name,           // ***
           'map'         :   user.player.map,            // ***
-          'room'        :   user.player.room,           // ***
+          'room'        :   user.player.room,           // *** { 'x': X, 'y': Y, 'z': Z }
           'description' :   'A commoner.',
           'pre'         :   'Kind',                       // Comes before the name.
           'post'        :   'the Commoner',               // Comes after the name.
