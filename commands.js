@@ -1943,7 +1943,7 @@ commands.user = {
         });
         */
         
-        handleCommands(cmdChar + 'login ' + user.account.username + ' ' + cmdArray[1]);
+        commands.user.login(user, ['login', user.account.username, cmdArray[1]]);
       });
     });
   },
