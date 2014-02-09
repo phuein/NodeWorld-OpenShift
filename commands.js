@@ -955,7 +955,7 @@ commands.builder = {
     // Otherwise, target was not found.
     user.socket.emit('warning', '<i><b>Target #' + idInst[0] + '.' + idInst[1] +
                                 ' was not found.</b></i>');
-  },
+  }
   /*  Removes a target from current room, last one in targets by default,
    *  or instance, last one by default.
    */
@@ -1827,7 +1827,7 @@ commands.user = {
       
       // Update 'lastonline'.
       user.account.lastonline = new Date();
-      console.log(world.users);
+      
       user.socket.emit('info', '<i>You are now logged into the account of ' + 
                                            user.account.username + '.</i>');
       // And alert everyone about this...

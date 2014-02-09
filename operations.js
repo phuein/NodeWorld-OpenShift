@@ -489,7 +489,7 @@ function commandExists(cmd, access) {
           continue;
         }
         
-        var curCategory = commands[category].descriptions;
+        var curCategory = commands[category];
         
         if (curCategory[cmd]) {
           return curCategory[cmd];
@@ -504,7 +504,7 @@ function commandExists(cmd, access) {
           continue;
         }
         
-        var curCategory = commands[category].descriptions;
+        var curCategory = commands[category];
         
         if (curCategory[cmd]) {
           return curCategory[cmd];
@@ -519,7 +519,7 @@ function commandExists(cmd, access) {
           continue;
         }
         
-        var curCategory = commands[category].descriptions;
+        var curCategory = commands[category];
         
         if (curCategory[cmd]) {
           return curCategory[cmd];
