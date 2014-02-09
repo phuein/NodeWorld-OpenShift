@@ -2,3 +2,9 @@
 # This is a simple post deploy hook executed after your application
 # is deployed and started.  This script gets executed directly, so
 # it could be python, php, ruby, etc.
+
+
+#  Source utility functions.
+source "$OPENSHIFT_REPO_DIR/.openshift/lib/utils"
+
+setup_path_for_custom_node_version

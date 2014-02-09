@@ -3,8 +3,8 @@
 # script. The application will work only if it binds to
 # $OPENSHIFT_INTERNAL_IP:8080
 
-build
-
 cd $OPENSHIFT_REPO_DIR
 
-nohup /var/lib/openshift/52f3a6885973cabb540004cf/app-root/data/node-v0.10.22-linux-x64/bin/node server.js & 
+export PATH=$OPENSHIFT_DATA_DIR/node-v0.10.22-linux-x64/bin/:$PATH
+
+nohup node server.js & 
