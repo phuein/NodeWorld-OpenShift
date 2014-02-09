@@ -1348,7 +1348,7 @@ commands.user = {
   'quit': function (user) {
     // Same as exit().
     commands.user.exit(user);
-  }
+  },
   
   // chat MESSAGE
   'chat': function (user, cmdArray, cmdStr) {
