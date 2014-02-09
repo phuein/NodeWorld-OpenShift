@@ -1339,6 +1339,7 @@ commands.user = {
     
     // Inform user.
     user.socket.emit('info', '<b>You may now leave.</b>');
+    user.socket.emit('error', 'exit');                        // Causes the client to not re-connect.
     
     // Disconnect.
     user.socket.disconnect();
@@ -1683,7 +1684,7 @@ commands.user = {
         }
         */
         // Display target data.
-        user.socket.emit('info', targetText + '<br />');
+        user.socket.emit('object', targetText + '<br />');
         return;
       }
     }

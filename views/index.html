@@ -95,6 +95,21 @@
   
   // Server related errors (for developers.)
   socket.on('error', function (message) {
+    // Don't reconnect on 'exit.'
+    if (message = 'exit') {
+      socket = io.connect('http://diy-phuein.rhcloud.com/', {
+        'sync disconnect on unload' : true,       // Send 'disconnect' to server when browser 'beforeunload'.
+        'auto connect'              : false,       // Automatically establish connection on 'io.connect()'.
+        'reconnect'                 : true,
+        'reconnection limit'        : 60000,      // Maximum ms to wait between reconnection attempts.
+        'reconnection delay'        : 5000,       // Multiplier to add for reconnection attempts.
+        'max reconnection attempts' : 30,         // After this emit 'reconnect_failed' event.
+        'connect timeout'           : 10000       // Wait this long in ms to abord connection attempt.
+      });
+      
+      return;
+    }
+    
     appendOutput(message, 'gray', '\"Courier New\",Lucida Console,monospace', null, null, null);
   });
   
@@ -110,7 +125,7 @@
   
   // An entire object for display, such as a user or target object data.
   socket.on('object', function (message) {
-    appendOutput('<pre>' + message + '</pre>', null, null, '80%', null, null);
+    appendOutput('<pre>' + JSON.stringify(message, 2) + '</pre>', null, null, '80%', null, null);
   });
   
   // *** //
@@ -259,7 +274,9 @@ $('form').on('submit',function(e) {
     
     var inputvalue = $('input[id=input]').val();    
     
-    socket.emit('message', inputvalue);
+    // Socket emits, only if it is connected.
+    if (socket.socket.connected) socket.emit('message', inputvalue);
+    
     sentCommands[sentCommands.length] = $('#input').val(); // Memorize commands into array.
     curCommandIndex = sentCommands.length; // Store the latest command index position for history scroll.
     
@@ -271,6 +288,11 @@ $('form').on('submit',function(e) {
       expires.setTime(expires.getTime() + (7 * 24 * 60 * 60 * 1000)); // Days, Hours, Minutes, Seconds, Milliseconds. Default 7 days.
       
       document.cookie = 'login' + "=" + $('#input').val() + ';path=' + path + ';expires=' + expires.toUTCString();
+    }
+    
+    // Client command for establishing a socket connection with the server.
+    if ($('#input').val() == ',connect') {
+      socket.connect();
     }
     
     $('#input').val(''); // Empty input.
