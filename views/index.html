@@ -69,9 +69,51 @@
     }
   });
   
+  //*** MESSAGES ***//
+  
+  /*
+   *  Messages from the server can come in different formats,
+   *  that the client should parse and display accordingly.
+   */
+  
+  // Output arguments: message, color, font, size, italic, bold.
+  
+  // Chat messages, that everyone can see.
   socket.on('message', function (message) {
-    appendOutput(message);
+    appendOutput(message, null, null, null, null, null);
   });
+  
+  // Chat emotes, that everyone can see.
+  socket.on('emote', function (message) {
+    appendOutput(message, color, null, null, null, null);
+  });
+  
+  // Chat messages, that only I can see.
+  socket.on('tell', function (message) {
+    appendOutput(message, color, null, null, null, null);
+  });
+  
+  // Server related errors (for developers.)
+  socket.on('error', function (message) {
+    appendOutput(message, color, font, null, null, null);
+  });
+  
+  // Warnings about clarification of commands, such as syntax.
+  socket.on('warning', function (message) {
+    appendOutput(message, color, null, null, italic, null);
+  });
+  
+  // Notifications about events, such as a player name change.
+  socket.on('info', function (message) {
+    appendOutput(message, color, null, null, italic, null);
+  });
+  
+  // An entire object for display, such as a user or target object data.
+  socket.on('object', function (message) {
+    appendOutput('<pre>' + message + '</pre>', null, null, '80%', null, null);
+  });
+  
+  // *** //
   
   socket.on('error', function (err) {
     console.log(err);
@@ -95,7 +137,6 @@
     if (socket.socket.connecting) {
       $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
       connectingDots += '.';
-      return;
     }
     
     // Stop checking when connected.
@@ -112,7 +153,6 @@
     if (socket.socket.reconnecting) {
       $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
       reconnectingDots += '.';
-      return;
     }
     
     // Stop checking when connected.
@@ -125,22 +165,26 @@
 // *** //
 
 // Add Timestamp to messages. Scroll down.
-function appendOutput(message) {
+function appendOutput(message, color, font, size, italic, bold) {
   var curDate = new Date();
   // Make sure the format is HH:MM:SS.
   var curTime = ( curDate.getHours() < 10 ? '0' + curDate.getHours() : curDate.getHours() ) + ':' + 
       ( curDate.getMinutes() < 10 ? '0' + curDate.getMinutes() : curDate.getMinutes() ) + ':' + 
       ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
-  $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + message + '<br />');
+  
+  // Add the text with styling arguments.
+  $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + 
+                      '<span style=\'' + 
+                      (color  ? 'color: '       + color     + ';' : '') +
+                      (font   ? 'font-family: ' + font      + ';' : '') +
+                      (size   ? 'font-size: '   + size      + ';' : '') +
+                      (italic ? 'font-style: '  + 'italic'  + ';' : '') +
+                      (bold   ? 'font-weight: ' + 'bold'    + ';' : '') +
+                      '\'>' +
+                      message + '</span><br />');
+  
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
 }
-
-/*
-// Interrupt user leaving only if connected to server.
-$(window).on('beforeunload', function() {
-  return 'Leave Node World?';
-});
-*/
 
 // General Variables
 var sentCommands = [""]; // First command is an empty line.

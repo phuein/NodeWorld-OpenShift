@@ -12,12 +12,12 @@ function cloneTarget(user, id) {
   targetsdb.findOne({ '_id': id }, function (err, target) {
     if (err) {
       console.log(err);
-      user.socket.emit('message', '<i>Failed to load a new creation [' + id + '] instance!</i>');
+      user.socket.emit('warning', '<i>Failed to load a new creation [' + id + '] instance!</i>');
       return;
     }
     
     if (!target) {
-      user.socket.emit('message', '<i>Creation [' + id + '] could not be found!</i>');
+      user.socket.emit('warning', '<i>Creation [' + id + '] could not be found!</i>');
       return;
     }
     
@@ -56,7 +56,7 @@ function cloneTarget(user, id) {
 
     // Inform all (including me) in the room about the new target instance.
     for (var i=0; i < world.watch[strCoord].length; i++) {
-      world.watch[strCoord][i].socket.emit('message', '<i><b>Creation ' + fullNameID(target) + 
+      world.watch[strCoord][i].socket.emit('info', '<i><b>Creation ' + fullNameID(target) + 
                                                       ' has been added to the room.</b></i>');
     }
   });
@@ -66,7 +66,7 @@ function cloneTarget(user, id) {
 function modifyRoom(user, fieldName, value) {
   // Some fields cannot be modified.
   if (fieldName == 'players' || fieldName == '_id' || fieldName == 'map' || fieldName == 'position') {
-    user.socket.emit('message', '<i>This field cannot be modified!</i>');
+    user.socket.emit('warning', '<i>This field cannot be modified!</i>');
     return;
   }
   
@@ -78,7 +78,7 @@ function modifyRoom(user, fieldName, value) {
     case '[object Array]':
       // Arrays must get a value.
       if (!value || value.trim() == '') {
-        user.socket.emit('message', '<i>This field must recieve an actual value to be modified!</i>');
+        user.socket.emit('warning', '<i>This field must recieve an actual value to be modified!</i>');
         return;
       }
       
@@ -88,7 +88,7 @@ function modifyRoom(user, fieldName, value) {
         // Loads an instance of the target in the room, from DB.
         var id = parseInt(value); // Number or NaN.
         if (isNaN(id)) {
-          user.socket.emit('message', '<i>Targets must be identified by an ID number!</i>');
+          user.socket.emit('warning', '<i>Targets must be identified by an ID number!</i>');
           return;
         }
         
@@ -103,18 +103,18 @@ function modifyRoom(user, fieldName, value) {
           
           if (i >= 0) {
             field.splice(i, 1); // Remove from array.
-            user.socket.emit('message', '<i>Command ' + value + ' has been removed.</i>');
+            user.socket.emit('info', '<i>Command ' + value + ' has been removed.</i>');
             break;
           }
           
           // Or add command to room.
           field.push(value);
-          user.socket.emit('message', '<i>Command ' + value + ' has been added to the room!</i>');
+          user.socket.emit('info', '<i>Command ' + value + ' has been added to the room!</i>');
           break;
         }
         
         // Otherwise, no such command.
-        user.socket.emit('message', '<i>Command ' + value + ' does not exist!</i>');
+        user.socket.emit('warning', '<i>Command ' + value + ' does not exist!</i>');
         return;
       }
       
@@ -127,23 +127,23 @@ function modifyRoom(user, fieldName, value) {
           
           if (i >= 0) {
             field.splice(i, 1); // Remove from array.
-            user.socket.emit('message', '<i>Exit ' + value + ' has been removed.</i>');
+            user.socket.emit('info', '<i>Exit ' + value + ' has been removed.</i>');
             break;
           }
           
           // Or add the exit.
           field.push(value);
-          user.socket.emit('message', '<i>Exit ' + value + ' has been added.</i>');
+          user.socket.emit('info', '<i>Exit ' + value + ' has been added.</i>');
           break;
         }
         
         // Otherwise, no such exit option.
-        user.socket.emit('message', '<i>Exit ' + value + ' does not exist!</i>');
+        user.socket.emit('warning', '<i>Exit ' + value + ' does not exist!</i>');
         return;
       }
       
       // Array of such field not defined in options above.
-      user.socket.emit('message', '<i>This field cannot be modified!</i>');
+      user.socket.emit('warning', '<i>This field cannot be modified!</i>');
       return;
     
     case '[object String]':
@@ -151,33 +151,33 @@ function modifyRoom(user, fieldName, value) {
       if (fieldName == 'title') {
         var parsed = parseName(value); // True or false.
         if (!parsed) {
-          user.socket.emit('message', '<i>Room titles must be composed only of letters and spaces!</i>');
+          user.socket.emit('warning', '<i>Room titles must be composed only of letters and spaces!</i>');
           return;
         }
       }
       
       curRoom[fieldName] = value; // Replace.
-      user.socket.emit('message', '<i>Value of field ' + fieldName + ' was changed successfully.</i>');
+      user.socket.emit('info', '<i>Value of field ' + fieldName + ' was changed successfully.</i>');
       break;
     
     case '[object Number]':
       value = parseFloat(value);
       // Check value parsed as number.
       if (isNaN(value)) {
-        user.socket.emit('message', '<i>This field must receive a numeric value!</i>');
+        user.socket.emit('warning', '<i>This field must receive a numeric value!</i>');
         return;
       }
       
       curRoom[fieldName] = value;
-      user.socket.emit('message', '<i>Value of field ' + fieldName + ' has been changed successfully.</i>');
+      user.socket.emit('info', '<i>Value of field ' + fieldName + ' has been changed successfully.</i>');
       break;
       
     case '[object Undefined]':
-      user.socket.emit('message', '<i>Field ' + fieldName + ' cannot be found.</i>');
+      user.socket.emit('warning', '<i>Field ' + fieldName + ' cannot be found.</i>');
       return;
     
     default:
-      user.socket.emit('message', '<i>This field cannot be modified!</i>');
+      user.socket.emit('warning', '<i>This field cannot be modified!</i>');
       return;
   }
   
@@ -191,7 +191,7 @@ function modifyTarget(user, fieldName, value, target) {
   
   // Some fields cannot be modified.
   if (fieldName == '_id' || fieldName == 'instance') {
-    user.socket.emit('message', '<i>This field cannot be modified!</i>');
+    user.socket.emit('warning', '<i>This field cannot be modified!</i>');
     return;
   }
   
@@ -201,7 +201,7 @@ function modifyTarget(user, fieldName, value, target) {
   
   // Field doesn't exist.
   if (!field) {
-    user.socket.emit('message', '<i>Field ' + fieldName + ' not found!</i>');
+    user.socket.emit('warning', '<i>Field ' + fieldName + ' not found!</i>');
     return;
   }
   
@@ -217,18 +217,18 @@ function modifyTarget(user, fieldName, value, target) {
         // Sub-field exists, then remove.
         if (fieldParent[fieldName][value]) {
           delete field[value];
-          user.socket.emit('message', '<i>The field ' + value + ' has been successfully removed.</i>');
+          user.socket.emit('info', '<i>The field ' + value + ' has been successfully removed.</i>');
           break;
         }
         
         // Otherwise, sub-field doesn't exist, so create.
         fieldParent[fieldName][value] = '';
-        user.socket.emit('message', '<i>The field ' + value + ' has been successfully added.</i>');
+        user.socket.emit('info', '<i>The field ' + value + ' has been successfully added.</i>');
         break;
       }
       
       // Field not in the above options.
-      user.socket.emit('message', '<i>This field cannot be modified directly.</i>');
+      user.socket.emit('warning', '<i>This field cannot be modified directly.</i>');
       return;
     
     case '[object Array]':
@@ -239,7 +239,7 @@ function modifyTarget(user, fieldName, value, target) {
         // Command must exist in commands, under access level.
         var cmd = commandExists(value, user.account.access);
         if (!cmd) {
-          user.socket.emit('message', '<i>The command ' + value + ' is not available.</i>');
+          user.socket.emit('warning', '<i>The command ' + value + ' is not available.</i>');
           return;
         }
         
@@ -247,7 +247,7 @@ function modifyTarget(user, fieldName, value, target) {
         for (var i=0; i < fieldParent[fieldName].length; i++) {
           if (fieldParent[fieldName][i] == value) {
             fieldParent[fieldName].splice(i, 1);
-            user.socket.emit('message', '<i>The command ' + value + 
+            user.socket.emit('info', '<i>The command ' + value + 
                              ' has been removed successfully from creation ' + fullID + '.</i>');
             break;
           }
@@ -255,7 +255,7 @@ function modifyTarget(user, fieldName, value, target) {
         
         // Otherwise, command not found. Add it.
         fieldParent[fieldName].push(value);
-        user.socket.emit('message', '<i>The command ' + value + 
+        user.socket.emit('info', '<i>The command ' + value + 
                          ' has been added successfully to creation ' + fullID + '.</i>');
         break;
       }
@@ -270,7 +270,7 @@ function modifyTarget(user, fieldName, value, target) {
       }
       
       // Field is not in the above options.
-      user.socket.emit('message', '<i>This field cannot be modified!</i>');
+      user.socket.emit('warning', '<i>This field cannot be modified!</i>');
       return;
     
     case '[object String]':
@@ -282,7 +282,7 @@ function modifyTarget(user, fieldName, value, target) {
         var ind = world.config[fieldName].indexOf(value); // Find by requested value.
         var item = world.config[fieldName][value.parseInt()]; // Find by requested index.
         if (!item && ind == '-1') {
-          user.socket.emit('message', '<i>The ' + fieldName + ' value ' + value + ' is not available.</i>');
+          user.socket.emit('warning', '<i>The ' + fieldName + ' value ' + value + ' is not available.</i>');
           return;
         }
       }
@@ -291,34 +291,34 @@ function modifyTarget(user, fieldName, value, target) {
       if (fieldName == 'name' || fieldName == 'pre' || fieldName == 'post') {
         var parsed = parseName(value); // True or false.
         if (!parsed) {
-          user.socket.emit('message', '<i>Creation names must be composed only of letters and spaces!</i>');
+          user.socket.emit('warning', '<i>Creation names must be composed only of letters and spaces!</i>');
           return;
         }
       }
       
       // Make the change.
       fieldParent[fieldName] = value;
-      user.socket.emit('message', '<i>Value of field ' + fieldName + ' has been changed successfully.</i>');
+      user.socket.emit('info', '<i>Value of field ' + fieldName + ' has been changed successfully.</i>');
       break;
     
     case '[object Number]':
       value = parseFloat(value);
       // Check value parsed as number.
       if (isNaN(value)) {
-        user.socket.emit('message', '<i>This field must receive a numeric value!</i>');
+        user.socket.emit('warning', '<i>This field must receive a numeric value!</i>');
         return;
       }
       
       fieldParent[fieldName] = value;
-      user.socket.emit('message', '<i>Value of field ' + fieldName + ' has been changed successfully.</i>');
+      user.socket.emit('info', '<i>Value of field ' + fieldName + ' has been changed successfully.</i>');
       break;
     
     case '[object Undefined]':
-      user.socket.emit('message', '<i>Field ' + fieldName + ' cannot be found.</i>');
+      user.socket.emit('warning', '<i>Field ' + fieldName + ' cannot be found.</i>');
       return;
     
     default:
-      user.socket.emit('message', '<i>This field cannot be modified directly.</i>');
+      user.socket.emit('warning', '<i>This field cannot be modified directly.</i>');
       return;
   }
   
@@ -413,7 +413,7 @@ function reloadCommands(user) {
   command = require('./commands.js');
   
   console.log(Timestamp() + 'The commands code has been reloaded!');
-  user.socket.emit('message', '<i><b>The commands code has been reloaded!</b></i>');
+  user.socket.emit('info', '<i><b>The commands code has been reloaded!</b></i>');
 }
 
 //*** EXPORTS ***//

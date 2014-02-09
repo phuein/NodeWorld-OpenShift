@@ -266,9 +266,9 @@ io.sockets.on('connection', function (socket) {
   world.users[user.account.username] = user;
   
   // Inform everybody about the new user.
-  user.socket.broadcast.emit('message', user.player.name +  ' has joined.');
+  user.socket.broadcast.emit('info', user.player.name +  ' has joined.');
   // Welcome the new user.
-  user.socket.emit('message', '<b>Welcome to Test Game!</b><br />' + 
+  user.socket.emit('info', '<b>Welcome to Test Game!</b><br />' + 
                       'Please, use <b>' + cmdChar + 'help</b> to list all available commands.<br />' +
                       'You are now known as <b>' +  user.player.name + '</b>.');
 
@@ -285,7 +285,7 @@ io.sockets.on('connection', function (socket) {
       // Catch error.
       curDomain.on('error', function (err) {
         console.log(Timestamp() + err.stack + nl);
-        user.socket.emit('message', '<i>Command failed!</i><br /><pre>' + err + '</pre><br />');
+        user.socket.emit('error', '<i>Command failed!</i><br /><pre>' + err + '</pre><br />');
       });
 
       // Run the command.
@@ -299,13 +299,7 @@ io.sockets.on('connection', function (socket) {
   	}
     
   	// Default to chat message.
-    // Show to all others.
-  	socket.broadcast.emit('message', user.player.name + 
-            ( user.player.name != user.account.username ? '(' + user.account.username + ')' : '' ) + 
-            ': ' + message); // Prefix with player name.
-    
-    // Show me.
-    socket.emit('message', 'You: ' + message);
+    command.handleCommands(',chat ' + message, user);
   });
   
   // When a client socket disconnects.

@@ -23,13 +23,13 @@ function holdTarget(user, target, hand) {
   // Target must have a valid 'worn' property.
   var wearable = verifyWearable(target);
   if (!wearable) {
-    user.socket.emit('message', '<i>' + fullName(target) + ' cannot be held!</i>');
+    user.socket.emit('warning', '<i>' + fullName(target) + ' cannot be held!</i>');
     return;
   }
   
   // Player must have hands!
   if (locationEmpty(user.player.worn.hands)) {
-    user.socket.emit('message', '<i>You have no hands to hold with!</i>');
+    user.socket.emit('warning', '<i>You have no hands to hold with!</i>');
     return;
   }
   
@@ -46,7 +46,7 @@ function holdTarget(user, target, hand) {
     }
   }
   if (!exists) {
-    user.socket.emit('message', '<i>Cannot find ' + stringifiedTarget + ' here!</i>');
+    user.socket.emit('warning', '<i>Cannot find ' + stringifiedTarget + ' here!</i>');
     return;
   }
   
@@ -57,7 +57,7 @@ function holdTarget(user, target, hand) {
   }
   // At this point some hand must be already selected.
   if (!hand) {
-    user.socket.emit('message', '<i>None of your hands are available!</i>');
+    user.socket.emit('warning', '<i>None of your hands are available!</i>');
     return;
   }
   
@@ -70,7 +70,7 @@ function holdTarget(user, target, hand) {
   // Add to changed list for DB update.
   targetMoved(user);
   
-  user.socket.emit('message', '<i>You hold ' + fullName(target) + ' in your ' + hand + ' hand.</i>');
+  user.socket.emit('info', '<i>You hold ' + fullName(target) + ' in your ' + hand + ' hand.</i>');
 }
 
 // Attempt to drop a target from my hands.
@@ -79,7 +79,7 @@ function dropTarget(user, target) {
   
   // Player must have hands!
   if (locationEmpty(user.player.worn.hands)) {
-    user.socket.emit('message', '<i>You have no hands to drop anything from!</i>');
+    user.socket.emit('warning', '<i>You have no hands to drop anything from!</i>');
     return;
   }
   
@@ -102,7 +102,7 @@ function dropTarget(user, target) {
     // Add to changed list for DB update.
     targetMoved(user);
     
-    user.socket.emit('message', '<i>You remove ' + fullName(target) + 
+    user.socket.emit('info', '<i>You remove ' + fullName(target) + 
                                 ' from your ' + hand + ' hand.</i>');
   }
 }
@@ -152,7 +152,7 @@ function wearTarget(user, target) {
   // Make sure I can wear it.
   var cantWear = assertWear(user, target);
   if (cantWear) {
-    user.socket.emit('message', result);
+    user.socket.emit('warning', result);
     return;
   }
   
@@ -170,7 +170,7 @@ function wearTarget(user, target) {
   if (hand) {
     // Ignore it, if it is meant for the hands.
     if (target.worn == 'hands') {
-      user.socket.emit('message', '<i>You are already holding ' + fullName(target) + '.</i>');
+      user.socket.emit('warning', '<i>You are already holding ' + fullName(target) + '.</i>');
       return;
     }
     
@@ -183,7 +183,7 @@ function wearTarget(user, target) {
     // Add to changed list for DB update.
     targetMoved(user);
     
-    user.socket.emit('message', '<i>You wear ' + fullName(target) + ' over your ' +
+    user.socket.emit('info', '<i>You wear ' + fullName(target) + ' over your ' +
                                 target.worn + '.</i>');
     return;
   }
@@ -209,7 +209,7 @@ function wearTarget(user, target) {
       // Add to changed list for DB update.
       targetMoved(user);
       
-      user.socket.emit('message', '<i>You wear ' + fullName(target) + ' over your ' +
+      user.socket.emit('info', '<i>You wear ' + fullName(target) + ' over your ' +
                                                    target.worn + '.</i>');
       return;
     }
@@ -253,7 +253,7 @@ function removeTarget(user, target) {
         // Add to changed list for DB update.
         targetMoved(user);
         
-        user.socket.emit('message', '<i>You remove ' + fullName(target) + ' to your ' +
+        user.socket.emit('info', '<i>You remove ' + fullName(target) + ' to your ' +
                                      hand + ' hand.</i>');
         return;
       }
@@ -264,12 +264,12 @@ function removeTarget(user, target) {
       // Add to changed list for DB update.
       targetMoved(user);
       
-      user.socket.emit('message', '<i>You drop ' + fullName(target) + '.</i>');
+      user.socket.emit('info', '<i>You drop ' + fullName(target) + '.</i>');
     }
   }
   
   // Otherwise, item not found on me.
-  user.socket.emit('message', '<i>Could not find [' + stringifiedTarget + '] on you.</i>');
+  user.socket.emit('warning', '<i>Could not find [' + stringifiedTarget + '] on you.</i>');
 }
 
 // Locate an item on a user by ID.INSTANCE, and return an array with the location name, 
@@ -480,7 +480,7 @@ function offerItems(user, target, items) {
     var itemObj = removeItemHeld(user, curItem); // Return the item, or false.
     
     if (!itemObj) {
-      user.socket.emit('message', '<i>You do not have item [' + curItem + '] on you.</i>');
+      user.socket.emit('warning', '<i>You do not have item [' + curItem + '] on you.</i>');
       
       // Restore removed items into hands, by availability.
       for (var j=0; j < removedItems.length; j++) {
@@ -492,7 +492,7 @@ function offerItems(user, target, items) {
           user.room.targets.push(curItem); // Add to room.
           world.changed.rooms.push(user.room); // Request DB update.
           
-          user.socket.emit('message', '<i>You drop ' + fullNameID(curItem) + '.</i>');
+          user.socket.emit('info', '<i>You drop ' + fullNameID(curItem) + '.</i>');
           continue;
         }
         
@@ -529,16 +529,16 @@ function offerItems(user, target, items) {
         
         // Notify target about the offer.
         var msg = 'the following items:<br />' + itemsDetails.join('<br />'); // More than one item offered.
-        curUser.socket.emit('message', '<b>' + fullNameID(user.player) + '</b> ' + ' offers to give you ' + 
+        curUser.socket.emit('info', '<b>' + fullNameID(user.player) + '</b> ' + ' offers to give you ' + 
                               (itemsDetails.length == 1 ? itemsDetails[0] : msg));
         
-        user.socket.emit('message', '<i>You make an offer to ' + target + '.</i>');
+        user.socket.emit('info', '<i>You make an offer to ' + target + '.</i>');
         return;
       }
     }
     
     // Player not found in the room.
-    user.socket.emit('message', '<i>Player ' + target + ' could not be found here!</i>');
+    user.socket.emit('warning', '<i>Player ' + target + ' could not be found here!</i>');
   } else {
     target = parsedTarget;
     
@@ -551,7 +551,7 @@ function offerItems(user, target, items) {
 function cancelOffer(user, offer) {
   // Offer index does not exist.
   if (user.player.offers[offer] == undefined) {
-    user.socket.emit('message', '<i>Offer on index #' + offer + ' was not found!</i>');
+    user.socket.emit('warning', '<i>Offer on index #' + offer + ' was not found!</i>');
     return;
   }
   
@@ -565,7 +565,7 @@ function cancelOffer(user, offer) {
       user.room.targets.push(curItem); // Add to room.
       world.changed.rooms.push(user.room); // Request DB update.
       
-      user.socket.emit('message', '<i>You drop ' + fullNameID(curItem) + '.</i>');
+      user.socket.emit('info', '<i>You drop ' + fullNameID(curItem) + '.</i>');
       continue;
     }
     
@@ -578,11 +578,11 @@ function cancelOffer(user, offer) {
   
   // Notify other user about the cancellation.
   if (removedItem.target.socket != undefined) {
-    removedItem.target.socket.emit('message', '<i>' + fullNameID(user) + ' has cancelled offer #' + 
+    removedItem.target.socket.emit('info', '<i>' + fullNameID(user) + ' has cancelled offer #' + 
                                               offer + '.</i>');
   }
   
-  user.socket.emit('message', '<i>Offer #' + offer + ' has been cancelled.</i>');
+  user.socket.emit('info', '<i>Offer #' + offer + ' has been cancelled.</i>');
 }
 
 // Accept an offer of items from a target or player, 
@@ -606,7 +606,7 @@ function acceptItems(user, target, offer) {
   var parsedTarget = parseTarget(target);
   
   if (isNaN(parsedTarget)) {
-    user.socket.emit('message', '<i>Target was not found here!</i>');
+    user.socket.emit('warning', '<i>Target was not found here!</i>');
     return;
   }
   
@@ -620,7 +620,7 @@ function acceptItems(user, target, offer) {
     }
   }
   
-  user.socket.emit('message', '<i>Target was not found here!</i>');
+  user.socket.emit('warning', '<i>Target was not found here!</i>');
 }
 
 // Accept a specific offer, or the first (lowest index) available offer of items from another user.
@@ -649,7 +649,7 @@ function acceptFromUser(user, other, offer) {
   
   // Could not find the offer.
   if (!offerObj) {
-    user.socket.emit('message', '<i>Offer on index #' + offer + ' was not found!</i>');
+    user.socket.emit('warning', '<i>Offer on index #' + offer + ' was not found!</i>');
     return;
   }
   
@@ -663,7 +663,7 @@ function acceptFromUser(user, other, offer) {
       user.room.targets.push(curItem); // Add to room.
       world.changed.rooms.push(user.room); // Request DB update.
       
-      user.socket.emit('message', '<i>You drop ' + fullNameID(curItem) + '.</i>');
+      user.socket.emit('info', '<i>You drop ' + fullNameID(curItem) + '.</i>');
       continue;
     }
     
@@ -672,15 +672,15 @@ function acceptFromUser(user, other, offer) {
   }
   
   // Inform success.
-  other.socket.emit('message', '<i>' + FullNameID(user) + ' has accept your offer #' + offer + '.</i>');
-  user.socket.emit('message', '<i>You have successfully accepted the offer.</i>');
+  other.socket.emit('info', '<i>' + FullNameID(user) + ' has accept your offer #' + offer + '.</i>');
+  user.socket.emit('info', '<i>You have successfully accepted the offer.</i>');
 }
 
 // Accept a specific offer, or the first (lowest index) available offer of items from a target.
 function acceptFromTarget(user, target, offer) {
   // Offer index does not exist.
   if (offer && target.offers[offer] == undefined) {
-    user.socket.emit('message', '<i>Offer on index #' + offer + ' was not found!</i>');
+    user.socket.emit('warning', '<i>Offer on index #' + offer + ' was not found!</i>');
     return;
   }
   

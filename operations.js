@@ -91,6 +91,7 @@ function updateObj(originalObj, newObj, upsert) {
 
 // Copies Object & Array types recursively,
 // and directly references the value of any other object type.
+// NOT USING isChild().
 function copyObj(originalObj) {
   var copiedObj;
   
@@ -99,17 +100,23 @@ function copyObj(originalObj) {
     copiedObj = {};
     
     for (var propertyName in originalObj) {
-    var curProperty = originalObj[propertyName];
-    
-    // Recursively copy Object and Array properties.
-    if (toType(curProperty) == '[object Object]' || toType(curProperty) == '[object Array]') {
-      copiedObj[propertyName] = copyObj(curProperty);
-      continue;
+      var curProperty = originalObj[propertyName];
+      
+      // Recursively copy Object and Array properties.
+      if (toType(curProperty) == '[object Object]' || toType(curProperty) == '[object Array]') {
+        copiedObj[propertyName] = copyObj(curProperty);
+        continue;
+      }
+      
+      // Copy date.
+      if (toType(curProperty) == '[object Date]') {
+        copiedObj[propertyName] = new Date(curProperty);
+        continue;
+      }
+      
+      // Otherwise, just copy the value.
+      copiedObj[propertyName] = curProperty;
     }
-    
-    // Otherwise, just reference the value.
-    copiedObj[propertyName] = curProperty;
-  }
   } else if (toType(originalObj) == '[object Array]') {
     copiedObj = [];
     
@@ -118,18 +125,60 @@ function copyObj(originalObj) {
       
       // Recursively copy Object and Array properties.
       if (toType(curProperty) == '[object Object]' || toType(curProperty) == '[object Array]') {
-        copiedObj[propertyName] = copyObj(curProperty);
+        copiedObj[i] = copyObj(curProperty);
+        continue;
+      }
+      
+      // Copy date.
+      if (toType(curProperty) == '[object Date]') {
+        copiedObj[i] = new Date(curProperty);
         continue;
       }
     
-      // Otherwise, just reference the value.
-      copiedObj[propertyName] = curProperty;
+      // Otherwise, just copy the value.
+      copiedObj[i] = curProperty;
     }
+  } else if (toType(originalObj) == '[object Date]') {
+    // Copy date.
+    copiedObj = new Date(originalObj);
   } else {
-    copiedObj = curProperty;
+    // Otherwise, just copy the value.
+    copiedObj = originalObj;
   }
   
   return copiedObj;
+}
+
+// Returns true, if one of the parent's children is the target.
+// This is useful, for avoiding copyObj() through an infinite loop!
+function isChild(target, parent) {
+  if (toType(parent) == '[object Object]') {
+    for (var name in parent) {
+      var curProperty = parent[name];
+      
+      // Direct child.
+      if (curProperty = target) return true;
+      
+      // Check if target is a child of this property, and so on, recursively.
+      if (toType(curProperty) == '[object Object]' || toType(curProperty) == '[object Array]') {
+        if (isChild(target, curProperty)) return true;
+      }
+    }
+  } else if (toType(parent) == '[object Array]') {
+    for (var i=0; i < parent.length; i++) {
+      var curItem = parent[i];
+      
+      // Direct child.
+      if (curItem = target) return true;
+      
+      // Check if target is a child of this property, and so on, recursively.
+      if (toType(curItem) == '[object Object]' || toType(curItem) == '[object Array]') {
+        if (isChild(target, curItem)) return true;
+      }
+    }
+  }
+  
+  return false;     // Not the target.
 }
 
 // Locates a property insides an object, receiving a dotted string,
@@ -391,26 +440,24 @@ function locationEmpty(location) {
 // Update the world.users reference, and the basic user properties:
 // account, player, ['_id'], name.
 function updateUser(user, newUser) {
-  // Simple player name change, for registered user.
+  // Replace name for a registered user.
   if (newUser.account == undefined) {
     user.player.name = newUser.player.name;
     user.name = fullName(user); // pre + name + post.
     return;
   }
   
-  // Username & player name change for an unregistered user,
-  // or a case of successful login.
-  delete world.users[user.account.username]; // Clean up world.users.
+  delete world.users[user.account.username]; // Clean up from world.users.
   
+  // Do login, or replace name for an unregistered user.
   if (newUser['_id']) {
-    // Full user. Only the top properties are replaced,
-    // to keep the same reference for variable user.
+    // User variable reference (pointer) is saved, by only replacing properties.
     user.account = newUser.account;
     user.player = newUser.player;
     user['_id'] = newUser['_id'];
   } else {
-    user.account.username = newUser.account.username;
-    user.player.name = newUser.player.name;
+    user.account = newUser.account;
+    user.player = newUser.player;
   }
   
   // Update extra properties.
@@ -509,13 +556,13 @@ function commandExists(cmd, access) {
 // and return true if so, or false if not so (this is for the rename command.)
 function randomName(name) {
   // Each word must be 3 characters long, exactly.
-  var prefixes  = ['All', 'Bin', 'Kor', 'Lam', 'Dar', 'Sof', 'Arn', 'Men', 'Che', 'Tai'];
+  var prefixes  = ['Ale', 'Bin', 'Kor', 'Lam', 'Dar', 'Sof', 'Arn', 'Men', 'Che', 'Tai'];
   
   // Each word must be 3 characters long, exactly.
   var middles   = ['gen', 'shi', 'por', 'pon', 'lam', 'att', 'raa', 'arr', 'gar', 'fen'];
   
   // Each word must be 3 characters long, exactly.
-  var suffixes  = ['eus', 'nos', 'gos', 'kor', 'mis', 'mal', 'dar', 'she', 'ous', 'eos'];
+  var suffixes  = ['eus', 'nos', 'gos', 'kor', 'mis', 'mal', 'dar', 'she', 'ous', 'fes'];
   
   // In case of a name check, check against these options.
   if (name) {

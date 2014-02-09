@@ -186,7 +186,7 @@
       console.log(Timestamp() + 'Default world configuration saved.');
     }); 
   }
-
+  
   // Saves any new or modified data to the DB
   // (replacing existing or creating unexisting documents!),
   // by intervals. Default should be every 1 minute.
@@ -379,10 +379,10 @@
       
       // Inform the user about the map's ID.
       if (mapObj['_id'] == 0) {
-        user.socket.emit('message', '<i><b>The first map of this world' +
+        user.socket.emit('info', '<i><b>The first map of this world' +
                                     ' has been created successfully!</b></i>');
       } else {
-        user.socket.emit('message', '<i><b>Map #' + mapObj['_id'] +
+        user.socket.emit('info', '<i><b>Map #' + mapObj['_id'] +
                                     ' has been created successfully.</b></i>');
       }
     });
@@ -437,13 +437,13 @@
       
       // Inform the user of success.
       if (x == 0 && y == 0 && z == 0 && user.player.map == 0) {
-        user.socket.emit('message', '<i><b>The first room in this world' +
+        user.socket.emit('info', '<i><b>The first room in this world' +
                                     ' has been created successfully!</b></i>');
       } else if (x == 0 && y == 0 && z == 0) {
-        user.socket.emit('message', '<i><b>The first room in the map' +
+        user.socket.emit('info', '<i><b>The first room in the map' +
                                     ' has been created successfully.</b></i>');
       } else {
-        user.socket.emit('message', '<i><b>Room at ' + strPos +
+        user.socket.emit('info', '<i><b>Room at ' + strPos +
                                     ' has been created successfully.</b></i>');
       }
       
@@ -454,7 +454,7 @@
   // Load current room data.
   function loadRoom(user) {
     // A shortened name for the same user position object.
-    var curPos = user.player.position;
+    var curPos = user.player.room;
     // This is how room names (as objects) look like.
     var strCoord = strPos(curPos);
 
@@ -495,7 +495,7 @@
   // Called by loadRoom.
   function processRoom(user, state) {
     // A shortened name for the same user position object.
-    var curPos = user.player.position;
+    var curPos = user.player.room;
     // This is how room names (as objects) look like.
     var strCoord = strPos(curPos);
     
@@ -524,7 +524,7 @@
       
       // Inform others in the last room.
       for (var i=0; i < world.watch[lastRoomStr].length; i++) {
-        world.watch[lastRoomStr][i].socket.emit('message', '<i>' + user.player.name +
+        world.watch[lastRoomStr][i].socket.emit('info', '<i>' + user.player.name +
                                                            ' has moved away.</i>');
       }
       
@@ -570,7 +570,7 @@
     }
     // Tell others I am here.
     for (var i=0; i < world.watch[strCoord].length; i++) {
-      world.watch[strCoord][i].socket.emit('message', '<i>Player ' + user.player.name +
+      world.watch[strCoord][i].socket.emit('info', '<i>Player ' + user.player.name +
                                                       ' has appeared.</i>');
     }
     
@@ -639,7 +639,7 @@
       
       // Create map if it just does not exist.
       if (!map) {
-        user.player.position = { 'x': 0, 'y': 0, 'z': 0 }; // If player tried moving to any other coord.
+        user.player.room = { 'x': 0, 'y': 0, 'z': 0 }; // If player tried moving to any other coord.
         createMap(user); // Map creation creates map 0 and room 0x0y0z automatically.
         return;
       }
@@ -689,7 +689,7 @@ commands.god = {
   'set': function (user, cmdArray, cmdStr) {
     // List world.config if only 'set' is sent.
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<pre><b>World configuration properties:</b><small>' + 
+      user.socket.emit('info', '<pre><b>World configuration properties:</b><small>' + 
                       JSON.stringify(world.config, null, 2).replace(/\[|\]|{|}|,/gm, '')
                       .replace(/^\s*\n/gm, '') + '</small></pre>To reset to default, do: ' +
                       cmdChar + '<b>set reset</b>');
@@ -698,20 +698,20 @@ commands.god = {
     
     // Some fields may not be changed!
     if (cmdArray[1] == '_id') {
-      user.socket.emit('message', '<i>Cannot change this field!</i>');
+      user.socket.emit('warning', '<i>Cannot change this field!</i>');
       return;
     }
     
     // 'reset' to run configureWorld() again.
     if (cmdArray[1] == 'reset') {
       configureWorld();
-      user.socket.emit('message', '<i>World configuration has been reset to default!</i>');
+      user.socket.emit('info', '<i>World configuration has been reset to default!</i>');
       return;
     }
     
     // MongoDB doesn't allow $ in fields.
     if (cmdArray[1].indexOf('$') >= 0) {
-      user.socket.emit('message', '<i>Property names cannot include the dollar sign!</i>');
+      user.socket.emit('warning', '<i>Property names cannot include the dollar sign!</i>');
       return;
     }
     
@@ -725,7 +725,7 @@ commands.god = {
     var madeObject = objDotted(cmdArray[1], value);
     
     if (!madeObject) {
-      user.socket.emit('message', '<i>Failed to set the configuration (parsing)!</i>');
+      user.socket.emit('warning', '<i>Failed to set the configuration (parsing)!</i>');
       return;
     }
     
@@ -733,7 +733,7 @@ commands.god = {
     updateObj(world.config, madeObject, true);
 
     world.changed.config = true;
-    user.socket.emit('message', '<i>World configuration changed successfully.</i>');
+    user.socket.emit('info', '<i>World configuration changed successfully.</i>');
   },
   /*  Sets a value into any world.config property, or 'reset' to default.
    */
@@ -741,7 +741,7 @@ commands.god = {
   // resetworld
   'resetworld': function (user) {
     if (user.account.username != 'Koss') {
-      user.socket.emit('message', '<b>This command is not available to you.</b>');
+      user.socket.emit('warning', '<b>This command is not available to you.</b>');
       return;
     }
     
@@ -754,7 +754,7 @@ commands.god = {
   // reloadcommands
   'reloadcommands': function (user) {
     if (user.account.username != 'Koss') {
-      user.socket.emit('message', '<b>This command is not available to you.</b>');
+      user.socket.emit('warning', '<b>This command is not available to you.</b>');
       return;
     }
     
@@ -769,14 +769,14 @@ commands.builder = {
   // create NAME
   'create': function (user, cmdArray, cmdStr) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'create NAME</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'create NAME</i>');
       return;
     }
     
     // Target name can only be English letters and spaces.
     var name = parseName(cmdStr); // True or false.
     if (!name) {
-      user.socket.emit('message', '<i>Creation names must be composed only of letters and spaces!</i>');
+      user.socket.emit('warning', '<i>Creation names must be composed only of letters and spaces!</i>');
       return;
     }
     
@@ -788,7 +788,7 @@ commands.builder = {
       'pre'           :   '',                             // Comes before the name.
       'post'          :   '',                             // Comes after the name.
       'description'   :   '',
-      'position'      :   user.player.position,
+      'position'      :   user.player.room,
       'commands'      :   [],
       'size'          :   world.config.size[2],           // See configureWorld().
       'weight'        :   world.config.weight[2],         // ...
@@ -804,7 +804,7 @@ commands.builder = {
                       function (err, doc) {
       if (err) {
         console.log(err);
-        user.socket.emit('message', '<i><b>Creation (counter) failed.</b></i>');
+        user.socket.emit('warning', '<i><b>Creation (counter) failed.</b></i>');
         return;
       }
       
@@ -839,7 +839,7 @@ commands.builder = {
       
       // Inform all (including me) in the room about the new target.
       for (var i=0; i < world.watch[strCoord].length; i++) {
-        world.watch[strCoord][i].socket.emit('message',
+        world.watch[strCoord][i].socket.emit('info',
                 '<i><b>Creation #' + fullID + ' has been successful.' + '<br />' + 
                 'Its\' template can be changed through instance \'-1\'.</b></i>');
       }
@@ -850,17 +850,17 @@ commands.builder = {
   
   // destroy (ID).(INSTANCE)
   'destroy': function (user, cmdArray) {
-    var strCoord = strPos(user.player.position);
+    var strCoord = strPos(user.player.room);
     
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'destroy ID.INSTANCE</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'destroy ID.INSTANCE</i>');
       return;
     }
     
     // Parse target.
     var parsedTarget = parseTarget(cmdArray[1]);
     if (!parsedTarget) {
-      user.socket.emit('message', '<i>Target must be a numeric value, for example: ' +
+      user.socket.emit('warning', '<i>Target must be a numeric value, for example: ' +
                                   cmdChar + 'destroy 0.1</i>');
       return;
     }
@@ -880,7 +880,7 @@ commands.builder = {
         
         // Inform all (including me) in the room about the removed target.
         for (var i=0; i < world.watch[strCoord].length; i++) {
-          world.watch[strCoord][i].socket.emit('message', '<i><b>Creation ' + targetName
+          world.watch[strCoord][i].socket.emit('info', '<i><b>Creation ' + targetName
                                                           + ' has been successfully destroyed.</b></i>');
         }
         
@@ -888,13 +888,13 @@ commands.builder = {
       }
       
       // Nothing to remove.
-      user.socket.emit('message', '<i><b>No targets in the room.</b></i>');
+      user.socket.emit('warning', '<i><b>No targets in the room.</b></i>');
       return;
     }
     
     // Make sure ID is a number.
     if (isNaN(idInst[0])) {
-      user.socket.emit('message', '<i><b>Target ID must be a number!</b></i>');
+      user.socket.emit('warning', '<i><b>Target ID must be a number!</b></i>');
       return;
     }
     
@@ -912,7 +912,7 @@ commands.builder = {
           
           // Inform all (including me) in the room about the removed target.
           for (var i=0; i < world.watch[strCoord].length; i++) {
-            world.watch[strCoord][i].socket.emit('message', '<i><b>Creation ' + targetName
+            world.watch[strCoord][i].socket.emit('info', '<i><b>Creation ' + targetName
                                                           + ' has been successfully destroyed.</b></i>');
           }
           
@@ -921,14 +921,14 @@ commands.builder = {
       }
       
       // Target not found.
-      user.socket.emit('message', '<i><b>Target #' + idInst[0] + '.' +
+      user.socket.emit('warning', '<i><b>Target #' + idInst[0] + '.' +
                                   idInst[1] + ' was not found.</b></i>');
       return;
     }
     
     // Make sure instance is a number.
     if (isNaN(idInst[1])) {
-      user.socket.emit('message', '<i><b>Target instance must be a number!</b></i>');
+      user.socket.emit('warning', '<i><b>Target instance must be a number!</b></i>');
       return;
     }
     
@@ -945,7 +945,7 @@ commands.builder = {
       
         // Inform all (including me) in the room about the removed target.
         for (var i=0; i < world.watch[strCoord].length; i++) {
-          world.watch[strCoord][i].socket.emit('message', '<i><b>Creation ' + targetName
+          world.watch[strCoord][i].socket.emit('info', '<i><b>Creation ' + targetName
                                                           + ' has been successfully destroyed.</b></i>');
         }
         
@@ -954,7 +954,7 @@ commands.builder = {
     }
     
     // Otherwise, target was not found.
-    user.socket.emit('message', '<i><b>Target #' + idInst[0] + '.' + idInst[1] +
+    user.socket.emit('warning', '<i><b>Target #' + idInst[0] + '.' + idInst[1] +
                                 ' was not found.</b></i>');
   },
   /*  Removes a target from current room, last one in targets by default,
@@ -967,7 +967,7 @@ commands.master = {
   // modify room/ID(.INSTANCE) FIELD(.FIELD) VALUE
   'modify': function (user, cmdArray, cmdStr) {
     if (!cmdArray[1] || !cmdArray[2]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'modify room/ID FIELD VALUE</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'modify room/ID FIELD VALUE</i>');
       return;
     }
     
@@ -994,7 +994,7 @@ commands.master = {
     var idInstance = parseTarget(cmdArray[1]);
     
     if (!idInstance) {
-      user.socket.emit('message', '<i>Target must be a number, such as \'0.0\'!</i>');
+      user.socket.emit('warning', '<i>Target must be a number, such as \'0.0\'!</i>');
       return;
     }
     
@@ -1034,7 +1034,7 @@ commands.master = {
       }
     }
     
-    user.socket.emit('message', '<i>Could not find creation [' + idInstance + '] here.</i>');
+    user.socket.emit('warning', '<i>Could not find creation [' + idInstance + '] here.</i>');
   },
   /*  Modify an existing field in current room or target,
    *  or toggle an available object property (e.g. worn) or array item (e.g. commands).
@@ -1048,7 +1048,7 @@ commands.player = {
   'email': function (user) {
     // Try the socket user object for the data.
     if (user.account.email) {
-      user.socket.emit('message', '<i>eMail for user ' + user.account.username + 
+      user.socket.emit('info', '<i>eMail for user ' + user.account.username + 
                         ' is: ' + user.account.email + '</i>');
       return;
     }
@@ -1058,23 +1058,58 @@ commands.player = {
   
   // logout
   'logout': function (user) {
+    // Remove reference to user from changed queue.
+    world.changed.users.splice(world.changed.users.indexOf(user), 1);
     
+    // Copy relevant user data, for saving queue.
+    var userCopy = {};
+    userCopy.account = copyObj(user.account);
+    userCopy.player = copyObj(user.player);
+    if (user['_id']) userCopy['_id'] = user['_id'];     // If a none logged-in user, somehow, reached here.
+    
+    // Add to saving queue.
+    world.changed.users.push(userCopy);
+    
+    // Continue into logging out...
+    var oldName = user.player.name;
+    
+    var newUser = {};
+    newUser.account = {};
+    newUser.player = {};
+    
+    newUser.account.username = randomName();
+    newUser.player.name = newUser.account.username;
+    
+    // Copy player position.
+    newUser.player.map = user.player.map;
+    newUser.player.room = user.player.room;
+    
+    newUser.account.access = 'user';            // Reset access level.
+    
+    updateUser(user, newUser);
+    
+    delete user['_id'];                         // Irrelevant for unregistered users.
+    
+    user.socket.emit('info', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
+    // And alert everyone about this...
+    user.socket.broadcast.emit('info', '<i>' + oldName + ' is now known as ' + 
+                                                        user.player.name + '.</i>');
   },
   /*  Logout from current logged-in user account,
-   *  and replace account.username, player.name with a randomName(), updating user.name.
+   *  and replace account.username & player.name with a randomName(), updating user.name.
    */
   
   // wear TARGET
   'wear': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'wear TARGET</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'wear TARGET</i>');
       return;
     }
     
     // TARGET must be a number.
     var parsedTarget = parseTarget(cmdArray[1]);
     if (!parsedTarget) {
-      user.socket.emit('message', '<i>Target must be a number, such as \'0.0\'!</i>');
+      user.socket.emit('warning', '<i>Target must be a number, such as \'0.0\'!</i>');
       return;
     }
     
@@ -1095,14 +1130,14 @@ commands.player = {
   // remove TARGET
   'remove': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'remove TARGET</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'remove TARGET</i>');
       return;
     }
     
     // TARGET must be a number.
     var parsedTarget = parseTarget(cmdArray[1]);
     if (!parsedTarget) {
-      user.socket.emit('message', '<i>Target must be a number, such as \'0.0\'!</i>');
+      user.socket.emit('warning', '<i>Target must be a number, such as \'0.0\'!</i>');
       return;
     }
     
@@ -1123,14 +1158,14 @@ commands.player = {
   // hold TARGET (HAND)
   'hold': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'hold TARGET (HAND)</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'hold TARGET (HAND)</i>');
       return;
     }
     
     // TARGET must be a number.
     var parsedTarget = parseTarget(cmdArray[1]);
     if (!parsedTarget) {
-      user.socket.emit('message', '<i>Target must be a number, such as \'0.0\'!</i>');
+      user.socket.emit('warning', '<i>Target must be a number, such as \'0.0\'!</i>');
       return;
     }
     
@@ -1155,14 +1190,14 @@ commands.player = {
   // drop TARGET
   'drop': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'drop TARGET</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'drop TARGET</i>');
       return;
     }
     
     // TARGET must be a number.
     var parsedTarget = parseTarget(cmdArray[1]);
     if (!parsedTarget) {
-      user.socket.emit('message', '<i>Target must be a number, such as \'0.0\'!</i>');
+      user.socket.emit('warning', '<i>Target must be a number, such as \'0.0\'!</i>');
       return;
     }
     
@@ -1184,7 +1219,7 @@ commands.player = {
   'examine': function (user, cmdArray) {
     // By default examine myself.
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Examining yourself...</i><br /><pre>' + 
+      user.socket.emit('info', '<i>Examining yourself...</i><br /><pre>' + 
                         JSON.stringify(user.player, null, 2)
                         .replace(/[\[\]{}]/g, '') + '</pre>');
       return;
@@ -1194,11 +1229,11 @@ commands.player = {
     var fixedName = caseName(cmdArray[1]);
     
     // Locate the username in current room.
-    for (var i=0; i < world.watch[strPos(user.player.position)].length; i++) {
-      var curPlayer = world.watch[strPos(user.player.position)][i];
+    for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
+      var curPlayer = world.watch[strPos(user.player.room)][i];
       
       if (curPlayer.account.name == fixedName) {
-        user.socket.emit('message', '<i>Examining ' + fullNameID(curPlayer) + '...</i><br /><pre>' + 
+        user.socket.emit('info', '<i>Examining ' + fullNameID(curPlayer) + '...</i><br /><pre>' + 
                                           JSON.stringify(curPlayer.player.worn, null, 2)
                                           .replace(/[\[\]{}]/g, '') + '</pre>');
         return;
@@ -1206,7 +1241,7 @@ commands.player = {
     }
     
     // Otherwise, player was not found.
-    user.socket.emit('message', '<i>Player ' + cmdArray[1] + ' was not found in this room.</i>');
+    user.socket.emit('warning', '<i>Player ' + cmdArray[1] + ' was not found in this room.</i>');
   },
   /*  Examine the properties of players, or myself by default.
    */
@@ -1214,7 +1249,7 @@ commands.player = {
   // offer TARGET ITEM (ITEM) ...
   'offer': function (user, cmdArray, cmdStr) {
     if (!cmdArray[1] || !cmdArray[2]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 
                         'offer TARGET/ANYONE ITEM(,AMOUNT) (ITEM)(,AMOUNT) ...</i>');
       return;
     }
@@ -1230,7 +1265,7 @@ commands.player = {
       
       // Item failed parsing as target.
       if (!parsedItem) {
-        user.socket.emit('message', '<i>Items must be formatted as ID.INSTANCE, such as \'0.0\'.</i>');
+        user.socket.emit('warning', '<i>Items must be formatted as ID.INSTANCE, such as \'0.0\'.</i>');
         return;
       }
       
@@ -1247,7 +1282,7 @@ commands.player = {
   // cancel OFFER
   'cancel': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'cancel OFFER</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'cancel OFFER</i>');
       return;
     }
     
@@ -1255,7 +1290,7 @@ commands.player = {
     
     // OFFER must be an integer number.
     if (isNaN(offer)) {
-      user.socket.emit('message', '<i>Offer must be a number!</i>');
+      user.socket.emit('warning', '<i>Offer must be a number!</i>');
       return;
     }
     
@@ -1268,7 +1303,7 @@ commands.player = {
   // accept TARGET (OFFER)
   'accept': function (user, cmdArray) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'accept TARGET (OFFER)</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'accept TARGET (OFFER)</i>');
       return;
     }
     
@@ -1295,16 +1330,53 @@ commands.player = {
 };
 
 commands.user = {
+  // exit
+  'exit': function (user) {
+    // Logout if logged-in.
+    if (user.account.registered) commands.player.logout(user);
+    
+    // Inform user.
+    user.socket.emit('info', '<b>You may now leave.</b>');
+    
+    // Disconnect.
+    user.socket.disconnect();
+  },
+  /*  Logout, disconnect, and request client to close the page.
+   */
+  
+  // quit = exit
+  'quit': function (user) {
+    // Same as exit().
+    commands.user.exit(user);
+  }
+  
+  // chat MESSAGE
+  'chat': function (user, cmdArray, cmdStr) {
+    if (!cmdArray[1]) {
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'chat MESSAGE</i>');
+      return;
+    }
+    
+    // Send to all others.
+    user.socket.broadcast.emit('message', '<b>' + user.player.name + '</b>[' + 
+                            user.account.username + ']: ' + cmdStr);
+    
+    // Show me.
+    user.socket.emit('message', '<b><i>You</i></b>: ' + cmdStr);
+  },
+  /*  Speak to everyone in the world/server.
+   */
+  
   // say MESSAGE
   'say': function (user, cmdArray, cmdStr) {
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'say MESSAGE</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'say MESSAGE</i>');
       return;
     }
     
     // Speak to the room, only.
-    for (var i=0; i < world.watch[strPos(user.player.position)].length; i++) {
-      var curPlayer = world.watch[strPos(user.player.position)][i];
+    for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
+      var curPlayer = world.watch[strPos(user.player.room)][i];
       
       if (curPlayer.account.username != user.account.username) {
         // Show my message to others.
@@ -1321,13 +1393,13 @@ commands.user = {
   // tell USERNAME MESSAGE
   'tell': function (user, cmdArray, cmdStr) {
     if (!cmdArray[1] || !cmdArray[2]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'tell USERNAME MESSAGE</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'tell USERNAME MESSAGE</i>');
       return;
     }
     
     // Cannot tell myself.
     if (cmdArray[1] == user.account.username) {
-      user.socket.emit('message', '<i>You cannot tell yourself anything!</i>');
+      user.socket.emit('warning', '<i>You cannot tell yourself anything!</i>');
       return;
     }
     
@@ -1338,15 +1410,15 @@ commands.user = {
     var targetUser = world.users[username];
     if (targetUser) {
       // Tell targret player.
-      targetUser.socket.emit('message',
+      targetUser.socket.emit('tell',
               user.player.name + 
               ( user.player.name !=  user.account.username ? '(' + user.account.username + ')' : '' ) + 
               ' tells you: ' + cmdStr);
       // Show me the message.
-      user.socket.emit('message', 'You tell ' + fullNameID(targetUser) + ': ' + cmdStr);
+      user.socket.emit('tell', 'You tell ' + fullNameID(targetUser) + ': ' + cmdStr);
     } else {
       // Not found.
-      user.socket.emit('message', '<i>Username not found!</i>');
+      user.socket.emit('warning', '<i>Username not found!</i>');
     }
   },
   /*  Speak to another player, anywhere in the world.
@@ -1355,12 +1427,12 @@ commands.user = {
   // move DIRECTION
   'move': function (user, cmdArray) {
     if (!cmdArray[1] || cmdArray[2]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'move DIRECTION</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'move DIRECTION</i>');
       return;
     }
     
     // Convert direction to coordinates.
-    var curPos = user.player.position;
+    var curPos = user.player.room;
     var newPos = {};
     
     // Parse direction to new position. Returns false on failure.
@@ -1376,7 +1448,7 @@ commands.user = {
       }
     }
     if (!check) {
-      socket.emit('message', '<i>Exit not found!</i>');
+      socket.emit('warning', '<i>Exit not found!</i>');
       return;
     } */
     
@@ -1385,13 +1457,13 @@ commands.user = {
     
     // Move.
     if (newPos) {
-      user.player.position = newPos;
-      user.socket.emit('message', '<i>Moving to position ' + JSON.stringify(newPos) + '.</i>');
+      user.player.room = newPos;
+      user.socket.emit('info', '<i>Moving to position ' + JSON.stringify(newPos) + '.</i>');
       loadRoom(user);
       return;
     }
     
-    user.socket.emit('message', '<i>Exit not found!</i>');
+    user.socket.emit('warning', '<i>Exit not found!</i>');
   },
   /*  Asks to move to a new position in the same map.
   */
@@ -1406,7 +1478,7 @@ commands.user = {
       }
       emotes = emotes.slice(0, emotes.length-2);  // Remove last ', '
       
-      user.socket.emit('message', 'The emotes available to you are:<br />' +
+      user.socket.emit('info', 'The emotes available to you are:<br />' +
                                   '<i>' + emotes + '.</i>');
       return;
     }
@@ -1414,7 +1486,7 @@ commands.user = {
     // Find emote.
     var curEmote = world.config.emotes[cmdArray[1]];
     if (!curEmote) {
-      user.socket.emit('message', '<i>Emote ' + cmdArray[1] + ' not found!</i>');
+      user.socket.emit('warning', '<i>Emote ' + cmdArray[1] + ' not found!</i>');
       return;
     }
     
@@ -1426,15 +1498,15 @@ commands.user = {
     // Emote to the room at-large.
     if (!cmdArray[2]) {
       // Show me the emote.
-      user.socket.emit('message',  curEmote.room.me.replace('USER', user.player.name));
+      user.socket.emit('emote', curEmote.room.me.replace('USER', user.player.name));
       
       // Show other players in the room.
-      for (var i=0; i < world.watch[strPos(user.player.position)].length; i++) {
-        var curUser = world.watch[strPos(user.player.position)][i];
+      for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
+        var curUser = world.watch[strPos(user.player.room)][i];
         
         // Send with each user socket, except myself.
         if (curUser.account.username != user.account.username) {
-          curUser.socket.emit('message', curEmote.room.others.replace('USER', user.player.name));
+          curUser.socket.emit('emote', curEmote.room.others.replace('USER', user.player.name));
         }
       }
       
@@ -1444,15 +1516,15 @@ commands.user = {
     // Emote at a target or user.
     // In the special case of emoting to myself.
     if (caseName(cmdArray[2]) == user.account.username) {
-      user.socket.emit('message', curEmote.self.me.replace('USER', user.player.name));
+      user.socket.emit('emote', curEmote.self.me.replace('USER', user.player.name));
       
       // Show other players in the room.
-      for (var i=0; i < world.watch[strPos(user.player.position)].length; i++) {
-        var curUser = world.watch[strPos(user.player.position)][i];
+      for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
+        var curUser = world.watch[strPos(user.player.room)][i];
         
         // Send with each user socket, except myself.
         if (curUser.account.username != user.account.username) {
-          curUser.socket.emit('message', curEmote.self.others.replace('USER', user.player.name));
+          curUser.socket.emit('emote', curEmote.self.others.replace('USER', user.player.name));
         }
       }
       
@@ -1462,8 +1534,8 @@ commands.user = {
     // Find the target or user in the room.
     var emoteTarget = false;
     // Try to find a user.
-    for (var i=0; i < world.watch[strPos(user.player.position)].length; i++) {
-      var curUser = world.watch[strPos(user.player.position)][i];
+    for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
+      var curUser = world.watch[strPos(user.player.room)][i];
       
       if (curUser.account.username == caseName(cmdArray[2])) {
         emoteTarget = curUser.socket; // Refer to the socket.
@@ -1472,7 +1544,7 @@ commands.user = {
     }
     // If not found user, then try to find a target.
     if (!emoteTarget) {
-      var arrTargets = world.maps[user.player.map].rooms[strPos(user.player.position)].targets;
+      var arrTargets = world.maps[user.player.map].rooms[strPos(user.player.room)].targets;
       for (var i=0; i < arrTargets.length; i++) {
         var curTarget = arrTargets[i];
         
@@ -1485,38 +1557,38 @@ commands.user = {
     }
     // Otherwise, leave.
     if (!emoteTarget) {
-      user.socket.emit('message', '<i>Could not find ' + cmdArray[2] + ' here!</i>');
+      user.socket.emit('warning', '<i>Could not find ' + cmdArray[2] + ' here!</i>');
       return;
     }
     
     // Player emote or target emote.
     if (!emoteTarget.instance) {
       // Show me the emote.
-      user.socket.emit('message', curEmote.player.me.replace('USER2', caseName(cmdArray[2])));
+      user.socket.emit('emote', curEmote.player.me.replace('USER2', caseName(cmdArray[2])));
       // Show the other player the emote.
-      emoteTarget.emit('message', curEmote.player.player.replace('USER1', user.player.name));
+      emoteTarget.emit('emote', curEmote.player.player.replace('USER1', user.player.name));
       // Show others the emote.
-      for (var i=0; i < world.watch[strPos(user.player.position)].length; i++) {
-        var curUser = world.watch[strPos(user.player.position)][i];
+      for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
+        var curUser = world.watch[strPos(user.player.room)][i];
         
         // Send with each user socket, except myself and emoteTarget player.
         if (curUser.account.username != user.account.username &&
             curUser.account.username != caseName(cmdArray[2])) {
-          curUser.socket.emit('message', curEmote.player.others.replace('USER1', user.player.name)
+          curUser.socket.emit('emote', curEmote.player.others.replace('USER1', user.player.name)
                                                                .replace('USER2', caseName(cmdArray[2])));
         }
       }
     } else {
       // Show me the emote.
-      user.socket.emit('message', curEmote.target.me.replace('TARGET', emoteTarget.name));
+      user.socket.emit('emote', curEmote.target.me.replace('TARGET', emoteTarget.name));
       
       // Show other players in the room.
-      for (var i=0; i < world.watch[strPos(user.player.position)].length; i++) {
-        var curUser = world.watch[strPos(user.player.position)][i];
+      for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
+        var curUser = world.watch[strPos(user.player.room)][i];
         
         // Send with each user socket, except myself.
         if (curUser.account.username != user.account.username) {
-          curUser.socket.emit('message', curEmote.target.others.replace('USER', user.player.name)
+          curUser.socket.emit('emote', curEmote.target.others.replace('USER', user.player.name)
                                                                .replace('TARGET', emoteTarget.name));
         }
       }
@@ -1556,13 +1628,13 @@ commands.user = {
       var commands = ( curRoom.commands.length == 0 ? 'None.' : curRoom.commands.join(', ') );
       var exits = ( curRoom.exits.length == 0 ? 'None.' : curRoom.exits.join(', ') );
       
-      user.socket.emit('message', '<b>Title: ' + title + '</b><br />' + 
-        'Map: ' + curRoom.map + '<br />' +
-        'Players: ' + players + '<br />' +
-        'Targets: ' + targets + '<br />' +
-        'Description: ' + description + '<br />----------<br />' +
-        'Commands: ' + commands + '<br />' +
-        'Exits: ' + exits + '<br />');
+      user.socket.emit('info', '<b>Title: ' + title + '</b><br />' + 
+        'Map: '         + curRoom.map + '<br />' +
+        'Players: '     + players     + '<br />' +
+        'Targets: '     + targets     + '<br />' +
+        'Description: ' + description + '<br />--------------------<br />' +
+        'Commands: '    + commands    + '<br />' +
+        'Exits: '       + exits       + '<br />');
       return;
     }
      
@@ -1578,7 +1650,9 @@ commands.user = {
         var curTarget = curRoom.targets[i];
         
         // Create the display text.
-        var targetText = '';
+        var targetText = curTarget;
+        
+        /*var targetText = '';
         
         for (var propertyName in curTarget) {
           var curProperty = curTarget[propertyName];
@@ -1595,7 +1669,7 @@ commands.user = {
               break;
             
             case '[object Object]':
-              propertyData = '<pre style="font-size: 90%; display: inline;">' +
+              propertyData = '<pre style="font-size: 80%; display: inline;">' +
                               JSON.stringify(curProperty, null, 2) + '</pre>';
               break;
             
@@ -1605,15 +1679,15 @@ commands.user = {
           
           targetText += '<b>' + propertyName + ':</b> ' +  propertyData + '<br />';
         }
-        
+        */
         // Display target data.
-        user.socket.emit('message', targetText + '<br />');
+        user.socket.emit('info', targetText + '<br />');
         return;
       }
     }
     
     // Otherwise, target not found.
-    user.socket.emit('message', '<i>Target #' + cmdArray[1] + ' not found.</i>');
+    user.socket.emit('warning', '<i>Target #' + cmdArray[1] + ' not found.</i>');
   },
   /*  Only 'look' shows the current room data.
   */
@@ -1622,7 +1696,7 @@ commands.user = {
   'rename': function (user, cmdArray) {
     // Make sure there is actually a name to change into.
     if (!cmdArray[1]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'rename NAME</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'rename NAME</i>');
       return;
     }
     
@@ -1630,7 +1704,7 @@ commands.user = {
     var testName = cmdArray[1].toLowerCase().trim();
     var exceptions = ['you', 'me', 'it', 'we', 'us', 'he', 'she', 'them', 'they', 'those', 'these'];
     if (exceptions.indexOf(testName) >= 0) {
-      user.socket.emit('message', '<i><b>' + caseName(cmdArray[1]) + 
+      user.socket.emit('warning', '<i><b>' + caseName(cmdArray[1]) + 
                                   '</b> cannot be used as a name!</i>');
       return;
     }
@@ -1638,7 +1712,7 @@ commands.user = {
     // Should return false to continue here.
     var tryParse = parseUsername(cmdArray[1]);
     if (tryParse) {
-      user.socket.emit('message', tryParse); // Error.
+      user.socket.emit('warning', tryParse); // Error.
       return;
     }
 
@@ -1660,9 +1734,9 @@ commands.user = {
       
       updateUser(user, newUser); // Update!
       
-      user.socket.emit('message', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
+      user.socket.emit('info', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
       // And alert everyone about this...
-      user.socket.broadcast.emit('message', '<i><b>' + oldName + '</b> is now known as </i><b>' + 
+      user.socket.broadcast.emit('info', '<i><b>' + oldName + '</b> is now known as </i><b>' + 
                                                                       user.player.name + '</b>.');
       
       return;
@@ -1670,14 +1744,14 @@ commands.user = {
     
     // Check if username is not one of the available randomName() options.
     if (randomName(fixedName)) {
-      user.socket.emit('message', '<i>' + fixedName + ' cannot be used as a username!</i>');
+      user.socket.emit('warning', '<i>' + fixedName + ' cannot be used as a username!</i>');
       return;
     }
     
-    // Check if username is already registered.
+    // Check if username is already registered - for unregistered users.
     usersdb.findOne({ 'account.username': fixedName }, function (e, acct) {
       if (acct) {
-        user.socket.emit('message', '<i>Username ' + fixedName + ' is already registered!</i>');
+        user.socket.emit('warning', '<i>Username ' + fixedName + ' is already registered!</i>');
         return;
       }
       
@@ -1685,14 +1759,18 @@ commands.user = {
       var newUser = {};
       newUser.account = {}; newUser.player = {};
       
-      newUser.account.username = fixedName; // Assign new name...
+      newUser.account.username = fixedName; // Assign new name.
       newUser.player.name = fixedName;      // ...
+      
+      // Copy player position.
+      newUser.player.map = user.player.map;
+      newUser.player.room = user.player.room;
       
       updateUser(user, newUser); // Update!
 
-      user.socket.emit('message', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
+      user.socket.emit('info', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
       // And alert everyone about this...
-      user.socket.broadcast.emit('message', '<i>' + oldName + ' is now known as ' + 
+      user.socket.broadcast.emit('info', '<i>' + oldName + ' is now known as ' + 
                                                           user.player.name + '.</i>');
     });
   },
@@ -1703,7 +1781,7 @@ commands.user = {
   'login': function (user, cmdArray) {
     // Make sure there is both a username and a password.
     if (!cmdArray[1] || !cmdArray[2]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'login USERNAME PASSWORD</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'login USERNAME PASSWORD</i>');
       return;
     }
 
@@ -1712,7 +1790,7 @@ commands.user = {
     
     // Check that the username isn't already logged in world.
     if (world.users[fixedUsername]) {
-      user.socket.emit('message', '<i>That username is already logged-in!</i>');
+      user.socket.emit('warning', '<i>That username is already logged-in!</i>');
       return;
     }
 
@@ -1726,26 +1804,29 @@ commands.user = {
       }
       
       if (!acct) {
-        user.socket.emit('message', '<i>Username ' + fixedUsername + ' is not registered, yet.</i>');
+        user.socket.emit('warning', '<i>Username ' + fixedUsername + ' is not registered, yet.</i>');
         return;
       }
 
       // Wrong password check.
       if (acct.account.password != cmdArray[2]) {
-        user.socket.emit('message', '<i>Wrong password!</i>');
+        user.socket.emit('warning', '<i>Wrong password!</i>');
         return;
       }
-
+      
+      // Logout, first, if already logged-in.
+      if (user.account.registered) commands.player.logout(user);
+      
       // Login
       updateUser(user, acct); // Update!
       
       // Update 'lastonline'.
       user.account.lastonline = new Date();
       
-      user.socket.emit('message', '<i>You are now logged into the account of ' + 
+      user.socket.emit('info', '<i>You are now logged into the account of ' + 
                                            user.account.username + '.</i>');
       // And alert everyone about this...
-      user.socket.broadcast.emit('message', '<i>' + oldName + ' is now known as ' + 
+      user.socket.broadcast.emit('info', '<i>' + oldName + ' is now known as ' + 
                                                     user.player.name + '.</i>');
       
       // Load updated position.
@@ -1759,7 +1840,14 @@ commands.user = {
   'register': function (user, cmdArray) {
     // Check for both password and email.
     if (!cmdArray[1] || !cmdArray[2]) {
-      user.socket.emit('message', '<i>Syntax: ' + cmdChar + 'register PASSWORD EMAIL</i>');
+      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'register PASSWORD EMAIL</i>');
+      return;
+    }
+    
+    // A logged-in user can't be registered, obviously.
+    if (user.account.registered) {
+      user.socket.emit('warning', '<i>The username ' + user.account.username +
+                                                ' is already registered.</i>');
       return;
     }
 
@@ -1771,7 +1859,7 @@ commands.user = {
       
       // Check if user is already registered.
       if (acct) {
-        user.socket.emit('message', '<i>The username ' + user.account.username +
+        user.socket.emit('warning', '<i>The username ' + user.account.username +
                                                   ' is already registered.</i>');
         return;
       }
@@ -1780,18 +1868,18 @@ commands.user = {
       usersdb.insert({
         // Account
         'account': {
-          'username': user.account.username,
+          'username': user.account.username,            // *** = Required property.
           'password': cmdArray[1],
           'email': cmdArray[2],
           'registered': new Date(),
           'lastonline': new Date(),
-          'access': 'god'
+          'access': 'builder'                           // ***
         },
         // Player
         'player': {
-          'name'        :   user.player.name,
-          'map'         :   user.player.map,
-          'position'    :   user.player.position,
+          'name'        :   user.player.name,           // ***
+          'map'         :   user.player.map,            // ***
+          'room'        :   user.player.room,           // ***
           'description' :   'A commoner.',
           'pre'         :   'Kind',                       // Comes before the name.
           'post'        :   'the Commoner',               // Comes after the name.
@@ -1822,7 +1910,7 @@ commands.user = {
         }
         
         // Send message.
-        user.socket.emit('message', '<i>You have now registered as ' + user.player.name + '.</i>');
+        user.socket.emit('info', '<i>You have now registered as ' + user.player.name + '.</i>');
 
         // Send email.
         nodemailer.mail({
@@ -1835,6 +1923,7 @@ commands.user = {
         });
 
         // Login.
+        /*
         usersdb.findOne({ 'account.username': user.account.username }, function (err, acct) {
           if (err) {
             console.log(err);
@@ -1843,10 +1932,12 @@ commands.user = {
           if (acct) {
             updateUser(user, acct); // Login - Update user object.
 
-            user.socket.emit('message', '<i>You are now logged into the account ' + 
+            user.socket.emit('info', '<i>You are now logged into the account ' + 
                                                 user.account.username + '.</i>');
           }
         });
+        */
+        commands.user.login(user, ['login', user.account.username, cmdArray[1]]);
       });
     });
   },
@@ -1923,7 +2014,7 @@ commands.user = {
         break;
     }
     
-    user.socket.emit('message', '<i>The following commands are available to you:</i>' + '<br />' + 
+    user.socket.emit('info', '<i>The following commands are available to you:</i>' + '<br />' + 
       commandsDisplay);
   }
   /*  Display command usage and list all available commands,
@@ -2027,7 +2118,7 @@ function handleCommands(message, user) {
   var cmd = commandExists(cmdArray[0], user.account.access);
   
   if (!cmd || cmdArray[0] == 'descriptions') {
-    user.socket.emit('message', '<i>Command not found!</i>');
+    user.socket.emit('warning', '<i>Command not found!</i>');
     return;
   }
   
@@ -2039,16 +2130,10 @@ function handleCommands(message, user) {
  *  using their own functions that recognize each other.
  */
 
-// After a target has moved,
+// After a target has moved in relation to a user,
 // update the DB with the user object & current room.
 function targetMoved(user) {
-  // Update DB with relevant properties.
-  var userObj = {};
-  userObj.account = user.account;
-  userObj.player = user.player;
-  userObj['_id'] = user['_id'];
-  
-  world.changed.users.push(userObj);
+  world.changed.users.push(user);
   world.changed.rooms.push(user.room);
 }
 
@@ -2069,7 +2154,7 @@ function loadTarget(user, idInstance, command, extra) {
     }
     
     if (!target) {
-      user.socket.emit('message', '<i>Creation [' + idInstance + '] could not be found.</i>');
+      user.socket.emit('warning', '<i>Creation [' + idInstance + '] could not be found.</i>');
       return;
     }
     
