@@ -1722,7 +1722,7 @@ commands.user = {
     var oldName = user.player.name;
     
     // Logged-in users only change their player.name & user.name.
-    if (user.account.access != 'user') {
+    if (user.account.registered) {
       user.player.name = fixedName;
       user.name = fullName(user); // pre + name + post.
       
@@ -1758,8 +1758,8 @@ commands.user = {
       var newUser = {};
       newUser.account = {}; newUser.player = {};
       
-      newUser.account.username = fixedName; // Assign new name.
-      newUser.player.name = fixedName;      // ...
+      newUser.account.username = fixedName;               // Assign new name.
+      newUser.player.name = newUser.account.username;     // ...
       
       // Copy player position.
       newUser.player.map = user.player.map;
@@ -1787,9 +1787,10 @@ commands.user = {
     // Returns a username with first letter uppercase and the rest lowercase.
     var fixedUsername = caseName(cmdArray[1]);
     
-    // Check that the username isn't already logged in world.
-    if (world.users[fixedUsername]) {
-      user.socket.emit('warning', '<i>That username is already logged-in!</i>');
+    // Check that the username isn't already being used,
+    // unless I am the one using it (register -> login.)
+    if (world.users[fixedUsername] && user.account.username != fixedUsername) {
+      user.socket.emit('warning', '<i>That username is already being used right now!</i>');
       return;
     }
 

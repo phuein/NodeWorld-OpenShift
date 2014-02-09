@@ -536,13 +536,11 @@ function commandExists(cmd, access) {
       break;
     
     default:
-      // Same as 'god', when no access argument.
-      for (var category in commands) {
-        var curCategory = commands[category];
-        
-        if (curCategory[cmd]) {
-          return curCategory[cmd];
-        }
+      // Same as 'user', when no access argument.
+      var curCategory = commands['user'];
+      
+      if (curCategory[cmd]) {
+        return curCategory[cmd];
       }
   }
   
