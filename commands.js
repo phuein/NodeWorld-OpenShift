@@ -1060,6 +1060,9 @@ commands.player = {
     // Remove reference to user from changed queue.
     world.changed.users.splice(world.changed.users.indexOf(user), 1);
     
+    // Update 'lastonline'.
+    user.account.lastonline = new Date();
+    
     // Copy relevant user data, for saving queue.
     var userCopy = {};
     userCopy.account = copyObj(user.account);
@@ -1765,6 +1768,8 @@ commands.user = {
       newUser.player.map = user.player.map;
       newUser.player.room = user.player.room;
       
+      newUser.account.access = user.account.access;       // Maintain access level.
+      
       updateUser(user, newUser); // Update!
 
       user.socket.emit('info', '<i>You have changed your name to <b>' + user.player.name + '</b>.</i>');
@@ -2107,13 +2112,19 @@ function handleCommands(message, user) {
   var cmdStr = message.substring(1); // Remove cmdChar
   cmdStr = cmdStr.substring(cmdStr.indexOf(" ") + 1); // Remove first (command) word,
                                                       // or return the command word itself.
-  console.log(cmdArray);
+  
   // Execute help command, if only the command character is received.
   if (!cmdArray[0]) {
     handleCommands(cmdChar + 'help', user);
     return;
   }
-
+  
+  // Avoid buggy calls (access not set), by defaulting to 'user' access.
+  if (!user.account.access) {
+    user.account.access = 'user';
+    console.log('ERROR: handleCommands() request with undefined user.account.access!');
+  }
+  
   // Make sure the command exists, according to user access level, and is not 'descriptions'.
   var cmd = commandExists(cmdArray[0], user.account.access);
   
