@@ -1827,7 +1827,7 @@ commands.user = {
       
       // Update 'lastonline'.
       user.account.lastonline = new Date();
-      
+      console.log(user);
       user.socket.emit('info', '<i>You are now logged into the account of ' + 
                                            user.account.username + '.</i>');
       // And alert everyone about this...
@@ -1942,7 +1942,8 @@ commands.user = {
           }
         });
         */
-        commands.user.login(user, ['login', user.account.username, cmdArray[1]]);
+        
+        handleCommands(cmdChar + 'login ' + user.account.username + ' ' + cmdArray[1]);
       });
     });
   },

@@ -470,8 +470,6 @@ function updateUser(user, newUser) {
 // Returns a reference to an existing command, or false,
 // with optional access level, to restrict the search.
 function commandExists(cmd, access) {
-  console.log(commands.god);
-  
   // Search according to access level.
   switch (access) {
     case 'god':
