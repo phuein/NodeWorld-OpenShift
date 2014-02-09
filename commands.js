@@ -1827,7 +1827,7 @@ commands.user = {
       
       // Update 'lastonline'.
       user.account.lastonline = new Date();
-      console.log(user);
+      console.log(world.users);
       user.socket.emit('info', '<i>You are now logged into the account of ' + 
                                            user.account.username + '.</i>');
       // And alert everyone about this...
