@@ -85,27 +85,27 @@
   
   // Chat emotes, that everyone can see.
   socket.on('emote', function (message) {
-    appendOutput(message, 'orange', null, null, null, null);
+    appendOutput(message, 'darkcyan', null, null, null, null);
   });
   
   // Chat messages, that only I can see.
   socket.on('tell', function (message) {
-    appendOutput(message, 'brown', null, null, null, null);
+    appendOutput(message, 'darkblue', null, null, null, null);
   });
   
   // Server related errors (for developers.)
   socket.on('error', function (message) {
-    appendOutput(message, 'grey', '\"Courier New\",Lucida Console,monospace', null, null, null);
+    appendOutput(message, 'gray', '\"Courier New\",Lucida Console,monospace', null, null, null);
   });
   
   // Warnings about clarification of commands, such as syntax.
   socket.on('warning', function (message) {
-    appendOutput(message, 'red', null, null, true, null);
+    appendOutput(message, 'darkred', null, null, true, null);
   });
   
   // Notifications about events, such as a player name change.
   socket.on('info', function (message) {
-    appendOutput(message, 'green', null, null, true, null);
+    appendOutput(message, 'darkgreen', null, null, true, null);
   });
   
   // An entire object for display, such as a user or target object data.
