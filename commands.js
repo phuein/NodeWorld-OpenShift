@@ -2107,7 +2107,7 @@ function handleCommands(message, user) {
   var cmdStr = message.substring(1); // Remove cmdChar
   cmdStr = cmdStr.substring(cmdStr.indexOf(" ") + 1); // Remove first (command) word,
                                                       // or return the command word itself.
-  
+  console.log(cmdArray);
   // Execute help command, if only the command character is received.
   if (!cmdArray[0]) {
     handleCommands(cmdChar + 'help', user);
