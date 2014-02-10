@@ -6,32 +6,44 @@
 var constructors = {
 
 //*** SERVER MESSAGES ***//
-  'welcomeMessage':       '<b>Welcome to Test Game!</b><br />' + 
-                          'Please, use <b>' + cmdChar +
-                          'help</b> to list all available commands.<br />' +
-                          'You are now known as <b>' + user.player.name + '</b>.',
-
-  'blah':                 '',
+  'welcomeMessage':
+    function (name) {
+      return  '<b>Welcome to Test Game!</b><br />' + 
+              'Please, use <b>' + cmdChar +
+              'help</b> to list all available commands.<br />' +
+              'You are now known as <b>' + name + '</b>.';
+    },
   
-  'bree':                 '',
+  'blah':
+    '',
   
-  'gersw':                '',
+  'bree':
+    '',
+  
+  'gersw':
+    '',
 // *** //
 
 //*** SERVER OBJECTS ***//
-  'htr':                 '',
+  'htr':
+    '',
   
-  'hset':                 '',
+  'hset':
+    '',
   
-  'ntrnty':                '',
+  'ntrnty':
+    '',
 // *** //
 
 //*** WORLD OBJECTS ***//
-  'nydtdrn':                 '',
+  'nydtdrn':
+    '',
   
-  'ntdrbb':                 '',
+  'ntdrbb':
+    '',
   
-  'ymtyjn':                ''                // Last item must not end with a comma!
+  'ymtyjn':
+    ''                // Last item must not end with a comma!
 // *** //
 };
 
