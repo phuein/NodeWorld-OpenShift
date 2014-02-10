@@ -1638,6 +1638,7 @@ commands.user = {
         'Description: ' + description + '<br />--------------------<br />' +
         'Commands: '    + commands    + '<br />' +
         'Exits: '       + exits       + '<br />');
+      
       return;
     }
      
@@ -1653,10 +1654,8 @@ commands.user = {
         var curTarget = curRoom.targets[i];
         
         // Create the display text.
-        var targetText = curTarget;
-        
-        /*var targetText = '';
-        
+        var targetText = '';
+        /*
         for (var propertyName in curTarget) {
           var curProperty = curTarget[propertyName];
           
@@ -1681,10 +1680,18 @@ commands.user = {
           }
           
           targetText += '<b>' + propertyName + ':</b> ' +  propertyData + '<br />';
-        }
-        */
+        }*/
+        
         // Display target data.
-        user.socket.emit('object', targetText + '<br />');
+        user.socket.emit('info', '<b>' + fullNameID(curTarget) + '</b><br />' + 
+        'Description: '         + curTarget.description + '<br />' +
+        'Position: '     + JSON.stringify(curTarget.position)     + '<br />' +
+        'Commands: '     + JSON.stringify(curTarget.commands)     + '<br />' +
+        'Size: ' + curTarget.size + '<br />--------------------<br />' +
+        'Trade: '    + JSON.stringify(curTarget.trade)    + '<br />');
+        
+        
+        // user.socket.emit('info', targetText + '<br />');
         return;
       }
     }

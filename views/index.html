@@ -97,16 +97,7 @@
   socket.on('error', function (message) {
     // Don't reconnect on 'exit.'
     if (message = 'exit') {
-      socket = io.connect('http://diy-phuein.rhcloud.com/', {
-        'sync disconnect on unload' : true,       // Send 'disconnect' to server when browser 'beforeunload'.
-        'auto connect'              : false,       // Automatically establish connection on 'io.connect()'.
-        'reconnect'                 : true,
-        'reconnection limit'        : 60000,      // Maximum ms to wait between reconnection attempts.
-        'reconnection delay'        : 5000,       // Multiplier to add for reconnection attempts.
-        'max reconnection attempts' : 30,         // After this emit 'reconnect_failed' event.
-        'connect timeout'           : 10000       // Wait this long in ms to abord connection attempt.
-      });
-      
+      socket = null;
       return;
     }
     
@@ -121,11 +112,6 @@
   // Notifications about events, such as a player name change.
   socket.on('info', function (message) {
     appendOutput(message, 'darkgreen', null, null, null, null);
-  });
-  
-  // An entire object for display, such as a user or target object data.
-  socket.on('object', function (message) {
-    appendOutput('<pre>' + JSON.stringify(message, 2) + '</pre>', null, null, '80%', null, null);
   });
   
   // *** //
@@ -292,6 +278,15 @@ $('form').on('submit',function(e) {
     
     // Client command for establishing a socket connection with the server.
     if ($('#input').val() == ',connect') {
+      socket = io.connect('http://diy-phuein.rhcloud.com/', {
+        'sync disconnect on unload' : true,           // Send 'disconnect' to server when browser 'beforeunload'.
+        'auto connect'              : true,           // Automatically establish connection on 'io.connect()'.
+        'reconnect'                 : true,
+        'reconnection limit'        : 60000,          // Maximum ms to wait between reconnection attempts.
+        'reconnection delay'        : 5000,           // Multiplier to add for reconnection attempts.
+        'max reconnection attempts' : 30,             // After this emit 'reconnect_failed' event.
+        'connect timeout'           : 10000           // Wait this long in ms to abord connection attempt.
+      });
       socket.connect();
     }
     
