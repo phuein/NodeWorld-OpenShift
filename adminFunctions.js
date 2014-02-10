@@ -429,5 +429,5 @@ function reloadCode(user) {
   exports.modifyTarget      =   modifyTarget;
   exports.destroyTarget     =   destroyTarget;
   exports.resetWorld        =   resetWorld;
-  exports.reloadCommands    =   reloadCommands;
+  exports.reloadCode        =   reloadCode;
 // *** //
