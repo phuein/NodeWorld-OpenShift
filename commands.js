@@ -5,13 +5,17 @@
  */
 
 //*** MODULE DEPENDENCIES ***//
-  var nodemailer = require('nodemailer');
-
-  // Clear operations cache on module reload.
-  if (require.cache[require.resolve('./operations.js')]) {
-    delete require.cache[require.resolve('./operations.js')]; // Remove module from cache.
+  if (require.cache[require.resolve('nodemailer')]) {
+    delete require.cache[require.resolve('nodemailer')];
   }
-
+  
+  var nodemailer = require('nodemailer');
+  
+  // Clear cache, for a new copy.
+  if (require.cache[require.resolve('./operations.js')]) {
+    delete require.cache[require.resolve('./operations.js')];
+  }
+  
   var operations = require('./operations.js');
   
   // Have a local variable referring to each operation.
@@ -19,11 +23,21 @@
     eval('var ' + opName + ' = ' + operations[opName] + ';');
   }
   
-  var creationFunctions = require('./adminFunctions.js');
+  // Clear cache, for a new copy.
+  if (require.cache[require.resolve('./adminFunctions.js')]) {
+    delete require.cache[require.resolve('./adminFunctions.js')];
+  }
+  
+  var adminFunctions = require('./adminFunctions.js');
   
   // Have a local variable referring to each function.
-  for (var functionName in creationFunctions) {
-    eval('var ' + functionName + ' = ' + creationFunctions[functionName] + ';');
+  for (var functionName in adminFunctions) {
+    eval('var ' + functionName + ' = ' + adminFunctions[functionName] + ';');
+  }
+  
+  // Clear cache, for a new copy.
+  if (require.cache[require.resolve('./playerFunctions.js')]) {
+    delete require.cache[require.resolve('./playerFunctions.js')];
   }
   
   var playerFunctions = require('./playerFunctions.js');
@@ -750,14 +764,14 @@ commands.god = {
    *  reset DB data, and make server available again.
    */
   
-  // reloadcommands
-  'reloadcommands': function (user) {
+  // reloadcode
+  'reloadcode': function (user) {
     if (user.account.username != 'Koss') {
       user.socket.emit('warning', '<b>This command is not available to you.</b>');
       return;
     }
     
-    reloadCommands(user);
+    reloadCode(user);
   }
   /*  Reloads the commands.js code.
    */
@@ -1628,8 +1642,8 @@ commands.user = {
         description = curRoom.description;
       }
       
-      var commands = ( curRoom.commands.length == 0 ? 'None.' : curRoom.commands.join(', ') );
-      var exits = ( curRoom.exits.length == 0 ? 'None.' : curRoom.exits.join(', ') );
+      var commands = ( curRoom.commands.length == 0 ? 'None.' : curRoom.commands.join(', ') + '.' );
+      var exits = ( curRoom.exits.length == 0 ? 'None.' : curRoom.exits.join(', ') + '.' );
       
       user.socket.emit('info', '<b>Title: ' + title + '</b><br />' + 
         'Map: '         + curRoom.map + '<br />' +
@@ -1682,13 +1696,15 @@ commands.user = {
           targetText += '<b>' + propertyName + ':</b> ' +  propertyData + '<br />';
         }*/
         
+        var commands = ( curTarget.commands.length == 0 ? 'None.' : curTarget.commands.join(', ') + '.' );
+        
         // Display target data.
-        user.socket.emit('info', '<b>' + fullNameID(curTarget) + '</b><br />' + 
-        'Description: '         + curTarget.description + '<br />' +
-        'Position: '     + JSON.stringify(curTarget.position)     + '<br />' +
-        'Commands: '     + JSON.stringify(curTarget.commands)     + '<br />' +
-        'Size: ' + curTarget.size + '<br />--------------------<br />' +
-        'Trade: '    + JSON.stringify(curTarget.trade)    + '<br />');
+        user.socket.emit('info', '<b>' + fullNameID(curTarget)  + '</b><br />' + 
+        'Description: '   + curTarget.description               + '<br />' +
+        'Position: '      + JSON.stringify(curTarget.position)  + '<br />' +
+        'Commands: '      + commands                            + '<br />' +
+        'Size: '          + curTarget.size                      + '<br />--------------------<br />' +
+        'Trade: '         + JSON.stringify(curTarget.trade)     + '<br />');
         
         
         // user.socket.emit('info', targetText + '<br />');

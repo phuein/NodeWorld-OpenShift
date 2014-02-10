@@ -407,13 +407,20 @@ function resetWorld(user) {
   console.log(Timestamp() + 'World has been reset!');
 }
 
-// Require the commands.js file, again, to enjoy updated code.
-function reloadCommands(user) {
-  delete require.cache[require.resolve('./commands.js')]; // Remove module from cache.
-  command = require('./commands.js');
+// Remove from cache and require again the code files:
+// commands.js -> adminFunctions.js, playerFunctions.js
+// constructors.js
+function reloadCode(user) {
+  // Remove modules from cache.
+  delete require.cache[require.resolve('./commands.js')];
+  delete require.cache[require.resolve('./constructors.js')];
   
-  console.log(Timestamp() + 'The commands code has been reloaded!');
-  user.socket.emit('info', '<i><b>The commands code has been reloaded!</b></i>');
+  // require() them again.
+  command = require('./commands.js');
+  constructors = require('./constructors.js');
+  
+  console.log(Timestamp() + 'The code files have been reloaded successfully!');
+  user.socket.emit('info', '<i><b>The code files have been reloaded successfully!</b></i>');
 }
 
 //*** EXPORTS ***//

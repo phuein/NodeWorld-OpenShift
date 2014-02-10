@@ -59,6 +59,9 @@
   
   // World Functionality Modules.
   command = require('./commands.js');
+  
+  // Constructors & Messages.
+  constructor = require('./constructors.js');
 // *** //
 
 //*** SERVER VARIABLES ***//
@@ -268,10 +271,8 @@ io.sockets.on('connection', function (socket) {
   // Inform everybody about the new user.
   user.socket.broadcast.emit('info', user.player.name +  ' has joined.');
   // Welcome the new user.
-  user.socket.emit('info', '<b>Welcome to Test Game!</b><br />' + 
-                      'Please, use <b>' + cmdChar + 'help</b> to list all available commands.<br />' +
-                      'You are now known as <b>' +  user.player.name + '</b>.');
-
+  user.socket.emit('info', constructor.welcomeMessage);
+  
   // Handle room and map loading, or creation, accordingly. Does a 'look', as well.
   command.loadRoom(user);
 
