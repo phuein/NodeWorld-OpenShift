@@ -59,135 +59,11 @@ function configureWorld() {
     world.config['_id'] = saveID;
   }
   
-  world.config.size = ['tiny', 'small', 'large', 
-                       'big', 'huge', 'enormous'];       // Multiply about 10 times per step.
-                                                         // With 'big' equaling an adult human male.
+  world.config.size = constructor.size;
   
-  world.config.weight = ['insignificant', 'very light', 'light', 
-                         'heavy', 'very heavy', 'massive']; // Multiply about 10 times per step.
-                                                            // With 'heavy' equaling an adult human male.
+  world.config.weight = constructor.weight;
   
-  world.config.emotes = {
-    'lick': {
-      'room'      : {
-        'me'        : 'You dangle your tongue out for all to see.',
-        'others'    : 'USER dangles his tongue out for all to see.'
-      },
-      'self'      : {
-        'me'        : 'You lick yourself.',
-        'others'    : 'USER licks himself.'
-      },
-      'player'    : {
-        'me'        : 'You lick USER2.',
-        'player'    : 'USER1 licks you.',
-        'others'    : 'USER1 licks USER2.'
-      },
-      'target'    : {
-        'me'        : 'You lick TARGET.',
-        'others'    : 'USER licks TARGET.'
-      }
-    },
-    
-    'greet': {
-      'room'      : {
-        'me'        : 'You greet all those present.',
-        'others'    : 'USER greets all who are present.'
-      },
-      'self'      : {
-        'me'        : 'You greet yourself.',
-        'others'    : 'USER greets himself.'
-      },
-      'player'    : {
-        'me'        : 'You greet USER2.',
-        'player'    : 'USER1 greets you.',
-        'others'    : 'USER1 greets USER2.'
-      },
-      'target'    : {
-        'me'        : 'You greet TARGET.',
-        'others'    : 'USER greets TARGET.'
-      }
-    },
-    
-    'bow': {
-      'room'      : {
-        'me'        : 'You bow to all those present.',
-        'others'    : 'USER bows to all who are present.'
-      },
-      'self'      : {
-        'me'        : 'You bow to yourself.',
-        'others'    : 'USER bows to himself.'
-      },
-      'player'    : {
-        'me'        : 'You bow to USER2.',
-        'player'    : 'USER1 bows to you.',
-        'others'    : 'USER1 bows to USER2.'
-      },
-      'target'    : {
-        'me'        : 'You bow to TARGET.',
-        'others'    : 'USER bows to TARGET.'
-      }
-    },
-    
-    'kiss': {
-      'room'      : {
-        'me'        : 'You quickly kiss every person present.',
-        'others'    : 'USER quickly kisses every person present.'
-      },
-      'self'      : {
-        'me'        : 'You kiss yourself.',
-        'others'    : 'USER kisses himself.'
-      },
-      'player'    : {
-        'me'        : 'You kiss USER2.',
-        'player'    : 'USER1 kisses you.',
-        'others'    : 'USER1 kisses USER2.'
-      },
-      'target'    : {
-        'me'        : 'You kiss TARGET.',
-        'others'    : 'USER kisses TARGET.'
-      }
-    },
-    
-    'curse': {
-      'room'      : {
-        'me'        : 'You curse loudly at no one in particular.',
-        'others'    : 'USER curses loudly at no one in particular.'
-      },
-      'self'      : {
-        'me'        : 'You curse yourself loudly, for all to hear.',
-        'others'    : 'USER curses himself loudly, for all to hear.'
-      },
-      'player'    : {
-        'me'        : 'You curse USER2 loudly, for all to hear.',
-        'player'    : 'USER1 curses you loudly, for all to hear.',
-        'others'    : 'USER1 curses USER2 loudly, for all to hear.'
-      },
-      'target'    : {
-        'me'        : 'You curse TARGET loudly, for all to hear.',
-        'others'    : 'USER curses TARGET loudly, for all to hear.'
-      }
-    },
-    
-    'threat': {
-      'room'      : {
-        'me'        : 'You present a threating air about yourself, for all to feel.',
-        'others'    : 'USER presents a threating air about himself, for all to feel.'
-      },
-      'self'      : {
-        'me'        : 'You threaten yourself loudly.',
-        'others'    : 'USER makes a threat against himself loudly.'
-      },
-      'player'    : {
-        'me'        : 'You become threatening towards USER2.',
-        'player'    : 'USER1 appears to be threatening you.',
-        'others'    : 'USER1 appears to be threatening USER2.'
-      },
-      'target'    : {
-        'me'        : 'You become threatening towards TARGET.',
-        'others'    : 'USER appears to be threatening TARGET.'
-      }
-    }
-  }
+  world.config.emotes = constructor.emotes;
   
   // Create the config object in the DB.
   worlddb.save(world.config, function(err) {
@@ -522,16 +398,7 @@ function createRoom(x, y, z, user) {
   var roomPos = { 'x': x, 'y': y, 'z': z } // Mimic how the DB object looks.
   
   // Create room object for insert.
-  var roomObj = {
-        'map'         : user.player.map,
-        'position'    : roomPos,          // { 'x': X, 'y': Y, 'z': Z }
-                                          // The DB collection is indexed with this field.
-        'targets'     : [],
-        'title'       : '',
-        'description' : '',
-        'commands'    : [],
-        'exits'       : []
-  };
+  var roomObj = constructor.room(user.player.map, roomPos);
   
   var strObj = {};
   strObj[strCoord] = { '$exists': true }; // DB query for existing field.
@@ -586,12 +453,8 @@ function loadMap(user) {
 // Puts user in map and creates first room at 0x0y0z.
 function createMap(user) {
   // map object. '_id' value set further on, here.
-  var mapObj = {
-    'name'          :   '',
-    'description'   :   '',
-    'rooms'         :   {}
-  };
-
+  var mapObj = constructor.map();
+  
   // Get the map with the highest id value.
   mapsdb.findOne({}, { 'fields': { '_id': 1 }, 'limit': 1, 'sort': { '_id': -1 } }, function (err, doc) {
     if (err) {
@@ -796,21 +659,7 @@ commands.builder = {
     var curRoom = user.room;
     
     // Create the target object.
-    var targetObj = {
-      'name'          :   name,
-      'pre'           :   '',                             // Comes before the name.
-      'post'          :   '',                             // Comes after the name.
-      'description'   :   '',
-      'position'      :   user.player.room,
-      'commands'      :   [],
-      'size'          :   world.config.size[2],           // See configureWorld().
-      'weight'        :   world.config.weight[2],         // ...
-      'worn'          :   {},                             // See 'registration' for a full scheme.
-      'trade'         :   {
-        'offers'          :   [],                                 // To a specific player or target.
-        'requests'        :   []                                  // Open request for anyone.
-      }
-    };
+    var targetObj = constructor.target(name, user.player.room);
     
     // Get the target with the highest id value.
     targetsdb.findOne({}, { fields: { '_id': 1 }, 'limit': 1 , 'sort': { '_id': -1 } },
@@ -1894,78 +1743,25 @@ commands.user = {
       }
 
       // Register new username.
-      usersdb.insert({
-        // Account
-        'account': {
-          'username': user.account.username,            // *** = Required property.
-          'password': cmdArray[1],
-          'email': cmdArray[2],
-          'registered': new Date(),
-          'lastonline': new Date(),
-          'access': 'builder'                           // ***
-        },
-        // Player
-        'player': {
-          'name'        :   user.player.name,           // ***
-          'map'         :   user.player.map,            // ***
-          'room'        :   user.player.room,           // *** { 'x': X, 'y': Y, 'z': Z }
-          'description' :   'A commoner.',
-          'pre'         :   'Kind',                       // Comes before the name.
-          'post'        :   'the Commoner',               // Comes after the name.
-          'worn'        :   {
-            'head'             :     {},
-            'face'             :     {},
-            'neck'             :     {},
-            'shoulders'        :     {},
-            'arms'             :     {},
-            'hands'            :     {
-              'left'              :     {},
-              'right'             :     {}
-            },
-            'fingers'          :     {},
-            'torso'            :     {},
-            'back'             :     {},
-            'waist'            :     {},
-            'loins'            :     {},
-            'legs'             :     {},
-            'shins'            :     {},
-            'feet'             :     {}
-          },
-          'offers'      :   []               // Offers I made to others.
-        }
-      }, function (err) {
+      usersdb.insert(constructor.player(user.account.username, cmdArray[1], cmdArray[2], user.player.name, 
+                                        user.player.map, user.player.room), function (err) {
         if (err) {
           console.log(err);
         }
         
         // Send message.
-        user.socket.emit('info', '<i>You have now registered as ' + user.player.name + '.</i>');
-
+        user.socket.emit('info', '<i>You have now registered as <b>' + 
+                                  user.account.username + '</b>.</i>');
+        
         // Send email.
         nodemailer.mail({
-          from: "Test Game <phuein@gmail.com>", // sender address
+          from: "Node World <phuein@gmail.com>", // sender address
           to: cmdArray[2], // list of receivers
-          subject: "Welcome to Test Game, " + user.account.username + ".", // Subject line
+          subject: "Welcome to Node World, " + user.account.username + "!", // Subject line
           // text: "Hello world ✔", // plaintext body
-          html: "<b>✔ Registration is complete.</b><br /><br/>Your password for the username <i>" + 
-                  user.account.username + "</i> is:  " + cmdArray[1] // html body
+          html: "<b>✔ Registration is complete!</b><br /><br/>Your password for username <i>" + 
+                  user.account.username + "</i> is: " + cmdArray[1] // html body
         });
-
-        // Login.
-        /*
-        usersdb.findOne({ 'account.username': user.account.username }, function (err, acct) {
-          if (err) {
-            console.log(err);
-          }
-            
-          if (acct) {
-            updateUser(user, acct); // Login - Update user object.
-
-            user.socket.emit('info', '<i>You are now logged into the account ' + 
-                                                user.account.username + '.</i>');
-          }
-        });
-        */
         
         commands.user.login(user, ['login', user.account.username, cmdArray[1]]);
       });

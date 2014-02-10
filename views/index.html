@@ -55,8 +55,6 @@
   
   // On socket connected.
   socket.on('connect', function () {
-    // Enable input box when connection open.
-    $('#input').prop('disabled', false);
     $('#input').prop('placeholder', 'Enter text here...');
     $('#input').focus();
     
@@ -250,7 +248,7 @@ var curCommandIndex = 0;
 <div id="output"></div>
 <div id="inputdiv">
 <form action="/" id="inputform" method="POST">
-  <input disabled autofocus placeholder="Connecting to server. Please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
+  <input autofocus placeholder="Connecting to server. Please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
 </form>
 </div>
 <script>
@@ -261,7 +259,9 @@ $('form').on('submit',function(e) {
     var inputvalue = $('input[id=input]').val();    
     
     // Socket emits, only if it is connected.
-    if (socket.socket.connected) socket.emit('message', inputvalue);
+    if (socket && socket.socket && socket.socket.connected) {
+      socket.emit('message', inputvalue);
+    }
     
     sentCommands[sentCommands.length] = $('#input').val(); // Memorize commands into array.
     curCommandIndex = sentCommands.length; // Store the latest command index position for history scroll.
@@ -287,7 +287,7 @@ $('form').on('submit',function(e) {
         'max reconnection attempts' : 30,             // After this emit 'reconnect_failed' event.
         'connect timeout'           : 10000           // Wait this long in ms to abord connection attempt.
       });
-      socket.connect();
+      // socket.connect();
     }
     
     $('#input').val(''); // Empty input.

@@ -108,36 +108,9 @@
   world = {};
 
   // Set (or empty) the world object properties;
-  setWorld = function () {
-    // World configurations and properties. Loaded from DB on server start.
-    world.config    = {};
-    
-    // All the active maps, named by their id value, holding all their rooms,
-    // holding their targets and players.
-    world.maps      = {};
-    
-    // All connected users refered by the user.account.username,
-    // and referring to their user object.
-    world.users     = {};
-    
-    // All the unique instances of targets, named by their '_id' value and instance value.
-    world.targets   = {};
-    
-    // Referring to all objects that have been changed,
-    // but not yet saved into the DB.
-    world.changed   = {};
-    // Including:
-    world.changed.users   = [];
-    world.changed.targets = [];
-    world.changed.rooms   = [];
-    world.changed.maps    = [];
-    world.changed.config  = false;    // Toggles saving the entire config object.
-    
-    // Follow which players are in which rooms and maps.
-    world.watch     = {};
-  }
+  setWorld = constructor.world;
 
-  setWorld(); // Call the function.
+  setWorld(); // Call the function, for the first time.
 // *** //
 
 //*** DATABASE OPEN CONNECTION & SOCKET LISTEN ***//
@@ -235,43 +208,16 @@ io.sockets.on('connection', function (socket) {
   }
   
 	// The user object that locally (per socket session) saves the logged-in user data from the DB.
-	var user = {
-		account : {},
-		player  : {}
-	};
-  
-  user.account.username    =  command.randomName();       // Get a random name.
-  user.player.name         =  user.account.username;      // ...
-  
-  user.account.access   = 'user'; // Default access level, for unregistered users.
-  
-	// Use local object room to refer to the current loaded room.
-	user.room;
-
-  // Default to 0,0,0 as first room.
-  if (!user.player.room) {
-    user.player.room = { 'x': 0, 'y': 0, 'z': 0 };
-  }
-  
-  // Default to 0 as first map.
-  if (!user.player.map) {
-    user.player.map = 0;
-  }
-  
-  // Let the user object access its' own socket,
-  // so there's no need to keep referncing sockets.
-  user.socket = socket;
-  
-  // Becomes pre + name + post for registered players!
-  user.name = user.player.name;
+	var user = constructor.user(command.randomName(), socket);    // Get a random name.
 
   // Track all users in world.users object for general access and listing.
   world.users[user.account.username] = user;
   
-  // Inform everybody about the new user.
-  user.socket.broadcast.emit('info', user.player.name +  ' has joined.');
   // Welcome the new user.
   user.socket.emit('info', constructor.welcomeMessage(user.player.name));
+  
+  // Inform everybody about the new user.
+  user.socket.broadcast.emit('info', user.player.name +  ' has joined.');
   
   // Handle room and map loading, or creation, accordingly. Does a 'look', as well.
   command.loadRoom(user);
