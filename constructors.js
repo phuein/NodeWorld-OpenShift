@@ -128,6 +128,7 @@ var constructors = {
         },
         'offers'      :   []               // Offers I made to others.
       }
+    };
   },
   
   'user': function (name, socket) {
