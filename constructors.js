@@ -6,7 +6,7 @@
 var constructors = {
 
 //*** SERVER MESSAGES ***//
-  'welcomeMessage':       "value",  "value",  '<b>Welcome to Test Game!</b><br />' + 
+  'welcomeMessage':       '<b>Welcome to Test Game!</b><br />' + 
                           'Please, use <b>' + cmdChar +
                           'help</b> to list all available commands.<br />' +
                           'You are now known as <b>' + user.player.name + '</b>.',
