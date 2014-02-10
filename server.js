@@ -23,6 +23,27 @@
  *  
  */
 
+//*** SERVER VARIABLES ***//
+  var ip = process.env.OPENSHIFT_DIY_IP || '127.0.0.1';
+  var port = process.env.OPENSHIFT_DIY_PORT || 8080;
+  
+  // var keyName = 'GameTest'; // Cookie name. Defaults to 'connect.sid'.
+  // var secret = '6edthsej75en43g35u563t345'; // Cookie pass.
+
+  //////    The command character is the one character that messages are parsed for.    //////
+  //////            It is ignored if the following character is the same!               //////
+  //////           If sent by itself, it will reply with the help command.              //////
+  cmdChar = ',';
+  
+  nl = '\n'; // New line.
+  
+  serverClosed = false;
+
+  // var cookieParser = express.cookieParser(secret);
+  // var cookie = require('cookie');
+  // var sessionStore = new connect.middleware.session.MemoryStore();
+// *** //
+
 //*** MODULE DEPENDENCIES ***//
   var domain = require('domain');
   
@@ -62,27 +83,6 @@
   
   // Constructors & Messages.
   constructor = require('./constructors.js');
-// *** //
-
-//*** SERVER VARIABLES ***//
-  var ip = process.env.OPENSHIFT_DIY_IP || '127.0.0.1';
-  var port = process.env.OPENSHIFT_DIY_PORT || 8080;
-  
-  // var keyName = 'GameTest'; // Cookie name. Defaults to 'connect.sid'.
-  // var secret = '6edthsej75en43g35u563t345'; // Cookie pass.
-
-  //////		The command character is the one character that messages are parsed for.		//////
-  //////						It is ignored if the following character is the same!								//////
-  //////					 If sent by itself, it will reply with the help command.							//////
-  cmdChar = ',';
-  
-  nl = '\n'; // New line.
-  
-  serverClosed = false;
-
-  // var cookieParser = express.cookieParser(secret);
-  // var cookie = require('cookie');
-  // var sessionStore = new connect.middleware.session.MemoryStore();
 // *** //
 
 //*** APP SET/ENGINE/MIDDLEWARE/GET ***//
