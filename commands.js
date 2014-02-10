@@ -1195,27 +1195,6 @@ commands.player = {
 };
 
 commands.user = {
-  // exit
-  'exit': function (user) {
-    // Logout if logged-in.
-    if (user.account.registered) commands.player.logout(user);
-    
-    // Inform user.
-    user.socket.emit('info', '<b>You may now leave.</b>');
-    user.socket.emit('error', 'exit');                        // Causes the client to not re-connect.
-    
-    // Disconnect.
-    user.socket.disconnect();
-  },
-  /*  Logout, disconnect, and request client to close the page.
-   */
-  
-  // quit = exit
-  'quit': function (user) {
-    // Same as exit().
-    commands.user.exit(user);
-  },
-  
   // chat MESSAGE
   'chat': function (user, cmdArray, cmdStr) {
     if (!cmdArray[1]) {

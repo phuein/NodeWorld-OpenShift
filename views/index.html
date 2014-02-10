@@ -93,12 +93,6 @@
   
   // Server related errors (for developers.)
   socket.on('error', function (message) {
-    // Don't reconnect on 'exit.'
-    if (message = 'exit') {
-      socket.disconnect();
-      return;
-    }
-    
     appendOutput(message, 'gray', '\"Courier New\",Lucida Console,monospace', null, null, null);
   });
   
@@ -274,9 +268,14 @@ $('form').on('submit',function(e) {
       document.cookie = 'login' + "=" + $('#input').val() + ';path=' + path + ';expires=' + expires.toUTCString();
     }
     
-    // Client command for establishing a socket connection with the server.
-    if ($('#input').val() == ',connect' && socket && socket.socket && !socket.socket.connected) {
+    // Client connect() to socket server.
+    if (($('#input').val() == ',connect') && (socket && socket.socket && !socket.socket.connected)) {
       socket.connect();
+    }
+    
+    // Client disconnect() from socket server.
+    if (($('#input').val() == ',exit' || $('#input').val() == ',quit') && (socket && socket.socket && !socket.socket.connected)) {
+      socket.disconnect();
     }
     
     $('#input').val(''); // Empty input.
