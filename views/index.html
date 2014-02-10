@@ -61,7 +61,7 @@
     // Attempt to send login command from saved cookie.
     if (document.cookie) {
       var cookieValue = document.cookie.match('(^|;) ?' + 'login' + '=([^;]*)(;|$)');
-      if (cookieValue[2]) {
+      if (cookieValue[2] && socket && socket.socket && socket.socket.connected) {
         socket.emit('message', cookieValue[2]);
       }
     }
@@ -122,8 +122,6 @@
   socket.on('disconnect', function () {
     appendOutput('<i>Lost connection to server!</i>');
     
-    // Disable input box when connection open.
-    $('#input').prop('disabled', true);
     $('#input').prop('placeholder', "Not connected to server...");
     $('#input').blur();
     
@@ -133,13 +131,13 @@
   // Check every second if connecting.
   var connectingDots = '...';
   function connectingCheck() {
-    if (socket.socket.connecting) {
+    if (socket && socket.socket && socket.socket.connecting) {
       $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
       connectingDots += '.';
     }
     
     // Stop checking when connected.
-    if (socket.socket.connected) {
+    if (socket && socket.socket && socket.socket.connected) {
       clearInterval(connectingTimer);
       connectingDots = '...';
     }
@@ -149,13 +147,13 @@
   // Check every second if reconnecting.
   var reconnectingDots = '...';  
   function reconnectingCheck() {
-    if (socket.socket.reconnecting) {
+    if (socket && socket.socket && socket.socket.reconnecting) {
       $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
       reconnectingDots += '.';
     }
     
     // Stop checking when connected.
-    if (socket.socket.connected) {
+    if (socket && socket.socket && socket.socket.connected) {
       clearInterval(reconnectingTimer);
       reconnectingDots = '...'; 
     }
@@ -248,7 +246,7 @@ var curCommandIndex = 0;
 <div id="output"></div>
 <div id="inputdiv">
 <form action="/" id="inputform" method="POST">
-  <input autofocus placeholder="Connecting to server. Please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
+  <input autofocus placeholder="Connecting to server, please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
 </form>
 </div>
 <script>
