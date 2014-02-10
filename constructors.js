@@ -89,6 +89,7 @@ var constructors = {
     };
   },
   
+  // Registered users.
   'player': function (username, password, email, name, map, room) {
     return {
       'account': {
@@ -131,6 +132,7 @@ var constructors = {
     };
   },
   
+  // Unregistered users.
   'user': function (name, socket) {
     return {
       'account': {
@@ -148,7 +150,7 @@ var constructors = {
       
       'socket': socket,           // User can access its' own socket.
       
-      'name': user.player.name    // Becomes pre + name + post for registered players!
+      'name': name                // Becomes pre + name + post for registered players!
     };
   },
   
