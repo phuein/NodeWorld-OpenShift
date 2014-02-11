@@ -115,6 +115,7 @@
     $('#input').blur();
     
     reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
+    console.log('STARTED RECONNCTING TIMER');
   });
   
   // Check every second if connecting.
@@ -123,6 +124,7 @@
     if (socket && socket.socket && socket.socket.connecting) {
       $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
       connectingDots += '.';
+      return;
     }
     
     // Stop checking when connected.
@@ -136,13 +138,16 @@
   // Check every second if reconnecting.
   var reconnectingDots = '...';  
   function reconnectingCheck() {
+    console.log('IF RECONNECTING');
     if (socket && socket.socket && socket.socket.reconnecting) {
       $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
       reconnectingDots += '.';
+      return;
     }
     
     // Stop checking when connected.
     if (socket && socket.socket && socket.socket.connected) {
+      console.log('STOPPING RECONNECTING, BECAUSE CONNECT');
       clearInterval(reconnectingTimer);
       reconnectingDots = '...'; 
     }

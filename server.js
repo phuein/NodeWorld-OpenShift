@@ -104,11 +104,11 @@
   app.get('/', routes.index);
   
   //*** ERROR PAGES ***//
+    // Respond with this, when any error occures.
     app.use(function(err, req, res, next){
       // we may use properties of the error object
       // here and next(err) appropriately, or if
       // we possibly recovered from the error, simply next().
-      console.error(err.stack);
       res.status(err.status || 500);
       // res.render('500', { error: err });
       res.send(err);
@@ -121,12 +121,12 @@
       // respond with html page
       if (req.accepts('html')) {
         //res.render('404', { url: req.url });
-        res.send(err);
+        res.send('<b>404 Page Not Found!</b>');
         return;
       }
 
       // default to plain-text. send()
-      res.type('txt').send('404 Not found.');
+      res.type('txt').send('404 Page Not Found!');
     });
     
     // Trigger errors for testing: //
@@ -135,13 +135,13 @@
     });
 
     app.get('/403', function(req, res, next){
-      var err = new Error('403 not allowed!');
+      var err = new Error('403 Not Allowed!');
       err.status = 403;
       next(err);
     });
 
     app.get('/500', function(req, res, next){
-      next(new Error('500 keyboard cat!'));
+      next(new Error('500 Server Error!'));
     });
   // *** //
 // *** //
