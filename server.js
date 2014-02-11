@@ -99,8 +99,50 @@
   //                          cookie: { httpOnly: true }, secret: secret, key: keyName }));
   app.use(app.router);
   app.use('/public', express.static('public'));
-
+  
+  // Default index page.
   app.get('/', routes.index);
+  
+  //*** ERROR PAGES ***//
+    app.use(function(err, req, res, next){
+      // we may use properties of the error object
+      // here and next(err) appropriately, or if
+      // we possibly recovered from the error, simply next().
+      
+      // ^ lol I'm not sure how to work this.
+      res.status(err.status || 500);
+      res.render('500', { error: err });
+    });
+    
+    // 404 is not actually an error, but a last choice use(), after nothing else matched.
+    app.use(function(req, res, next){
+      res.status(404);
+      
+      // respond with html page
+      if (req.accepts('html')) {
+        res.render('404', { url: req.url });
+        return;
+      }
+
+      // default to plain-text. send()
+      res.type('txt').send('404 Not found.');
+    });
+    
+    // Trigger errors for testing: //
+    app.get('/404', function(req, res, next){
+      next();
+    });
+
+    app.get('/403', function(req, res, next){
+      var err = new Error('403 not allowed!');
+      err.status = 403;
+      next(err);
+    });
+
+    app.get('/500', function(req, res, next){
+      next(new Error('500 keyboard cat!'));
+    });
+  // *** //
 // *** //
 
 //*** WORLD OBJECT ***//
