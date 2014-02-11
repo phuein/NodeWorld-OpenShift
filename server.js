@@ -108,10 +108,10 @@
       // we may use properties of the error object
       // here and next(err) appropriately, or if
       // we possibly recovered from the error, simply next().
-      
-      // ^ lol I'm not sure how to work this.
+      console.error(err.stack);
       res.status(err.status || 500);
-      res.render('500', { error: err });
+      // res.render('500', { error: err });
+      res.send(err);
     });
     
     // 404 is not actually an error, but a last choice use(), after nothing else matched.
@@ -120,7 +120,8 @@
       
       // respond with html page
       if (req.accepts('html')) {
-        res.render('404', { url: req.url });
+        //res.render('404', { url: req.url });
+        res.send(err);
         return;
       }
 
