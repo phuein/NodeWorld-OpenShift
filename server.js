@@ -112,7 +112,7 @@
     // Respond with this, when any error occures.
     app.use(function(err, req, res, next){
       res.status(err.status || 500);
-      
+      console.log(err);
       if (req.accepts('html')) {
         // res.render('500', { error: err });
         res.send(err);
@@ -144,9 +144,7 @@
     });
 
     app.get('/403', function(req, res, next){
-      var err = new Error('403 Not Allowed!');
-      err.status = 403;
-      next(err);
+      next(new Error('403 Not Allowed!'));
     });
 
     app.get('/500', function(req, res, next){
