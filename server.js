@@ -112,15 +112,15 @@
     // Respond with this, when any error occures.
     app.use(function(err, req, res, next){
       res.status(err.status || 500);
-      console.log(err);
+      
       if (req.accepts('html')) {
         // res.render('500', { error: err });
-        res.send(err);
+        res.send(err.stack);
         return;
       }
       
       // default to plain-text. send()
-      res.type('txt').send(err);
+      res.type('txt').send(err.stack);
     });
     
     // 404 is not actually an error, but a last choice use(), after nothing else matched.
@@ -144,7 +144,9 @@
     });
 
     app.get('/403', function(req, res, next){
-      next(new Error('403 Not Allowed!'));
+      var err = new Error('403 Not Allowed!');
+      err.status = 403;
+      next(err);
     });
 
     app.get('/500', function(req, res, next){
