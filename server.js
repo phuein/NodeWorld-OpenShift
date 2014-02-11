@@ -111,13 +111,16 @@
   //*** ERROR PAGES ***//
     // Respond with this, when any error occures.
     app.use(function(err, req, res, next){
-      // we may use properties of the error object
-      // here and next(err) appropriately, or if
-      // we possibly recovered from the error, simply next().
       res.status(err.status || 500);
-      // res.render('500', { error: err });
-      res.send(err.status + nl + err + nl + err.stack);
-      console.log(err);
+      
+      if (req.accepts('html')) {
+        // res.render('500', { error: err });
+        res.send(err);
+        return;
+      }
+      
+      // default to plain-text. send()
+      res.type('txt').send(err);
     });
     
     // 404 is not actually an error, but a last choice use(), after nothing else matched.
