@@ -115,12 +115,12 @@
       
       if (req.accepts('html')) {
         // res.render('500', { error: err });
-        res.send(err.stack);
+        res.send(err.message);
         return;
       }
       
       // default to plain-text. send()
-      res.type('txt').send(err.stack);
+      res.type('txt').send(err.message);
     });
     
     // 404 is not actually an error, but a last choice use(), after nothing else matched.
