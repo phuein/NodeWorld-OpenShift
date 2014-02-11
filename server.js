@@ -21,6 +21,11 @@
  *  Best viewed in Sublime Text 3, with "tab_size": 2
  *  and "translate_tabs_to_spaces": true.
  *  
+ *  References for anything MongoDB in NodeJS.
+ *  http://mongodb.github.io/node-mongodb-native/api-generated/collection.html
+ *  
+ *  Most comfortable for quick testing of NodeJS functionality.
+ *  http://www.node-console.com/script/code
  */
 
 //*** SERVER VARIABLES ***//
@@ -111,7 +116,10 @@
       // we possibly recovered from the error, simply next().
       res.status(err.status || 500);
       // res.render('500', { error: err });
+      res.send(err.status);
       res.send(err);
+      res.send(err.stack);
+      console.log(err);
     });
     
     // 404 is not actually an error, but a last choice use(), after nothing else matched.
