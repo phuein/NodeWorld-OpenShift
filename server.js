@@ -116,9 +116,7 @@
       // we possibly recovered from the error, simply next().
       res.status(err.status || 500);
       // res.render('500', { error: err });
-      res.send(err.status);
-      res.send(err);
-      res.send(err.stack);
+      res.send(err.status + nl + err + nl + err.stack);
       console.log(err);
     });
     
