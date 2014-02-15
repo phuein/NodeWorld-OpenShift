@@ -355,6 +355,8 @@ io.sockets.on('connection', function (socket) {
     
     // Track number of connected users.
     world.userCount -= 1;
+    console.log(Timestamp() + world.userCount + ' user' + (world.userCount > 1 ? 's' : '') +
+                                                              ' connected to the server.');
   });
 });
 

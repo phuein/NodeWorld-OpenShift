@@ -77,7 +77,6 @@ $( document ).ready(function() {
   }
   
   $(window).focus(function() {
-    console.log('Focus');
     if (alertRunning) {
       clearInterval(alertTimer);
       alertRunning = false;
@@ -87,7 +86,7 @@ $( document ).ready(function() {
   });
 
   $(window).blur(function() {
-    console.log('Blur');
+    // EMPTY.
   });
 });
 
@@ -227,7 +226,7 @@ function appendOutput(message, color, font, size, italic, bold) {
   
   if (!alertRunning && !document.hasFocus()) {
     alertRunning = true;
-    alertTimer = setInterval(titleAlert, 500);      // Blink title text, if unfocused.
+    alertTimer = setInterval(titleAlert, 500, message);      // Blink title text, if unfocused.
   }
   
   // Replace any unloaded images in output box with their alt text.
@@ -240,10 +239,10 @@ function appendOutput(message, color, font, size, italic, bold) {
 alertTimer = null;
 var alertRunning = false;
 
-function titleAlert() {
+function titleAlert(message) {
   if (document.title == title) {
     // Custom message as alert.
-    document.title = 'Activity...';
+    document.title = message;
   } else {
     document.title = title;       // Restore default title.
   }
