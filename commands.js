@@ -562,11 +562,7 @@ var commands = {}; // WARNING: Global variable from server.js is named 'command'
 // Server control.
 commands.god = {
   'test': function (user, cmdArray, cmdStr) {
-    user.socket.emit('message', 'one', 'two', 'three', 4, 5);
-    user.socket.emit('message', { 'property': 'value' });
-    user.socket.emit('message', { 'property': { 'subproperty': 'value' } } );
-    user.socket.emit('message', ['array', 'is', 'nice!']);
-    user.socket.emit('message', ['array'], { 'object': 'yay' });
+    var a = new Error('Test error!');
   },
   
   // set PROPERTY VALUE

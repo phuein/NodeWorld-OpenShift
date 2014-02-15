@@ -66,11 +66,13 @@ $('#output img').error(function() {
 
 //*** SOCKET.IO ***//
   // Start status timer.
-  var statusTimer = setInterval(function () {
-    // Connecting to server.
-    if (socket && socket.socket && socket.socket.connecting) {
-      $('#input').prop('placeholder', 'Connecting to server...');
-      return;
+  statusTimer = setInterval(statusCheck, 100);
+  statusTimerRunning = true;
+  
+  function statusCheck() {
+    if (socket && socket.socket && socket.socket.connected) {
+      clearInterval(statusTimer);
+      statusTimerRunning = false;
     }
     
     // Reconnecting to server.
@@ -78,7 +80,13 @@ $('#output img').error(function() {
       $('#input').prop('placeholder', 'Reconnecting to server...');
       return;
     }
-  }, 1000);
+    
+    // Connecting to server.
+    if (socket && socket.socket && socket.socket.connecting) {
+      $('#input').prop('placeholder', 'Connecting to server...');
+      return;
+    }
+  }
   
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
@@ -151,6 +159,11 @@ $('#output img').error(function() {
     
     $('#input').prop('placeholder', "Not connected to server...");
     $('#input').blur();
+    
+    if (!statusTimerRunning) {
+      statusTimer = setInterval(statusCheck, 100);
+      statusTimerRunning = true;
+    }
   });
 // *** //
 

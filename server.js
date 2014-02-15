@@ -312,7 +312,7 @@ io.sockets.on('connection', function (socket) {
       // Catch error.
       curDomain.on('error', function (err) {
         console.log(Timestamp() + err.stack + nl);
-        user.socket.emit('error', '<i>Command failed!</i><br /><pre>' + err + '</pre><br />');
+        user.socket.emit('error', '<b>Command failed!</b><br />' + err.message + '<br />');
       });
 
       // Run the command.
