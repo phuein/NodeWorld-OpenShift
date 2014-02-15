@@ -62,12 +62,6 @@ if (document.cookie) {
   }
 }
 
-// Replace any unloaded images in output box with their alt text.
-$('#output img').error(function() {
-  console.log('BAD IMG! REPLACE TO TEXT!');
-  $(this).text($(this).prop('alt'));
-});
-
 //*** SOCKET.IO ***//
   // Start status timer. //
   statusTimer = setInterval(statusCheck, 100);
@@ -200,6 +194,12 @@ function appendOutput(message, color, font, size, italic, bold) {
                       parsedMessage + '</span><br />');
   
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
+  
+  // Replace any unloaded images in output box with their alt text.
+  $('#output img').error(function() {
+    console.log('BAD IMG! REPLACE TO TEXT!');
+    $(this).text($(this).prop('alt'));
+  });
 }
 
 // Find and convert URLs to links, and try to display images.

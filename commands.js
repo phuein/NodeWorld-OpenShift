@@ -1926,7 +1926,7 @@ commands.user = {
         break;
     }
     
-    user.socket.emit('info', '<u>Available Commands:</u><br />' + commandsDisplay);
+    user.socket.emit('info', '<u>Available Commands:</u><br /><br />' + commandsDisplay);
   }
   /*  Display command usage and list all available commands,
    *  by account access level.
