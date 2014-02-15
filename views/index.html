@@ -46,7 +46,7 @@
 // After document has loaded.
 $( document ).ready(function() {
   // Inform of client-only information.
-  var msg = '<u><b>Client-only Commands:</b></u><br />,textcolor COLORNAME<br />,bgcolor COLORNAME <br />' + 
+  var msg = '<u><b>Client-only Commands:</b></u><br />,color COLORNAME<br />,bgcolor COLORNAME <br />' + 
       'These and any ,login command will be saved into a cookie and loaded automatically.';
   $('#output').append('<span style=\"color: green;\">' + msg + '</span><br /><br />');
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
@@ -59,7 +59,7 @@ $( document ).ready(function() {
   // Client-Side Only Cookie Data.
   if (document.cookie) {
     // Text color.
-    var textColor = document.cookie.match('(^|;) ?' + 'textcolor' + '=([^;]*)(;|$)');
+    var textColor = document.cookie.match('(^|;) ?' + 'color' + '=([^;]*)(;|$)');
     if (textColor && textColor[2]) {
       $('body').css('color', textColor[2]);
     }
@@ -145,6 +145,11 @@ $( document ).ready(function() {
     appendOutput(message, 'darkblue', null, null, null, null);
   });
   
+  // An object or array that requires parsing for display.
+  socket.on('object', function (message) {
+    appendOutput(JSON.stringify(message), null, null, null, null, null);
+  });
+  
   // Warnings about clarification of commands, such as syntax.
   socket.on('warning', function (message) {
     appendOutput(message, 'darkred', null, null, true, null);
@@ -165,8 +170,10 @@ $( document ).ready(function() {
   socket.on('disconnect', function () {
     appendOutput('<i>Lost connection to server!</i>');
     
-    $('#input').prop('placeholder', "Not connected to server...");
-    $('#input').blur();
+    if (socket && socket.socket && !socket.socket.reconnecting) {
+      $('#input').prop('placeholder', "Not connected to server...");
+      $('#input').blur();
+    }
     
     if (!statusTimerRunning) {
       statusTimer = setInterval(statusCheck, 100);
@@ -189,7 +196,6 @@ function appendOutput(message, color, font, size, italic, bold) {
   } else {
     parsedMessage = JSON.stringify(message);
   }
-  
   
   // Add the text with styling arguments.
   $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + 
@@ -343,7 +349,7 @@ var curCommandIndex = 0;
 <script>
 // Client-side-only commands, which do not get sent to server.
 var clientCommands = {
-  ',textcolor': function (argArray) {
+  ',color': function (argArray) {
     // Restore default color, if no argument.
     var color = 'black';
     // Otherwise, set new color.
