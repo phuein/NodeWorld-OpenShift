@@ -259,11 +259,23 @@ io.sockets.on('connection', function (socket) {
     console.log('Connection attempt: Server closed!');
   }
   
+  // Track number of connected users.
+  world.userCount += 1;
+  console.log(Timestamp() + world.userCount + ' users connected to the server.');
+  
 	// The user object that locally (per socket session) saves the logged-in user data from the DB.
 	var user = constructor.user(command.randomName(), socket);    // Get a random name.
-
+  
   // Track all users in world.users object for general access and listing.
   world.users[user.account.username] = user;
+  
+  // Reset counter every minute.
+  var limitMessages = setTimeout(function () {
+    messageCount = 0;
+    limitMessages = null;
+  }, 60000);
+  // Track number of socket messages per minute.
+  var messageCount = 0;
   
   // Welcome the new user.
   user.socket.emit('info', constructor.welcomeMessage(user.player.name));
@@ -276,6 +288,22 @@ io.sockets.on('connection', function (socket) {
 
 	// When a client socket emits/sends any message.
   socket.on('message', function (message) {
+    // Flood protection.
+    messageCount += 1;
+    
+    if (limitMessages != null && messageCount >= 1000) {
+      // Limit socket messages to 1000 per minute.
+      user.socket.emit('error', 'Server command flooding detected! You are ignored for one minute.');
+      console.log(Timestamp() + 'User ' + user.account.username + ' is flooding the server!');
+      return;
+    } else if (limitMessages == null) {
+      // Start timer.
+      limitMessages = setTimeout(function () {
+        messageCount = 0;
+        limitMessages = null;
+      }, 60000);
+    }
+    
   	// Check for command character.
   	if (message.charAt(0) == cmdChar && message.charAt(1) != cmdChar) {
       // Every command message is handled on a new domain.
@@ -323,6 +351,9 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('info', command.fullNameID(user) + ' has left.');
     
     delete world.users[user.account.username]; // Clean up the user reference from world object.
+    
+    // Track number of connected users.
+    world.userCount -= 1;
   });
 });
 

@@ -6,13 +6,90 @@
 var constructors = {
 
 //*** SERVER MESSAGES ***//
-  'welcomeMessage':
-    function (name) {
+  'welcomeMessage': function (name) {
       return  '<b>Welcome to Test Game!</b><br />' + 
               'Please, use <b>' + cmdChar +
               'help</b> to list all available commands.<br />' +
               'You are now known as <b>' + name + '</b>.';
+  },
+  
+  // Used by the help command.
+  'descriptions': {
+    'god': {
+      'set PROPERTY VALUE':
+          'Sets the value of any world configuration property. ' + 
+          'Displays the configuration object, if sent without arguments. ' + 
+          'The \'reset\' argument will reset to default values.'
     },
+    
+    'builder': {
+      'create NAME':
+          'Create a new target, where you stand.',
+      'destroy (ID).(INSTANCE)':
+          'Removes a target from current room, last one in targets by default, ' + 
+          'or instance, last one by default.'
+    },
+    
+    'master': {
+      'modify room/ID(.INSTANCE) FIELD(.FIELD) VALUE':
+          'Modify a property of the room, or of a specific target, ' + 
+          'or toggle an object property or array item. ' + 
+          'Instance -1 modifies future copies of the target.'
+    },
+    
+    'player': {
+      'email':
+          'Display your registered email address.',
+      'logout':
+          'Logout from your current account, and resume a random name.',
+      'wear TARGET':
+          'Wear a visible item, or an item you hold.',
+      'remove TARGET':
+          'Remove a worn item, and hold it, if possible.',
+      'hold TARGET (HAND)':
+          'Hold a visible item in an empty hand of your choosing.',
+      'drop TARGET':
+          'Drop a held or worn item.',
+      'examine (PLAYER)':
+          'Examine the properties of a registered player. ' + 
+          'Displays your own player properties, if sent without arguments.',
+      'offer TARGET ITEM (ITEM) ...':
+          'Offer to give an item or items that you hold, to another player or target',
+      'cancel OFFER':
+          'Cancel an existing offer.',
+      'accept TARGET (OFFER)':
+          'Accept an existing offer.',
+      'attack TARGET':
+          'Not available, yet!'
+    },
+    
+    'user': {
+      'chat MESSAGE':
+          'Speak to everyone in the world/server.',
+      'say MESSAGE':
+          'Speak to those in your proximity.',
+      'tell USERNAME MESSAGE':
+          'Speak to another player, anywhere in the world.',
+      'move DIRECTION':
+          'Move in any one direction: N (North), S (South), E (East), W (West), ' + 
+          'NE, NW, SE, SW, U (Up), D (Down).',
+      'emote ACTION (TARGET)':
+          'Act out an emotion, or gesture, generally, or to yourself, or towards another player, ' + 
+          'or target. Displays the available emotes, if sent without arguments.',
+      'look (TARGET)':
+          'Displays the properties of a target.' + 
+          'Displays the current room data, if sent without arguments.',
+      'rename NAME':
+          'Changes your name, for unregistered users, and only changes the player name, ' + 
+          'for registered users, without affecting your username.',
+      'login USERNAME PASSWORD':
+          'Log into your existing account.',
+      'register PASSWORD EMAIL':
+          'Register your current username, and receive your details by email.',
+      'help':
+          'Display all available commands, according to your account access level.'
+    }
+  },
 // *** //
 
 //*** SERVER OBJECTS ***//
@@ -28,6 +105,8 @@ var constructors = {
     // All connected users refered by the user.account.username,
     // and referring to their user object.
     world.users     = {};
+    // And count them.
+    world.userCount = 0;
     
     // All the unique instances of targets, named by their '_id' value and instance value.
     world.targets   = {};

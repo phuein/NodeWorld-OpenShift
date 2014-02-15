@@ -561,7 +561,15 @@ var commands = {}; // WARNING: Global variable from server.js is named 'command'
 
 // Server control.
 commands.god = {
-  // set OBJECT.PROPERTY VALUE
+  'test': function (user, cmdArray, cmdStr) {
+    user.socket.emit('message', 'one', 'two', 'three', 4, 5);
+    user.socket.emit('message', { 'property': 'value' });
+    user.socket.emit('message', { 'property': { 'subproperty': 'value' } } );
+    user.socket.emit('message', ['array', 'is', 'nice!']);
+    user.socket.emit('message', ['array'], { 'object': 'yay' });
+  },
+  
+  // set PROPERTY VALUE
   'set': function (user, cmdArray, cmdStr) {
     // List world.config if only 'set' is sent.
     if (!cmdArray[1]) {
@@ -635,8 +643,42 @@ commands.god = {
     }
     
     reloadCode(user);
-  }
+  },
   /*  Reloads the commands.js code.
+   */
+  
+  // kick USERNAME (MESSAGE)
+  'kick': function (user, cmdArray) {
+    if (!cmdArray[1]) {
+      user.socket.emit('warning', 'Syntax: ' + cmdChar + 'kick USERNAME (MESSAGE)');
+      return;
+    }
+    
+    // Default message.
+    var msg = 'You have been disconnected by ' + fullNameID(user) + '.';
+    
+    // Use custom message, instead.
+    if (cmdArray[2] && cmdArray[2].trim()) {
+      msg = cmdArray[2].trim();
+    }
+    
+    var username = caseName(cmdArray[1]); // Make it case-compatibale for usernames, for example 'Bob'.
+    
+    // Find player by username in world.users.
+    var targetUser = world.users[username];
+    if (targetUser) {
+      // Inform and kick target user.
+      targetUser.socket.emit('warning', msg);
+      targetUser.socket.disconnect();
+      // Inform me of success.
+      user.socket.emit('info', username + ' has been successfully disconnected.');
+    } else {
+      // Not found.
+      user.socket.emit('warning', 'Username not found!');
+    }
+  }
+  /*  Force a user to disconnect from server.
+   *  MESSAGE defaults to 'You have been disconnected by fullNameID().'
    */
 };
 
@@ -645,14 +687,14 @@ commands.builder = {
   // create NAME
   'create': function (user, cmdArray, cmdStr) {
     if (!cmdArray[1]) {
-      user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'create NAME</i>');
+      user.socket.emit('warning', 'Syntax: ' + cmdChar + 'create NAME');
       return;
     }
     
     // Target name can only be English letters and spaces.
     var name = parseName(cmdStr); // True or false.
     if (!name) {
-      user.socket.emit('warning', '<i>Creation names must be composed only of letters and spaces!</i>');
+      user.socket.emit('warning', 'Creation names must be composed only of letters and spaces!');
       return;
     }
     
@@ -1187,9 +1229,9 @@ commands.player = {
   
   // attack TARGET
   'attack': function () {
-    
+    // EMPTY
   }
-  /*  
+  /*  EMPTY
    *  
    */
 };
@@ -1197,26 +1239,77 @@ commands.player = {
 commands.user = {
   // chat MESSAGE
   'chat': function (user, cmdArray, cmdStr) {
-    if (!cmdArray[1]) {
+    var msg = cmdStr.trim();      // Remove surrounding spaces.
+    
+    if (!msg) {
       user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'chat MESSAGE</i>');
       return;
     }
     
+    // Limit chat messages to 200 characters.
+    if (msg.length > 200) {
+      user.socket.emit('warning', 'You cannot chat a message more than two-hundred characters long.');
+      return;
+    }
+    
+    // Limit chat messages to 3 in every 10 seconds.
+    if (!user.chatLimit) {
+      user.chatLimit = {
+        'count': 1
+      };
+      // Start cooldown timer.
+      user.chatLimit.timer = setTimeout(function () {
+        delete user.chatLimit;
+      }, 10000)
+    } else {
+      user.chatLimit.count += 1;
+      
+      if (user.chatLimit.count > 3) {
+        user.socket.emit('warning', 'You cannot chat more than three messages in every ten second period.');
+        return;
+      }
+    }
+    
     // Send to all others.
-    user.socket.broadcast.emit('message', '<b>' + user.player.name + '</b>[' + 
-                            user.account.username + ']: ' + cmdStr);
+    user.socket.broadcast.emit('message', '<b>' + fullNameID(user) + ':' + msg);
     
     // Show me.
-    user.socket.emit('message', '<b><i>You</i></b>: ' + cmdStr);
+    user.socket.emit('message', '<b>You</b>: ' + msg);
   },
   /*  Speak to everyone in the world/server.
    */
   
   // say MESSAGE
   'say': function (user, cmdArray, cmdStr) {
-    if (!cmdArray[1]) {
+    var msg = cmdStr.trim();
+    
+    if (!msg) {
       user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'say MESSAGE</i>');
       return;
+    }
+    
+    // Limit chat messages to 200 characters.
+    if (msg.length > 100) {
+      user.socket.emit('warning', 'You cannot say a message more than one-hundred characters long.');
+      return;
+    }
+    
+    // Limit say messages to 5 in every 10 seconds.
+    if (!user.sayLimit) {
+      user.sayLimit = {
+        'count': 1
+      };
+      // Start cooldown timer.
+      user.sayLimit.timer = setTimeout(function () {
+        delete user.sayLimit;
+      }, 10000)
+    } else {
+      user.sayLimit.count += 1;
+      
+      if (user.sayLimit.count > 5) {
+        user.socket.emit('warning', 'You cannot say more than five messages in every ten second period.');
+        return;
+      }
     }
     
     // Speak to the room, only.
@@ -1225,10 +1318,10 @@ commands.user = {
       
       if (curPlayer.account.username != user.account.username) {
         // Show my message to others.
-        curPlayer.socket.emit('message', user.player.name + ' says: ' + cmdStr);
+        curPlayer.socket.emit('message', fullNameID(user) + ' says: ' + msg);
       } else {
         // Show me my message.
-        user.socket.emit('message', 'You say: ' + cmdStr);
+        user.socket.emit('message', 'You say: ' + msg);
       }
     }
   },
@@ -1237,7 +1330,12 @@ commands.user = {
   
   // tell USERNAME MESSAGE
   'tell': function (user, cmdArray, cmdStr) {
-    if (!cmdArray[1] || !cmdArray[2]) {
+    // Remove USERNAME part and surrounding spaces,
+    // or false, if no space after USERNAME.
+    var msg = (cmdStr.indexOf(" ") >= 0 ? cmdStr.substring(cmdStr.indexOf(" ") + 1).trim() : false);
+    
+    // Either check for having two arguments, or an argument and a msg.
+    if (!cmdArray[1] || !msg) {
       user.socket.emit('warning', '<i>Syntax: ' + cmdChar + 'tell USERNAME MESSAGE</i>');
       return;
     }
@@ -1249,18 +1347,14 @@ commands.user = {
     }
     
     var username = caseName(cmdArray[1]); // Make it case-compatibale for usernames, for example 'Bob'.
-    cmdStr = cmdStr.substring(cmdStr.indexOf(" ") + 1); // Remove TARGET part.
     
     // Find player by username in world.users.
     var targetUser = world.users[username];
     if (targetUser) {
       // Tell targret player.
-      targetUser.socket.emit('tell',
-              user.player.name + 
-              ( user.player.name !=  user.account.username ? '(' + user.account.username + ')' : '' ) + 
-              ' tells you: ' + cmdStr);
+      targetUser.socket.emit('tell', fullNameID(user) + ' tells you: ' + msg);
       // Show me the message.
-      user.socket.emit('tell', 'You tell ' + fullNameID(targetUser) + ': ' + cmdStr);
+      user.socket.emit('tell', 'You tell ' + fullNameID(targetUser) + ': ' + msg);
     } else {
       // Not found.
       user.socket.emit('warning', '<i>Username not found!</i>');
@@ -1331,14 +1425,14 @@ commands.user = {
     // Find emote.
     var curEmote = world.config.emotes[cmdArray[1]];
     if (!curEmote) {
-      user.socket.emit('warning', '<i>Emote ' + cmdArray[1] + ' not found!</i>');
+      user.socket.emit('warning', '<i>Emote ' + cmdArray[1].toLowerCase() + ' not found!</i>');
       return;
     }
     
-    // Options: curEmote.room.me/others
-    //          curEmote.self.me/others
-    //          curEmote.player.me/player/others
-    //          curEmote.target.me/others
+    // Options: curEmote.room.me/others           (at no one)
+    //          curEmote.self.me/others           (at myself)
+    //          curEmote.player.me/player/others  (at another player)
+    //          curEmote.target.me/others         (at a target)
     
     // Emote to the room at-large.
     if (!cmdArray[2]) {
@@ -1543,7 +1637,8 @@ commands.user = {
     // Otherwise, target not found.
     user.socket.emit('warning', '<i>Target #' + cmdArray[1] + ' not found.</i>');
   },
-  /*  Only 'look' shows the current room data.
+  /*  Displays a target data. Shows the current room data,
+   *  if sent without arguments.
   */
 
   // rename NAME
@@ -1756,152 +1851,96 @@ commands.user = {
     // Show commands according to access level.
     switch (user.account.access) {
       case 'god':
-        for (var category in commands) {
-          var curCategory = commands[category].descriptions;
+        for (var access in constructor.descriptions) {
+          var curAccess = constructor.descriptions[access];
           
-          for (var i=0; i < curCategory.length; i++) {
-            commandsDisplay += cmdChar + curCategory[i] + '<br />';
+          for (var cmd in curAccess) {
+            commandsDisplay += '<b>' + cmdChar + cmd + '</b><br />';
+            
+            var desc = curAccess[cmd];    // The value of the property is the description.
+            
+            commandsDisplay += desc + '<br />';
           }
         }
         break;
       
       case 'builder':
-        for (var category in commands) {
+        for (var access in constructor.descriptions) {
           // Skip god commands.
-          if (category == 'god') {
+          if (access == 'god') {
             continue;
           }
           
-          var curCategory = commands[category].descriptions;
+          var curAccess = constructor.descriptions[access];
           
-          for (var i=0; i < curCategory.length; i++) {
-            commandsDisplay += cmdChar + curCategory[i] + '<br />';
+          for (var cmd in curAccess) {
+            commandsDisplay += '<b>' + cmdChar + cmd + '</b><br />';
+            
+            var desc = curAccess[cmd];    // The value of the property is the description.
+            
+            commandsDisplay += desc + '<br />';
           }
         }
         break;
       
       case 'master':
-        for (var category in commands) {
-          // Skip god and builder commands.
-          if (category == 'god' || category == 'builder') {
+        for (var access in constructor.descriptions) {
+          // Skip god commands.
+          if (access == 'god' || access == 'builder') {
             continue;
           }
           
-          var curCategory = commands[category].descriptions;
+          var curAccess = constructor.descriptions[access];
           
-          for (var i=0; i < curCategory.length; i++) {
-            commandsDisplay += cmdChar + curCategory[i] + '<br />';
+          for (var cmd in curAccess) {
+            commandsDisplay += '<b>' + cmdChar + cmd + '</b><br />';
+            
+            var desc = curAccess[cmd];    // The value of the property is the description.
+            
+            commandsDisplay += desc + '<br />';
           }
         }
         break;
       
       case 'player':
-        for (var category in commands) {
-          // Skip god, builder, and master commands.
-          if (category == 'god' || category == 'builder' || category == 'master') {
+        for (var access in constructor.descriptions) {
+          // Skip god commands.
+          if (access == 'god' || access == 'builder' || access == 'master') {
             continue;
           }
           
-          var curCategory = commands[category].descriptions;
+          var curAccess = constructor.descriptions[access];
           
-          for (var i=0; i < curCategory.length; i++) {
-            commandsDisplay += cmdChar + curCategory[i] + '<br />';
+          for (var cmd in curAccess) {
+            commandsDisplay += '<b>' + cmdChar + cmd + '</b><br />';
+            
+            var desc = curAccess[cmd];    // The value of the property is the description.
+            
+            commandsDisplay += desc + '<br />';
           }
         }
         break;
       
       case 'user':
-        var curCategory = commands['user'].descriptions;
+        var curAccess = constructor.descriptions['user'];
         
-        for (var i=0; i < curCategory.length; i++) {
-          commandsDisplay += cmdChar + curCategory[i] + '<br />';
+        for (var cmd in curAccess) {
+          commandsDisplay += '<b>' + cmdChar + cmd + '</b><br />';
+          
+          var desc = curAccess[cmd];    // The value of the property is the description.
+          
+          commandsDisplay += desc + '<br />';
         }
         break;
     }
     
-    user.socket.emit('info', '<i>The following commands are available to you:</i>' + '<br />' + 
-      commandsDisplay);
+    user.socket.emit('info', 'The following commands are available to you:<br />' + 
+                                                                  commandsDisplay);
   }
   /*  Display command usage and list all available commands,
    *  by account access level.
    */
 };
-
-// List descriptions in arrays, under each category. //
-  commands.god.descriptions = [
-    '<b>set</b>' + 
-          '<br />Sets a value into any world.config property.'
-  ];
-
-  commands.builder.descriptions = [
-    '<b>create NAME</b>' + 
-          '<br />Create a new target where you stand.',
-    
-    '<b>destroy ID.INSTANCE</b>' + 
-          '<br />Removes a target from current room, ' +
-          'last one in targets by default, or instance, last one by default.'
-  ];
-
-  commands.master.descriptions = [
-    '<b>modify room/ID(.INSTANCE) FIELD(.FIELD) VALUE</b>' + 
-        '<br />Modify an existing field of the current room, or in a target instance.'
-  ];
-
-  commands.player.descriptions = [
-    '<b>wear TARGET</b>' + 
-          '<br />Wear an item from the room or hands.',
-    
-    '<b>remove TARGET</b>' + 
-          '<br />Remove a worn item and hold if possible, or drop to room.',
-    
-    '<b>email</b>' + 
-          '<br />Display your registered account email.',
-    
-    '<b>hold TARGET (HAND)</b>' + 
-          '<br />Hold an item from the room in an empty hand, randomly or selected.',
-    
-    '<b>drop TARGET</b>' + 
-          '<br />Drop an item to the room, either from hands or worn.',
-    
-    '<b>examine (PLAYER)</b>' + 
-        '<br />Examine the properties of players, or myself by default.',
-    
-    '<b>offer TARGET ITEM (ITEM)</b>' + 
-        '<br />Offer to give an item, and optionally expect an item in return.',
-    
-    '<b>request ITEM (ITEM)</b>' + 
-        '<br />Request an item, and optionally offer an item in return.',
-
-    '<b>accept TARGET ITEM</b>' + 
-        '<br />Accept an offer or request of an item.'
-  ];
-
-  commands.user.descriptions = [
-    '<b>say MESSAGE</b>' + 
-          '<br />Speak to the room.',
-    
-    '<b>tell USERNAME MESSAGE</b>' + 
-          '<br />Speak to another player, anywhere in the world.',
-    
-    '<b>move DIRECTION</b>' + 
-          '<br />Move in an available direction.',
-    
-    '<b>emote</b>' + 
-          '<br />Act an emotion or gesture generally or towards a target.',
-        
-    '<b>look (TARGET)</b>' + 
-          '<br />Look at the current room or at a target.',
-    
-    '<b>rename USERNAME</b>' + 
-          '<br />Rename into an available username.',
-    
-    '<b>login USERNAME PASSWORD</b>' + 
-          '<br />Log into your existing account.',
-    
-    '<b>register PASSWORD EMAIL</b>' + 
-          '<br />Register your current username.'
-  ];
-// *** //
 
 // Handle command requests from player, according to user.account.access level.
 function handleCommands(message, user) {  

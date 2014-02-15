@@ -25,6 +25,8 @@
     font-size: 14px;
     margin-left:auto;
     margin-right:auto;
+    word-wrap: normal;
+    word-break: break-word;
   }
 
   #inputdiv {
@@ -41,6 +43,27 @@
 </head>
 <body>
 <script>
+// Client-Side Only Cookie Data //
+console.log(document.cookie);
+  if (document.cookie) {
+    // Text color.
+    var textColor = document.cookie.match('(^|;) ?' + 'textcolor' + '=([^;]*)(;|$)');
+    if (textColor && textColor[2]) {
+      $('body').css('color', textColor[2]);
+    }
+    // Background color.
+    var textColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
+    if (textColor && textColor[2]) {
+      $('body').css('background-color', textColor[2]);
+    }
+  }
+// //
+
+// Replace any unloaded images in output box with their alt text.
+$('#output img').error(function() {
+  $(this).text($(this).prop('alt'));
+});
+
 //*** SOCKET.IO ***//
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
@@ -61,7 +84,7 @@
     // Attempt to send login command from saved cookie.
     if (document.cookie) {
       var cookieValue = document.cookie.match('(^|;) ?' + 'login' + '=([^;]*)(;|$)');
-      if (cookieValue[2] && socket && socket.socket && socket.socket.connected) {
+      if (cookieValue && cookieValue[2]) {
         socket.emit('message', cookieValue[2]);
       }
     }
@@ -160,8 +183,11 @@ function appendOutput(message, color, font, size, italic, bold) {
   var curDate = new Date();
   // Make sure the format is HH:MM:SS.
   var curTime = ( curDate.getHours() < 10 ? '0' + curDate.getHours() : curDate.getHours() ) + ':' + 
-      ( curDate.getMinutes() < 10 ? '0' + curDate.getMinutes() : curDate.getMinutes() ) + ':' + 
-      ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
+      ( curDate.getMinutes() < 10 ? '0' + curDate.getMinutes() : curDate.getMinutes() );
+      //  + ':' + ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
+  
+  // Find and convert URLs to links.
+  parsedMessage = parseURL(message);
   
   // Add the text with styling arguments.
   $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + 
@@ -172,9 +198,73 @@ function appendOutput(message, color, font, size, italic, bold) {
                       (italic ? 'font-style: '  + 'italic'  + ';' : '') +
                       (bold   ? 'font-weight: ' + 'bold'    + ';' : '') +
                       '\'>' +
-                      message + '</span><br />');
+                      parsedMessage + '</span><br />');
   
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
+}
+
+// Find and convert URLs to links, and try to display images.
+// Mixes JS with Regex for readability of Regex.
+function parseURL(message) {
+  // This function has been tested with an image and the following example:
+  /* var message = 'Lets see...<br />' + 
+    'yo. yo.boo yo.boo.hey yoo/moo yo.me/ yo.me/moo <br /> ' + 
+    'http :://::// http://wow https://.. ftp:/hey ftp://hey-hey <br /> ' + 
+    'http://42t3.g43.g43 http://... http://g43..g43 <br /> ' + 
+    'ha@ ha@ha hey@yo. @.@... la@@.la mailmeat:as@bo.com <br /> ' + 
+    'www www.. www. www.www.www.w wrw.www.hey wutwwwlol';
+  */
+  
+  // e.g. word://anything.word
+  var prefix = /\w+[:][/][/]\S+[.]\w+/igm;
+  // e.g. google.com/
+  var shortUrl = /\w+[.]\w+[/]|www[.]\w+[.]\w+/igm;
+  // e.g. anything@word.word
+  var email = /\S+@\w+[.]\w+/igm;
+  
+  // e.g. anything.jpg
+  var image = /\S+[.](jpg|jpeg|bmp|gif|png|apng|svg|ico)/igm;
+  
+  var strArray = message.split(' ');      // Split into words.
+  
+  // Check each word.
+  for (var i=0; i < strArray.length; i++) {
+    var curWord = strArray[i];
+    var matchedProtocol = false;
+    
+    if (curWord.search(image) >= 0) {
+      strArray[i] = '<img style=\"min-width: 20px; min-height: 20px; max-width: 100px; ' + 
+                    'max-height: 100px;\"' + ' src=\"' + curWord + '\" alt=\"' + curWord + '\">';
+      
+      // Either URL or shortUrl - make image a link to itself.
+      if (curWord.search(prefix) >= 0) {
+        strArray[i] = '<a href=\"' + curWord + '\" target=\"_blank\">' + strArray[i] + '</a>';
+      } else if (curWord.search(shortUrl) >= 0) {
+        strArray[i] = '<a href=\"http://' + curWord + '\" target=\"_blank\">' + strArray[i] + '</a>';
+      }
+      
+      continue;
+    }
+    
+    if (curWord.search(prefix) >= 0) {
+      strArray[i] = '<a href=\"' + curWord + '\" target=\"_blank\">' + curWord + '</a>';
+      continue;
+    }
+    
+    if (curWord.search(shortUrl) >= 0) {
+      strArray[i] = '<a href=\"http://' + curWord + '\" target=\"_blank\">' + curWord + '</a>';
+      continue;
+    }
+    
+    if (curWord.search(email) >= 0) {
+      strArray[i] = '<a href=\"mailto:' + curWord + '\">' + curWord + '</a>';
+      continue;
+    }
+  }
+  
+  var result = strArray.join(' ');
+  
+  return result;
 }
 
 // General Variables
@@ -248,28 +338,80 @@ var curCommandIndex = 0;
 $('form').on('submit',function(e) {
     e.preventDefault(); // Stop regular form submission.
     
-    var inputvalue = $('input[id=input]').val();    
+    // var inputvalue = $('input[id=input]').val(); WAS USED IN SOCKET.EMIT FOR SOME REASON.
+    var inputText = $('#input').val();
     
-    // Socket emits, only if it is connected.
-    if (socket && socket.socket && socket.socket.connected) {
-      socket.emit('message', inputvalue);
+    var clientCommands = {
+      ',textcolor': function (cmdArray) {
+        // Restore default color, if no argument.
+        var color = 'black';
+        // Otherwise, set new color.
+        if (cmdArray[1]) color = cmdArray[1];
+        
+        $('body').css('color', color);
+        
+        saveCookie('textcolor', color);
+        
+        // Inform user of change.
+        appendOutput('Text color changed to <b>' + color + '</b>.', 
+                              'darkgreen', null, null, true, null);
+      },
+      
+      ',bgcolor': function (cmdArray) {
+        // Restore default color, if no argument.
+        var color = 'white';
+        // Otherwise, set new color.
+        if (cmdArray[1]) color = cmdArray[1];
+        
+        $('body').css('background-color', color);
+        
+        saveCookie('bgcolor', color);
+        
+        // Inform user of change.
+        appendOutput('Background color changed to <b>' + color + '</b>.', 
+                                    'darkgreen', null, null, true, null);
+      }
+    };
+    
+    // Check first word (possibly a command) from input.
+    var firstWord = inputText.substring(0, inputText.indexOf(' '));
+    if (clientCommands[firstWord]) {
+      // Client only commands. //
+      var cmdArray = inputText.substring(1).split(' ');  // First item is the command word, without ','.
+      // Run the command.
+      clientCommands[firstWord](cmdArray);
+    } else if (socket && socket.socket && socket.socket.connected) {
+      // Send input text to socket server. //
+      socket.emit('message', $('#input').val());
     }
     
-    sentCommands[sentCommands.length] = $('#input').val(); // Memorize commands into array.
-    curCommandIndex = sentCommands.length; // Store the latest command index position for history scroll.
+    // Remember login input, for next page load.
+    logInput(inputText);
     
-    // Save last login command for cookie.
-    if ($('#input').val().search('login') == 1) {
-      var path = '';
-      
-      var expires = new Date();
-      expires.setTime(expires.getTime() + (7 * 24 * 60 * 60 * 1000)); // Days, Hours, Minutes, Seconds, Milliseconds. Default 7 days.
-      
-      document.cookie = 'login' + "=" + $('#input').val() + ';path=' + path + ';expires=' + expires.toUTCString();
-    }
+    // Save logins into cookie.
+    if (inputText.indexOf(',login') == '0') saveCookie('login', inputText);
     
     $('#input').val(''); // Empty input.
 });
+
+// Logs command history.
+function logInput(inputText) {
+  sentCommands[sentCommands.length] = inputText; // Memorize commands into array.
+  curCommandIndex = sentCommands.length; // Store the latest command index position for history scroll.
+}
+
+// Save name=value pair to cookie.
+function saveCookie(name, value) {
+  // var path = '/';           // Default to same domain and folder.
+  
+  var expires = new Date();
+  // Days, Hours, Minutes, Seconds, Milliseconds. Default is 30 days.
+  expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
+  
+  document.cookie = name      + '='  + value + ';' + 
+                 //'path'     + '='  + path  + ';' + 
+                   'expires'  + '='  + expires.toUTCString(); + ';';
+}
 </script>
 </body>
 </html>
