@@ -46,8 +46,10 @@
 // After document has loaded.
 $( document ).ready(function() {
   // Inform of client-only information.
-  appendOutput('<u>Client-only Commands:</u> ,textcolor COLORNAME - ,bgcolor COLORNAME <br />' + 
-      'These and any ,login command will be saved into a cookie and loaded automatically.', 'green');
+  var msg = '<u><b>Client-only Commands:</b></u><br />,textcolor COLORNAME<br />,bgcolor COLORNAME <br />' + 
+      'These and any ,login command will be saved into a cookie and loaded automatically.';
+  $('#output').append('<span style=\"color: green;\">' + msg + '</span><br /><br />');
+  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
   
   // Scroll output on window resize.
   $(window).resize(function() {
@@ -191,13 +193,13 @@ function appendOutput(message, color, font, size, italic, bold) {
   
   // Add the text with styling arguments.
   $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + 
-                      '<span style=\'' + 
+                      '<span style=\"' + 
                       (color  ? 'color: '       + color     + ';' : '') +
                       (font   ? 'font-family: ' + font      + ';' : '') +
                       (size   ? 'font-size: '   + size      + ';' : '') +
                       (italic ? 'font-style: '  + 'italic'  + ';' : '') +
                       (bold   ? 'font-weight: ' + 'bold'    + ';' : '') +
-                      '\'>' +
+                      '\"">' +
                       parsedMessage + '</span><br />');
   
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
