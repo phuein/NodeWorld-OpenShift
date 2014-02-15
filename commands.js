@@ -1271,7 +1271,7 @@ commands.user = {
     }
     
     // Send to all others.
-    user.socket.broadcast.emit('message', '<b>' + fullNameID(user) + ':' + msg);
+    user.socket.broadcast.emit('message', fullNameID(user) + ': ' + msg);
     
     // Show me.
     user.socket.emit('message', '<b>You</b>: ' + msg);
@@ -1321,7 +1321,7 @@ commands.user = {
         curPlayer.socket.emit('message', fullNameID(user) + ' says: ' + msg);
       } else {
         // Show me my message.
-        user.socket.emit('message', 'You say: ' + msg);
+        user.socket.emit('message', '<b>You say:</b> ' + msg);
       }
     }
   },
@@ -1354,7 +1354,7 @@ commands.user = {
       // Tell targret player.
       targetUser.socket.emit('tell', fullNameID(user) + ' tells you: ' + msg);
       // Show me the message.
-      user.socket.emit('tell', 'You tell ' + fullNameID(targetUser) + ': ' + msg);
+      user.socket.emit('tell', '<b>You tell ' + fullNameID(targetUser) + ':</b> ' + msg);
     } else {
       // Not found.
       user.socket.emit('warning', '<i>Username not found!</i>');

@@ -187,7 +187,12 @@ function appendOutput(message, color, font, size, italic, bold) {
       //  + ':' + ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
   
   // Find and convert URLs to links.
-  parsedMessage = parseURL(message);
+  if (typeof message === 'string') {
+    parsedMessage = parseURL(message);
+  } else {
+    parsedMessage = JSON.stringify(message);
+  }
+  
   
   // Add the text with styling arguments.
   $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + 
