@@ -341,57 +341,59 @@ var curCommandIndex = 0;
 </form>
 </div>
 <script>
+// Client-side-only commands, which do not get sent to server.
+var clientCommands = {
+  ',textcolor': function (argArray) {
+    // Restore default color, if no argument.
+    var color = 'black';
+    // Otherwise, set new color.
+    if (argArray[0]) color = argArray[0];
+    
+    $('body').css('color', color);
+    $('#input').css('color', color);
+    
+    saveCookie('textcolor', color);
+    
+    // Inform user of change.
+    appendOutput('Text color changed to <b>' + color + '</b>.', 
+                          'darkgreen', null, null, true, null);
+  },
+  
+  ',bgcolor': function (argArray) {
+    // Restore default color, if no argument.
+    var color = 'white';
+    // Otherwise, set new color.
+    if (argArray[0]) color = argArray[0];
+    
+    $('body').css('background-color', color);
+    $('#input').css('background-color', color);
+    
+    saveCookie('bgcolor', color);
+    
+    // Inform user of change.
+    appendOutput('Background color changed to <b>' + color + '</b>.', 
+                                'darkgreen', null, null, true, null);
+  }
+};
+
 // Send user input to server by Socket.
 $('form').on('submit',function(e) {
     e.preventDefault(); // Stop regular form submission.
     
     // var inputvalue = $('input[id=input]').val(); WAS USED IN SOCKET.EMIT FOR SOME REASON.
-    var inputText = $('#input').val();
+    var inputText = $('#input').val().trim();
     
-    var clientCommands = {
-      ',textcolor': function (cmdArray) {
-        // Restore default color, if no argument.
-        var color = 'black';
-        // Otherwise, set new color.
-        if (cmdArray[1]) color = cmdArray[1];
-        
-        $('body').css('color', color);
-        $('#input').css('color', color);
-        
-        saveCookie('textcolor', color);
-        
-        // Inform user of change.
-        appendOutput('Text color changed to <b>' + color + '</b>.', 
-                              'darkgreen', null, null, true, null);
-      },
-      
-      ',bgcolor': function (cmdArray) {
-        // Restore default color, if no argument.
-        var color = 'white';
-        // Otherwise, set new color.
-        if (cmdArray[1]) color = cmdArray[1];
-        
-        $('body').css('background-color', color);
-        $('#input').css('background-color', color);
-        
-        saveCookie('bgcolor', color);
-        
-        // Inform user of change.
-        appendOutput('Background color changed to <b>' + color + '</b>.', 
-                                    'darkgreen', null, null, true, null);
-      }
-    };
+    // Return the first or word, or the only one word.
+    var firstWord = (inputText.indexOf(' ') >= 0 ? 
+                     inputText.substring(0, inputText.indexOf(' ')) : inputText);
     
-    // Check first word (possibly a command) from input.
-    var firstWord = inputText.substring(0, inputText.indexOf(' '));
     if (clientCommands[firstWord]) {
-      // Client only commands. //
-      var cmdArray = inputText.substring(1).split(' ');  // First item is the command word, without ','.
-      // Run the command.
-      clientCommands[firstWord](cmdArray);
+      // Client only command.
+      var argArray = inputText.split(' ').splice(0, 1);      // Exclude command word.
+      clientCommands[firstWord](argArray);
     } else if (socket && socket.socket && socket.socket.connected) {
-      // Send input text to socket server. //
-      socket.emit('message', $('#input').val());
+      // Send input text to socket server.
+      socket.emit('message', inputText);
     }
     
     // Remember login input, for next page load.
