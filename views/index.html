@@ -226,7 +226,7 @@ function appendOutput(message, color, font, size, italic, bold) {
   
   if (!alertRunning && !document.hasFocus()) {
     alertRunning = true;
-    alertTimer = setInterval(titleAlert, 500, message);      // Blink title text, if unfocused.
+    alertTimer = setInterval(titleAlert, 1000, message);      // Blink title text, if unfocused.
   }
   
   // Replace any unloaded images in output box with their alt text.
