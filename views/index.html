@@ -143,14 +143,14 @@ $('#output img').error(function() {
   // Check every second if connecting.
   var connectingDots = '...';
   function connectingCheck() {
-    if (socket && socket.socket && socket.socket.connecting) {
+    if (socket && socket.connecting) {
       $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
       connectingDots += '.';
       return;
     }
     
     // Stop checking when connected.
-    if (socket && socket.socket && socket.socket.connected) {
+    if (socket && socket.connected) {
       clearInterval(connectingTimer);
       connectingDots = '...';
     }
@@ -160,7 +160,7 @@ $('#output img').error(function() {
   // Check every second if reconnecting.
   var reconnectingDots = '...';  
   function reconnectingCheck() {
-    if (socket && socket.socket && socket.socket.reconnecting) {
+    if (socket && socket.reconnecting) {
       console.log('RECONNECTING...');
       $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
       reconnectingDots += '.';
@@ -168,7 +168,7 @@ $('#output img').error(function() {
     }
     
     // Stop checking when connected.
-    if (socket && socket.socket && socket.socket.connected) {
+    if (socket && socket.connected) {
       console.log('STOPPING RECONNECTING, BECAUSE CONNECTED');
       clearInterval(reconnectingTimer);
       reconnectingDots = '...'; 
