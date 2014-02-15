@@ -261,7 +261,8 @@ io.sockets.on('connection', function (socket) {
   
   // Track number of connected users.
   world.userCount += 1;
-  console.log(Timestamp() + world.userCount + ' users connected to the server.');
+  console.log(Timestamp() + world.userCount + ' user' + (world.userCount > 1 ? 's' : '') +
+                                                              ' connected to the server.');
   
 	// The user object that locally (per socket session) saves the logged-in user data from the DB.
 	var user = constructor.user(command.randomName(), socket);    // Get a random name.
