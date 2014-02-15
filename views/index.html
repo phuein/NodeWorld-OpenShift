@@ -389,8 +389,8 @@ $('form').on('submit',function(e) {
     
     if (clientCommands[firstWord]) {
       // Client only command.
-      var argArray = inputText.split(' ').splice(0, 1);      // Exclude command word.
-      console.log(argArray);
+      var argArray = inputText.split(' ');
+      argArray.splice(0, 1);                    // Exclude command word.
       clientCommands[firstWord](argArray);
     } else if (socket && socket.socket && socket.socket.connected) {
       // Send input text to socket server.
