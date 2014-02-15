@@ -336,7 +336,7 @@ var curCommandIndex = 0;
 </script>
 <div id="output"></div>
 <div id="inputdiv">
-<form action="/" id="inputform" style="background-color: inherit; color: inherit;" method="POST">
+<form action="/" id="inputform" method="POST">
   <input autofocus placeholder="Connecting to server, please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
 </form>
 </div>
@@ -356,6 +356,7 @@ $('form').on('submit',function(e) {
         if (cmdArray[1]) color = cmdArray[1];
         
         $('body').css('color', color);
+        $('#input').css('color', color);
         
         saveCookie('textcolor', color);
         
@@ -371,6 +372,7 @@ $('form').on('submit',function(e) {
         if (cmdArray[1]) color = cmdArray[1];
         
         $('body').css('background-color', color);
+        $('#input').css('background-color', color);
         
         saveCookie('bgcolor', color);
         
