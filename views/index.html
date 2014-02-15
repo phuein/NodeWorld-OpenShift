@@ -51,7 +51,7 @@ $( document ).ready(function() {
   
   // Scroll output on window resize.
   $(window).resize(function() {
-    $('#output').scrollTop($('#output').scrollHeight); // Scroll down.
+    $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
   });
 
   // Client-Side Only Cookie Data.
@@ -200,7 +200,7 @@ function appendOutput(message, color, font, size, italic, bold) {
                       '\'>' +
                       parsedMessage + '</span><br />');
   
-  $('#output').scrollTop($('#output').scrollHeight); // Scroll down.
+  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
   
   // Replace any unloaded images in output box with their alt text.
   $('#output img').error(function() {
