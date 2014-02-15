@@ -160,29 +160,29 @@ $( document ).ready(function() {
   
   // Chat emotes, that everyone can see.
   socket.on('emote', function (message) {
-    appendOutput(message, 'darkcyan', null, null, null, null);
+    appendOutput(message, 'rgb(0, 130, 130)', null, null, null, null);
   });
   
   // Chat messages, that only I can see.
   socket.on('tell', function (message) {
-    appendOutput(message, 'darkblue', null, null, null, null);
+    appendOutput(message, 'rgb(0, 0, 80)', null, null, null, null);
   });
   
   // Warnings about clarification of commands, such as syntax.
   socket.on('warning', function (message) {
-    appendOutput(message, 'darkred', null, null, true, null);
+    appendOutput(message, 'rgb(80, 0, 0)', null, null, true, null);
   });
   
   // Notifications about events, such as a player name change.
   socket.on('info', function (message) {
-    appendOutput(message, 'rgb(0, 80, 0)', null, null, null, null);
+    appendOutput(message, 'rgb(0, 60, 0)', null, null, null, null);
   });
   
   // *** //
   
   socket.on('error', function (err) {
     console.log(err);
-    appendOutput('<b><u>Socket Error:</u></b><br />' + err + '<br />', 'red');
+    appendOutput('<b><u>Socket Error:</u></b><br />' + err + '<br />', 'rgb(120, 0, 0)');
   });
   
   socket.on('disconnect', function () {
