@@ -43,6 +43,11 @@
 </head>
 <body>
 <script>
+// Inform of client-only information.
+appendOutput('<u>Client-only Commands:</u> ,textcolor COLORNAME - ,bgcolor COLORNAME <br />' + 
+              'These and any ,login command will be saved into a cookie and loaded automatically.', 
+                                                                'green', font, size, italic, bold);
+
 // Scroll output on window resize.
 $(window).resize(function() {
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
