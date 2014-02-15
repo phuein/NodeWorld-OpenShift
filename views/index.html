@@ -43,29 +43,33 @@
 </head>
 <body>
 <script>
-// Client-Side Only Cookie Data //
-console.log(document.cookie);
-  if (document.cookie) {
-    // Text color.
-    var textColor = document.cookie.match('(^|;) ?' + 'textcolor' + '=([^;]*)(;|$)');
-    if (textColor && textColor[2]) {
-      $('body').css('color', textColor[2]);
-    }
-    // Background color.
-    var textColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
-    if (textColor && textColor[2]) {
-      $('body').css('background-color', textColor[2]);
-    }
+// Scroll output on window resize.
+$(window).resize(function() {
+  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
+});
+
+// Client-Side Only Cookie Data.
+if (document.cookie) {
+  // Text color.
+  var textColor = document.cookie.match('(^|;) ?' + 'textcolor' + '=([^;]*)(;|$)');
+  if (textColor && textColor[2]) {
+    $('body').css('color', textColor[2]);
   }
-// //
+  // Background color.
+  var textColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
+  if (textColor && textColor[2]) {
+    $('body').css('background-color', textColor[2]);
+  }
+}
 
 // Replace any unloaded images in output box with their alt text.
 $('#output img').error(function() {
+  console.log('BAD IMG! REPLACE TO TEXT!');
   $(this).text($(this).prop('alt'));
 });
 
 //*** SOCKET.IO ***//
-  // Start status timer.
+  // Start status timer. //
   statusTimer = setInterval(statusCheck, 100);
   statusTimerRunning = true;
   
@@ -87,6 +91,7 @@ $('#output img').error(function() {
       return;
     }
   }
+  // //
   
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
@@ -151,7 +156,7 @@ $('#output img').error(function() {
   
   socket.on('error', function (err) {
     console.log(err);
-    appendOutput('<b><u>Socket Error:</u></b><br />' + err + '<br />');
+    appendOutput('<b><u>Socket Error:</u></b><br />' + err + '<br />', 'red');
   });
   
   socket.on('disconnect', function () {
@@ -323,7 +328,7 @@ var curCommandIndex = 0;
 </script>
 <div id="output"></div>
 <div id="inputdiv">
-<form action="/" id="inputform" method="POST">
+<form action="/" id="inputform" style="background-color: inherit; color: inherit;" method="POST">
   <input autofocus placeholder="Connecting to server, please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
 </form>
 </div>

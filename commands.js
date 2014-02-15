@@ -561,10 +561,6 @@ var commands = {}; // WARNING: Global variable from server.js is named 'command'
 
 // Server control.
 commands.god = {
-  'test': function (user, cmdArray, cmdStr) {
-    a.split();
-  },
-  
   // set PROPERTY VALUE
   'set': function (user, cmdArray, cmdStr) {
     // List world.config if only 'set' is sent.
@@ -1855,7 +1851,7 @@ commands.user = {
             
             var desc = curAccess[cmd];    // The value of the property is the description.
             
-            commandsDisplay += desc + '<br />';
+            commandsDisplay += desc + '<br /><br />';
           }
         }
         break;
@@ -1874,7 +1870,7 @@ commands.user = {
             
             var desc = curAccess[cmd];    // The value of the property is the description.
             
-            commandsDisplay += desc + '<br />';
+            commandsDisplay += desc + '<br /><br />';
           }
         }
         break;
@@ -1893,7 +1889,7 @@ commands.user = {
             
             var desc = curAccess[cmd];    // The value of the property is the description.
             
-            commandsDisplay += desc + '<br />';
+            commandsDisplay += desc + '<br /><br />';
           }
         }
         break;
@@ -1912,7 +1908,7 @@ commands.user = {
             
             var desc = curAccess[cmd];    // The value of the property is the description.
             
-            commandsDisplay += desc + '<br />';
+            commandsDisplay += desc + '<br /><br />';
           }
         }
         break;
@@ -1925,13 +1921,12 @@ commands.user = {
           
           var desc = curAccess[cmd];    // The value of the property is the description.
           
-          commandsDisplay += desc + '<br />';
+          commandsDisplay += desc + '<br /><br />';
         }
         break;
     }
     
-    user.socket.emit('info', 'The following commands are available to you:<br />' + 
-                                                                  commandsDisplay);
+    user.socket.emit('info', '<u>Available Commands:</u><br />' + commandsDisplay);
   }
   /*  Display command usage and list all available commands,
    *  by account access level.
