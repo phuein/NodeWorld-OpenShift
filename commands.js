@@ -562,7 +562,7 @@ var commands = {}; // WARNING: Global variable from server.js is named 'command'
 // Server control.
 commands.god = {
   'test': function (user, cmdArray, cmdStr) {
-    var a = new Error('Test error!');
+    a.split();
   },
   
   // set PROPERTY VALUE
