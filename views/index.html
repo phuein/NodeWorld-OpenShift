@@ -47,9 +47,9 @@ var title = 'Node World';
 var msg = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
           '<b>,color (COLORNAME)<br />,bgcolor (COLORNAME)</b><br />' + 
           '() - Optional. No arguments uses default values.<br />' + 
-          'These and your login are saved in a <b>cookie</b>, and loaded automatically.<br />' + 
-          '<b>Commands</b> start with the command character, which defaults to a comma.<br />' + 
-          'The following is the comma character: ' + '<span style=\"font-size: 150%;\">,</span><br />' + 
+          'These and your <b>login</b> are saved in a <b>cookie</b>, and loaded automatically.<br />' + 
+          '<b>Commands</b> start with the command character, which defaults to a comma: <br />' + 
+          '<span style=\"font-size: 200%;\">,</span><br />' + 
           'Please, <b>rename</b> into a unique alias, and <b>register</b> your name,' + 
           ' to get world-building access!';
 
@@ -175,7 +175,7 @@ $( document ).ready(function() {
   
   // Notifications about events, such as a player name change.
   socket.on('info', function (message) {
-    appendOutput(message, 'darkgreen', null, null, null, null);
+    appendOutput(message, 'rgb(0, 80, 0)', null, null, null, null);
   });
   
   // *** //
