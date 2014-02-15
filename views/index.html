@@ -43,28 +43,31 @@
 </head>
 <body>
 <script>
-// Inform of client-only information.
-appendOutput('<u>Client-only Commands:</u> ,textcolor COLORNAME - ,bgcolor COLORNAME <br />' + 
-    'These and any ,login command will be saved into a cookie and loaded automatically.', 'green');
+// After document has loaded.
+$( document ).ready(function() {
+  // Inform of client-only information.
+  appendOutput('<u>Client-only Commands:</u> ,textcolor COLORNAME - ,bgcolor COLORNAME <br />' + 
+      'These and any ,login command will be saved into a cookie and loaded automatically.', 'green');
+  
+  // Scroll output on window resize.
+  $(window).resize(function() {
+    $('#output').scrollTop($('#output').scrollHeight); // Scroll down.
+  });
 
-// Scroll output on window resize.
-$(window).resize(function() {
-  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
+  // Client-Side Only Cookie Data.
+  if (document.cookie) {
+    // Text color.
+    var textColor = document.cookie.match('(^|;) ?' + 'textcolor' + '=([^;]*)(;|$)');
+    if (textColor && textColor[2]) {
+      $('body').css('color', textColor[2]);
+    }
+    // Background color.
+    var textColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
+    if (textColor && textColor[2]) {
+      $('body').css('background-color', textColor[2]);
+    }
+  }
 });
-
-// Client-Side Only Cookie Data.
-if (document.cookie) {
-  // Text color.
-  var textColor = document.cookie.match('(^|;) ?' + 'textcolor' + '=([^;]*)(;|$)');
-  if (textColor && textColor[2]) {
-    $('body').css('color', textColor[2]);
-  }
-  // Background color.
-  var textColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
-  if (textColor && textColor[2]) {
-    $('body').css('background-color', textColor[2]);
-  }
-}
 
 //*** SOCKET.IO ***//
   // Start status timer. //
@@ -197,7 +200,7 @@ function appendOutput(message, color, font, size, italic, bold) {
                       '\'>' +
                       parsedMessage + '</span><br />');
   
-  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
+  $('#output').scrollTop($('#output').scrollHeight); // Scroll down.
   
   // Replace any unloaded images in output box with their alt text.
   $('#output img').error(function() {
