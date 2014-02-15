@@ -43,20 +43,6 @@
 </head>
 <body>
 <script>
-// Asynchronic with callback; returns true if exists, or false otherwise.
-function urlExists(url, callback){
-  $.ajax({
-    type: 'HEAD',
-    url: url,
-    success: function(){
-      callback(true);
-    },
-    error: function() {
-      callback(false);
-    }
-  });
-}
-
 // Scroll output on window resize.
 $(window).resize(function() {
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
@@ -209,10 +195,10 @@ function appendOutput(message, color, font, size, italic, bold) {
   
   $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
   
-  /* // Replace any unloaded images in output box with their alt text.
+  // Replace any unloaded images in output box with their alt text.
   $('#output img').error(function() {
     $(this).replaceWith($(this).prop('alt'));
-  }); */
+  });
 }
 
 // Find and convert URLs to links, and try to display images.
@@ -245,16 +231,8 @@ function parseURL(message) {
     var matchedProtocol = false;
     
     if (curWord.search(image) >= 0) {
-      // Use <img> tag, only if image exists.
-      urlExists(curWord, function(exists){
-        if (exists) {
-          console.log('IMG EXISTS');
-          strArray[i] = '<img style=\"min-width: 20px; min-height: 20px; max-width: 100px; ' + 
-                        'max-height: 100px;\"' + ' src=\"' + curWord + '\" alt=\"' + curWord + '\">';
-        } else {
-          console.log('IMG DOESNT EXIST');
-        }
-      });
+      strArray[i] = '<img style=\"min-width: 20px; min-height: 20px; max-width: 100px; ' + 
+              'max-height: 100px;\"' + ' src=\"' + curWord + '\" alt=\"' + curWord + '\">';
       
       // Either URL or shortUrl - make image a link to itself.
       if (curWord.search(prefix) >= 0) {
