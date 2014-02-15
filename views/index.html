@@ -197,8 +197,9 @@ function appendOutput(message, color, font, size, italic, bold) {
   
   // Replace any unloaded images in output box with their alt text.
   $('#output img').error(function() {
-    console.log('BAD IMG! REPLACE TO TEXT!');
-    $(this).text($(this).prop('alt'));
+    // $(this).text($(this).prop('alt'));
+    console.log($(this));
+    $(this).replaceWith($(this).prop('alt') || 'failed to load alt text');
   });
 }
 
