@@ -138,7 +138,6 @@ $('#output img').error(function() {
     $('#input').blur();
     
     reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
-    console.log('STARTED RECONNCTING TIMER');
   });
   
   // Check every second if connecting.
@@ -161,8 +160,8 @@ $('#output img').error(function() {
   // Check every second if reconnecting.
   var reconnectingDots = '...';  
   function reconnectingCheck() {
-    console.log('IF RECONNECTING');
     if (socket && socket.socket && socket.socket.reconnecting) {
+      console.log('RECONNECTING...');
       $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
       reconnectingDots += '.';
       return;
@@ -170,7 +169,7 @@ $('#output img').error(function() {
     
     // Stop checking when connected.
     if (socket && socket.socket && socket.socket.connected) {
-      console.log('STOPPING RECONNECTING, BECAUSE CONNECT');
+      console.log('STOPPING RECONNECTING, BECAUSE CONNECTED');
       clearInterval(reconnectingTimer);
       reconnectingDots = '...'; 
     }
