@@ -65,6 +65,21 @@ $('#output img').error(function() {
 });
 
 //*** SOCKET.IO ***//
+  // Start status timer.
+  var statusTimer = setInterval(function () {
+    // Connecting to server.
+    if (socket && socket.socket && socket.socket.connecting) {
+      $('#input').prop('placeholder', 'Connecting to server...');
+      return;
+    }
+    
+    // Reconnecting to server.
+    if (socket && socket.socket && socket.socket.reconnecting) {
+      $('#input').prop('placeholder', 'Reconnecting to server...');
+      return;
+    }
+  }, 1000);
+  
   // Connect to socket server.
   var socket = io.connect('http://diy-phuein.rhcloud.com/', {
     'sync disconnect on unload' : true,           // Send 'disconnect' to server when browser 'beforeunload'.
@@ -136,45 +151,7 @@ $('#output img').error(function() {
     
     $('#input').prop('placeholder', "Not connected to server...");
     $('#input').blur();
-    
-    reconnectingTimer = setInterval(reconnectingCheck(), 500); // Show the reconnection status.
   });
-  
-  // Check every second if connecting.
-  var connectingDots = '...';
-  function connectingCheck() {
-    if (socket && socket.connecting) {
-      $('#input').prop('placeholder', 'Connecting to server' + connectingDots);
-      connectingDots += '.';
-      return;
-    }
-    
-    // Stop checking when connected.
-    if (socket && socket.connected) {
-      clearInterval(connectingTimer);
-      connectingDots = '...';
-    }
-  }
-  var connectingTimer = setInterval(connectingCheck(), 500); // Show the connecting status, first thing.
-  
-  // Check every second if reconnecting.
-  var reconnectingDots = '...';  
-  function reconnectingCheck() {
-    if (socket && socket.reconnecting) {
-      console.log('RECONNECTING...');
-      $('#input').prop('placeholder', 'Reconnecting to server' + reconnectingDots);
-      reconnectingDots += '.';
-      return;
-    }
-    
-    // Stop checking when connected.
-    if (socket && socket.connected) {
-      console.log('STOPPING RECONNECTING, BECAUSE CONNECTED');
-      clearInterval(reconnectingTimer);
-      reconnectingDots = '...'; 
-    }
-  }
-  var reconnectingTimer;
 // *** //
 
 // Add Timestamp to messages. Scroll down.
