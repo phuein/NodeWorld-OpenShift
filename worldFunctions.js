@@ -583,3 +583,24 @@ function loadTarget(user, idInstance, command, extra) {
     }
   });
 }
+
+//*** EXPORTS ***//
+  exports.handleCommands  =   handleCommands;
+  exports.configureWorld  =   configureWorld;
+  exports.saveWorld       =   saveWorld;
+  exports.saveUser        =   saveUser;
+  exports.saveTarget      =   saveTarget;
+  exports.deleteTarget    =   deleteTarget;
+  exports.saveRoom        =   saveRoom;
+  exports.saveMap         =   saveMap;
+  exports.saveConfig      =   saveConfig;
+  exports.processRoom     =   processRoom;
+  exports.loadRoom        =   loadRoom;
+  exports.createRoom      =   createRoom;
+  exports.loadMap         =   loadMap;
+  exports.createMap       =   createMap;
+  exports.loadMapWorld    =   loadMapWorld;
+  exports.loadMapDB       =   loadMapDB;
+  exports.targetMoved     =   targetMoved;
+  exports.loadTarget      =   loadTarget;
+// *** //
