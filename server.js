@@ -247,7 +247,7 @@ Timestamp = function () {
   var timestamp = '<' + hours + ':' + minutes + ':' + seconds + '> ';
   
   return timestamp;
-}
+};
 
 // When a client requests a connection with the Socket server. //
 io.sockets.on('connection', function (socket) {
@@ -305,8 +305,8 @@ io.sockets.on('connection', function (socket) {
       }, 60000);
     }
     
-  	// Check for command character.
-  	if (message.charAt(0) == cmdChar && message.charAt(1) != cmdChar) {
+    // Check for command character.
+    if (message.charAt(0) == cmdChar && message.charAt(1) != cmdChar) {
       // Every command message is handled on a new domain.
       var curDomain = new domain.create();
 
@@ -323,10 +323,10 @@ io.sockets.on('connection', function (socket) {
         });
       });
       
-  		return;
-  	}
+      return;
+    }
     
-  	// Default to chat message.
+    // Default to chat message.
     command.handleCommands(',chat ' + message, user);
   });
   
