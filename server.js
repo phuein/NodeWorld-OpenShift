@@ -88,7 +88,15 @@
   
   var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
   
-  var irc = http.createServer(function (client) {
+  var irc = http.createServer(messageStream);
+  
+  // OpenShift allows ports in range 15000 - 35530.
+  var ircPort = 20000;
+  irc.listen(ircPort, ip, function() {
+    console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
+  });
+  
+  irc.on('connect', function (req, client, head) {
     console.log('IRC Client connected.');
     console.log(client);
     
@@ -136,12 +144,6 @@
     
     client.write('TEST MESSAGE FROM SERVER!\r\n');
     client.pipe(stream);
-  });
-  
-  // OpenShift allows ports in range 15000 - 35530.
-  var ircPort = 20000;
-  irc.listen(ircPort, ip, function() {
-    console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
   });
     
   // World Functionality Modules.
