@@ -64,7 +64,7 @@
   io = require('socket.io').listen(server, {
     // Socket Server Options.
     // 'close timeout' :   60,               // Seconds to re-open the connection, after client disconnect.
-    'log level'     :   1,                   // Recommended 1 for production.
+    'log level'     :   2,                   // Recommended 1 for production.
     'transports'    :   ['xhr-polling']
   });
   
@@ -138,8 +138,8 @@
   });
   
   // Port 6667 not available with OpenShift.
-  server.listen(8001, function() {
-    console.log('IRC Server listening on port 8001.');
+  server.listen(15000, function() {
+    console.log('IRC Server listening on port 15000.');
   });
   
   var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
