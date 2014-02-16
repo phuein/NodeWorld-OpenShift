@@ -138,7 +138,7 @@
   });
   
   // Port 6667 not available with OpenShift.
-  server.listen(15001, ip, function() {
+  irc.listen(15001, ip, function() {
     console.log('IRC Server listening on local-only (see port forwarding) port 15001.');
   });
   
