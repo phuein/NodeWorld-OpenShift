@@ -585,7 +585,6 @@ function loadTarget(user, idInstance, command, extra) {
 }
 
 //*** EXPORTS ***//
-  exports.handleCommands  =   handleCommands;
   exports.configureWorld  =   configureWorld;
   exports.saveWorld       =   saveWorld;
   exports.saveUser        =   saveUser;
