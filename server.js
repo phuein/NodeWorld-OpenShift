@@ -87,9 +87,8 @@
   var ircUsers = {};
   
   var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
-  var net = require('net');
   
-  var irc = net.createServer(function (client) {
+  var irc = http.createServer(function (client) {
     console.log('IRC Client connected.');
     console.log(client);
     
