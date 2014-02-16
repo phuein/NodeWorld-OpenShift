@@ -83,68 +83,69 @@
   ]);
   */
   
-  // IRC Server, to join world chat.
-  var ircUsers = {};
-  
-  var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
-  
-  var irc = http.createServer(messageStream);
-  
-  // OpenShift allows ports in range 15000 - 35530.
-  var ircPort = 20000;
-  irc.listen(ircPort, ip, function() {
-    console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
-  });
-  
-  irc.on('connect', function (req, client, head) {
-    console.log('IRC Client connected.');
-    console.log(client);
+  /* Only HTTP protocol currently (16.2.2014) supported with OpenShift.
+    // IRC Server, to join world chat.
+    var ircUsers = {};
     
-    var ircUser = {};
+    var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
+    var net = require('net');
     
-    // The user has a reference to its' own socket.
-    ircUser.socket = client;
-    
-    client.on('error', function(err) {
-      console.log('IRC Server Error:' + nl + err.stack);
-    });
-    
-    client.on('end', function() {
-      console.log('IRC Client disconnected.');
-    });
-    
-    client.on('close', function() {
-      console.log('IRC Server is down.');
-    });
-    
-    var stream = new messageStream();
-    
-    stream.on("data", function(message) {
-      console.log(message);
+    var irc = net.createServer(function (client) {
+      console.log('IRC Client connected.');
+      console.log(client);
       
-      switch (message.command) {
-        case 'NICK':
-          ircUser.nickname = message.params[0];
-          ircUsers[ircUser.nickname] = ircUser;
-          break;
+      var ircUser = {};
+      
+      // The user has a reference to its' own socket.
+      ircUser.socket = client;
+      
+      client.on('error', function(err) {
+        console.log('IRC Server Error:' + nl + err.stack);
+      });
+      
+      client.on('end', function() {
+        console.log('IRC Client disconnected.');
+      });
+      
+      client.on('close', function() {
+        console.log('IRC Server is down.');
+      });
+      
+      var stream = new messageStream();
+      
+      stream.on("data", function(message) {
+        console.log(message);
         
-        case 'USER':
-          // ircUser.ident = message.params[0];
-          // ircUser.realname = message.params[3];
-          break;
-        
-        case 'PRIVMSG':
-          var target = message.params[0];
-          var msg = message.params[1];
+        switch (message.command) {
+          case 'NICK':
+            ircUser.nickname = message.params[0];
+            ircUsers[ircUser.nickname] = ircUser;
+            break;
           
+          case 'USER':
+            // ircUser.ident = message.params[0];
+            // ircUser.realname = message.params[3];
+            break;
           
-          break;
-      }
+          case 'PRIVMSG':
+            var target = message.params[0];
+            var msg = message.params[1];
+            
+            
+            break;
+        }
+      });
+      
+      client.write('TEST MESSAGE FROM SERVER!\r\n');
+      client.pipe(stream);
     });
     
-    client.write('TEST MESSAGE FROM SERVER!\r\n');
-    client.pipe(stream);
-  });
+    // OpenShift allows ports in range 15000 - 35530.
+    var ircPort = 20000;
+    irc.listen(ircPort, ip, function() {
+      console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
+    });
+  */
     
   // World Functionality Modules.
   command = require('./commands.js');
