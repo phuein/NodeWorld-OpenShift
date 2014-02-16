@@ -83,6 +83,66 @@
   ]);
   */
   
+  // IRC Server, to join world chat.
+  var ircUsers = {};
+  
+  var net = require('net');
+  var irc = net.createServer(function (client) {
+    console.log('IRC Client connected.');
+    console.log(client);
+    
+    var ircUser = {};
+    
+    // The user has a reference to its' own socket.
+    ircUser.socket = client;
+    
+    client.on('error', function(err) {
+      console.log('IRC Server Error:' + nl + err.stack);
+    });
+    
+    client.on('end', function() {
+      console.log('IRC Client disconnected.');
+    });
+    
+    client.on('close', function() {
+      console.log('IRC Server is down.');
+    });
+    
+    var stream = new messageStream();
+    
+    stream.on("data", function(message) {
+      console.log(message);
+      
+      switch (message.command) {
+        case 'NICK':
+          ircUser.nickname = message.params[0];
+          ircUsers[ircUser.nickname] = ircUser;
+          break;
+        
+        case 'USER':
+          // ircUser.ident = message.params[0];
+          // ircUser.realname = message.params[3];
+          break;
+        
+        case 'PRIVMSG':
+          var target = message.params[0];
+          var msg = message.params[1];
+          
+          
+          break;
+      }
+    });
+    
+    client.write('TEST MESSAGE FROM SERVER!\r\n');
+    client.pipe(stream);
+  });
+  
+  server.listen(6667, function() {
+    console.log('IRC Server listening on port 6667.');
+  });
+  
+  var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
+  
   // World Functionality Modules.
   command = require('./commands.js');
   
@@ -248,6 +308,9 @@ Timestamp = function () {
   
   return timestamp;
 };
+
+// IRC Server.
+net.on
 
 // When a client requests a connection with the Socket server. //
 io.sockets.on('connection', function (socket) {
