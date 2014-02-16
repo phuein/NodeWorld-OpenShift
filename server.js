@@ -30,7 +30,7 @@
 
 //*** SERVER VARIABLES ***//
   var ip = process.env.OPENSHIFT_DIY_IP || '127.0.0.1';
-  var port = 15123 || process.env.OPENSHIFT_DIY_PORT || 8080;
+  var port = process.env.OPENSHIFT_DIY_PORT || 8080;
   
   // var keyName = 'GameTest'; // Cookie name. Defaults to 'connect.sid'.
   // var secret = '6edthsej75en43g35u563t345'; // Cookie pass.
@@ -140,7 +140,7 @@
   });
   
   // OpenShift allows ports in range 15000 - 35530.
-  var ircPort = 15001;
+  var ircPort = 20000;
   irc.listen(ircPort, ip, function() {
     console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
   });
