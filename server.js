@@ -86,7 +86,9 @@
   // IRC Server, to join world chat.
   var ircUsers = {};
   
+  var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
   var net = require('net');
+  
   var irc = net.createServer(function (client) {
     console.log('IRC Client connected.');
     console.log(client);
@@ -137,13 +139,12 @@
     client.pipe(stream);
   });
   
-  // Port 6667 not available with OpenShift.
-  irc.listen(15001, ip, function() {
-    console.log('IRC Server listening on local-only (see port forwarding) port 15001.');
+  // OpenShift allows ports in range 15000 - 35530.
+  var ircPort = 15001;
+  irc.listen(ircPort, ip, function() {
+    console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
   });
-  
-  var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
-  
+    
   // World Functionality Modules.
   command = require('./commands.js');
   
