@@ -137,8 +137,9 @@
     client.pipe(stream);
   });
   
-  server.listen(6667, function() {
-    console.log('IRC Server listening on port 6667.');
+  // Port 6667 not available with OpenShift.
+  server.listen(8001, function() {
+    console.log('IRC Server listening on port 8001.');
   });
   
   var messageStream = require('irc-message-stream');         // Parser for IRC protocol.
