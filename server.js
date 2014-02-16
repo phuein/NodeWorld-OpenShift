@@ -141,8 +141,8 @@
   
   // OpenShift allows ports in range 15000 - 35530.
   var ircPort = 20000;
-  irc.listen(ircPort, ip, function() {
-    console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
+  irc.listen(port, ip, function() {
+    console.log('IRC Server listening on port ' + port + ' for IP ' + ip + '.');
   });
     
   // World Functionality Modules.
