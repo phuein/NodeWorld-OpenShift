@@ -13,6 +13,7 @@ body {
 #menu {
   border-bottom: solid;
   width: 99%;
+  height: 20px;
   text-align: center;
 }
 
@@ -37,6 +38,7 @@ body {
   height: 25%;
   word-wrap: normal;
   word-break: break-word;
+  position: relative;
 }
 
 #inputDiv {

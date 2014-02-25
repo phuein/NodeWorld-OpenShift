@@ -1281,7 +1281,7 @@ commands.user = {
       user.account.lastonline = new Date();
       
       // Update client about available commands, by access level.
-      socketHandler(user, 'availableCommands', availableCommands);
+      commands.user.help(user, ['help', 'getAvailableCommandsOnly']);
       
       socketHandler(user, 'info', 'You are now logged in as ' + format.player(user.account.username) + '.');
       // And alert everybody else about this...
