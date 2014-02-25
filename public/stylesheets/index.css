@@ -6,7 +6,6 @@ html {
 body {
   height: 98%;
   overflow: auto;
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -35,11 +34,31 @@ body {
   border: 1px solid #ccc;
   overflow-y: scroll;
   padding: 0;
-  width: 25%;
-  height: 25%;
+  width: 50%;
+  height: 50%;
   word-wrap: normal;
   word-break: break-word;
-  position: relative;
+  position: absolute;
+}
+
+#output1 {
+  top: 0px;
+  left: 0px;
+}
+
+#output2 {
+  top: 0px;
+  right: 0px;
+}
+
+#output31 {
+  top: 50%;
+  left: 0px;
+}
+
+#output4 {
+  top: 50%;
+  right: 0px;
 }
 
 #inputDiv {
