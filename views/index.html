@@ -302,10 +302,10 @@
     
     if (output.message) {
       // Find and convert URLs to links.
-      parsedMessage = parseCommands( parseText( parseURL( encodeURI( parseObjects(output.message) ) ) ) );
+      parsedMessage = parseCommands( parseText( parseURL( parseObjects(output.message) ) ) ) );
     } else {
       if (typeof output === 'string') {
-        parsedMessage = parseCommands( parseText( parseURL( encodeURI( parseObjects(output) ) ) ) );
+        parsedMessage = parseCommands( parseText( parseURL( parseObjects(output) ) ) ) );
       } else {
         parsedMessage = JSON.stringify(output);
       }
