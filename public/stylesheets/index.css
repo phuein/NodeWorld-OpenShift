@@ -39,6 +39,7 @@ body {
   word-wrap: normal;
   word-break: break-word;
   position: relative;
+  display: inline-block;
 }
 
 #output1 {
@@ -51,7 +52,7 @@ body {
   right: 0px;
 }
 
-#output31 {
+#output3 {
   top: 50%;
   left: 0px;
 }
