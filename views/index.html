@@ -360,8 +360,8 @@
     // Inform of client-only information.
     $('#output' + outputs.welcomeMessage).append('<span style=\"color: green;\">' + 
                                             welcomeMessage + '</span><br /><br />');
-    $('#output' + outputs.welcomeMessage).scrollTop($('#output' + 
-                                            outputs.welcomeMessage)[0].scrollHeight); // Scroll down.
+    $('#output' + outputs.welcomeMessage).
+        scrollTop($('#output' + outputs.welcomeMessage)[0].scrollHeight); // Scroll down.
     
     // Client-Side Only Cookie Data.
     if (document.cookie) {
@@ -402,7 +402,7 @@
       }
       
       // Request an array of available commands by user access level.
-      socket.emit('message', ',help getAvailableCommandsOnly');
+      socket.emit('message', cmdChar + 'help getAvailableCommandsOnly');
     });
     
     // Socket Events //
@@ -511,7 +511,7 @@
         'message': message
       };
       
-      appendOutput(output, output.events);
+      appendOutput(output, outputs.events);
     });
   });
 
@@ -548,7 +548,7 @@
       outputs.events          = 3;
       outputs.clientCommands  = 2;
   
-      $('#viewChanger').text = 'Multiple View';
+      $('#viewChanger').text('Multiple View');
       
       viewMode = 1;
       
@@ -570,12 +570,12 @@
       outputs.events          = 1;
       outputs.clientCommands  = 1;
       
-      $('#viewChanger').text = 'Single View';
+      $('#viewChanger').text('Single View');
       
       viewMode = 4;
       
       $('#output1').css('top', '0px');
-      $('#output1').css('top', '0px');
+      $('#output1').css('left', '0px');
       
       $('#output2').css('width', '50%');
       $('#output2').css('height', '50%');
