@@ -41,7 +41,7 @@ body {
   position: relative;
 }
 
-#outputContainer > div:not(#outpu1) {
+#outputContainer > div:not(#output1) {
   display: none;
 }
 
