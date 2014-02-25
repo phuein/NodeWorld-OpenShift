@@ -302,10 +302,10 @@
     
     if (output.message) {
       // Find and convert URLs to links.
-      parsedMessage = parseCommands( parseText( parseURL( parseObjects(output.message) ) ) ) );
+      parsedMessage = parseCommands( parseText( parseURL( parseObjects(output.message) ) ) );
     } else {
       if (typeof output === 'string') {
-        parsedMessage = parseCommands( parseText( parseURL( parseObjects(output) ) ) ) );
+        parsedMessage = parseCommands( parseText( parseURL( parseObjects(output) ) ) );
       } else {
         parsedMessage = JSON.stringify(output);
       }
@@ -338,10 +338,7 @@
       $(this).replaceWith($(this).prop('alt'));
     });
   }
-</script>
-</head>
-<body>
-<script>
+  
   // After document (DOM) has loaded.
   $(document).ready(function() {
     document.title = title;
@@ -554,6 +551,8 @@
     }
   }
 </script>
+</head>
+<body>
 <div id="menu">
   <span onclick="toggleView()">Single View</span>
   <!--
