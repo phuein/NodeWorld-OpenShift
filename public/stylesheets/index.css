@@ -41,12 +41,8 @@ body {
   position: relative;
 }
 
-#outputContainer:nth-child(even) {
-  left: 50%;
-}
-
-#output3, #output4 {
-  top: 50%;
+#outputContainer > div:not(#outpu1) {
+  display: none;
 }
 
 #inputDiv {
