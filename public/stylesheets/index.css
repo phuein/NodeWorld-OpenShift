@@ -38,10 +38,15 @@ body {
   height: 50%;
   word-wrap: normal;
   word-break: break-word;
+  position: relative;
 }
 
 #outputContainer:nth-child(even) {
-  break-after: right;
+  left: 50%;
+}
+
+#output3, #output4 {
+  top: 50%;
 }
 
 #inputDiv {
