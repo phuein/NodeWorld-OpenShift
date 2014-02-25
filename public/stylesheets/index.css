@@ -1,18 +1,20 @@
 html {
-  height: 98%;
-  overflow: auto;
+  width: 99%;
+  height: 99%;
+  overflow: hidden;
 }
 
 body {
-  height: 98%;
-  overflow: auto;
+  width: 99%;
+  height: 99%;
+  overflow: hidden;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 #menu {
   border-bottom: solid;
   width: 99%;
-  height: 20px;
+  height: 5%;
   text-align: center;
   cursor: pointer;
 }
@@ -50,6 +52,7 @@ body {
 
 #inputDiv {
   width: 99%;
+  height: 5%;
   margin-left:auto;
   margin-right:auto;
 }
