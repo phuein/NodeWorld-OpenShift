@@ -38,28 +38,10 @@ body {
   height: 50%;
   word-wrap: normal;
   word-break: break-word;
-  position: relative;
-  display: inline-block;
 }
 
-#output1 {
-  top: 0px;
-  left: 0px;
-}
-
-#output2 {
-  top: 0px;
-  right: 0px;
-}
-
-#output3 {
-  top: 50%;
-  left: 0px;
-}
-
-#output4 {
-  top: 50%;
-  right: 0px;
+#outputContainer:nth-child(even) {
+  break-after: right;
 }
 
 #inputDiv {
