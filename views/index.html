@@ -121,6 +121,28 @@
     }
   }
   
+  // document.title
+  // Timer for when new message arrives, and window not in focus.
+  alertTimer = null;
+  var alertRunning = false;
+  function titleAlert(message) {
+    if (document.title == title) {
+      // Custom message as alert.
+      document.title = message;
+    } else {
+      document.title = title;       // Restore default title.
+    }
+  }
+  // Cleanup title stuff.
+  $(window).focus(function() {
+    if (alertRunning) {
+      clearInterval(alertTimer);
+      alertRunning = false;
+      
+      document.title = title;
+    }
+  });
+  
   var sentCommands = [""]; // First command is an empty line.
   var curCommandIndex = 0;
   // Using Up or Down arrow keys with input textbox to scroll through command history.
