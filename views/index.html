@@ -542,37 +542,47 @@
   
   // Toggle between single div and multiple divs for output view.
   function toggleView() {
+    // Set 1 view mode.
     if (viewMode == 4) {
-      outputs.errors          = 2;
-      outputs.disconnect      = 2;
-      outputs.events          = 3;
-      outputs.clientCommands  = 2;
+      outputs.errors          = 1;
+      outputs.disconnect      = 1;
+      outputs.events          = 1;
+      outputs.clientCommands  = 1;
   
       $('#viewChanger').text('Multiple View');
       
       viewMode = 1;
       
-      $('#output2').hide(1000);
-      $('#output3').hide(1000);
-      $('#output4').hide(1000);
+      var time = 1000;
+      
+      $('#output2').hide(time);
+      $('#output3').hide(time);
+      $('#output4').hide(time);
       
       $('#output1').animate({
         width: '100%',
         height: '100%'
-      }, 1000);
+      }, time);
+      
+      $('#output1').animate({
+        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
+      }, time);
       
       return;
     }
     
+    // Set 4 view mode.
     if (viewMode == 1) {
-      outputs.errors          = 1;
-      outputs.disconnect      = 1;
-      outputs.events          = 1;
-      outputs.clientCommands  = 1;
+      outputs.errors          = 2;
+      outputs.disconnect      = 2;
+      outputs.events          = 3;
+      outputs.clientCommands  = 2;
       
       $('#viewChanger').text('Single View');
       
       viewMode = 4;
+      
+      var time = 1000;
       
       $('#output1').css('top', '0px');
       $('#output1').css('left', '0px');
@@ -581,24 +591,40 @@
       $('#output2').css('height', '50%');
       $('#output2').css('left', '50%');
       $('#output2').css('top', '0px');
-      $('#output2').show(1000);
+      $('#output2').show(time);
       
       $('#output3').css('width', '50%');
       $('#output3').css('height', '50%');
       $('#output3').css('left', '0px');
       $('#output3').css('top', '50%');
-      $('#output3').show(1000);
+      $('#output3').show(time);
       
       $('#output4').css('width', '50%');
       $('#output4').css('height', '50%');
       $('#output4').css('top', '50%');
       $('#output4').css('left', '50%');
-      $('#output4').show(1000);
+      $('#output4').show(time);
       
       $('#output1').animate({
         width: '50%',
         height: '50%'
-      }, 500);
+      }, time / 2);
+      
+      $('#output1').animate({
+        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
+      }, time);
+      
+      $('#output2').animate({
+        scrollTop: $('#output2')[0].scrollHeight      // Scroll down.
+      }, time);
+      
+      $('#output3').animate({
+        scrollTop: $('#output3')[0].scrollHeight      // Scroll down.
+      }, time);
+      
+      $('#output4').animate({
+        scrollTop: $('#output4')[0].scrollHeight      // Scroll down.
+      }, time);
       
       return;
     }
