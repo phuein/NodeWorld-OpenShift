@@ -14,7 +14,7 @@ body {
 #menu {
   border-bottom: solid;
   width: 99%;
-  height: 5%;
+  height: 10%;
   text-align: center;
   cursor: pointer;
 }
@@ -25,7 +25,7 @@ body {
   /* overflow-y: scroll; */
   padding: 0;
   width: 99%;
-  height: 90%;
+  height: 80%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -52,7 +52,7 @@ body {
 
 #inputDiv {
   width: 99%;
-  height: 5%;
+  height: 10%;
   margin-left:auto;
   margin-right:auto;
 }
