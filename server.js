@@ -1,30 +1,32 @@
 /*  
- *  Node World 0.1
+ *  Node World
  *  
- *  by Assaf Koss, 2014.
+ *  by Assaf Koss.
  *  
- *  This is an interactive virtual world game-server
+ *  This is an interactive virtual game-world erver
  *  that saves to database, but queries it as little
  *  as possible.
  *  
  *  All the code is intended to be readable and simple,
- *  even at the expense of functionality and efficiency.
- *  
- *  All world objects' properties and functionality can be
- *  changed or toggled from the client-side. Each functionality
- *  category resides inside its' own module.
+ *  even at the expense of some functionality and efficiency.
  *
- *  Naming conventions should be short and reflect purpose.
- *  Function should be limited to a hundred lines.
- *  Comments should describe the logic used in each event.
+ *  Naming conventions are short and reflect purpose.
  *  
- *  Best viewed in Sublime Text 3, with "tab_size": 2
+ *  Functions are limited to about a hundred lines.
+ *  
+ *  Comments describe logic, for quick overviewing of functions.
+ *  
+ *  Best viewed in a modern code editor with Code Folding.
+ *  
+ *  Best edited with the assistance of JSHint.
+ *  
+ *  Composed with Sublime Text 3 with Code Folding, "tab_size": 2,
  *  and "translate_tabs_to_spaces": true.
  *  
- *  References for anything MongoDB in NodeJS.
+ *  References for anything MongoDB in NodeJS:
  *  http://mongodb.github.io/node-mongodb-native/api-generated/collection.html
  *  
- *  Most comfortable for quick testing of NodeJS functionality.
+ *  Quick testing of NodeJS functionality:
  *  http://www.node-console.com/script/code
  */
 
@@ -146,12 +148,14 @@
       console.log('IRC Server listening on port ' + ircPort + ' for IP ' + ip + '.');
     });
   */
-    
-  // World Functionality Modules.
-  command = require('./commands.js');
   
   // Constructors & Messages.
   constructor = require('./constructors.js');
+  
+  format = constructor.format;    // Global, for quick text formatting.
+  
+  // World Functionality Modules.
+  command = require('./commands.js');
 // *** //
 
 //*** APP SET/ENGINE/MIDDLEWARE/GET ***//
@@ -313,12 +317,12 @@ Timestamp = function () {
   return timestamp;
 };
 
-// When a client requests a connection with the Socket server. //
+// Client connected to server.
 io.sockets.on('connection', function (socket) {
   // Server is closed.
   if (serverClosed) {
     // Kick socket.
-    socket.emit('info', '<b>Server is closed!</b>');
+    socket.emit('info', format.bold('Server is closed!'));
     socket.disconnect();
     console.log('Connection attempt: Server closed!');
   }
@@ -343,10 +347,13 @@ io.sockets.on('connection', function (socket) {
   var messageCount = 0;
   
   // Welcome the new user.
-  user.socket.emit('info', constructor.welcomeMessage(user.player.name));
+  socket.emit(constructor.welcome.type, constructor.welcome.message(user.player.name));
+  
+  // Send cmdChar to user.
+  socket.emit('cmdChar', cmdChar);
   
   // Inform everybody about the new user.
-  user.socket.broadcast.emit('info', user.player.name +  ' has joined.');
+  socket.broadcast.emit('info', user.player.name + ' has joined.');
   
   // Handle room and map loading, or creation, accordingly. Does a 'look', as well.
   command.loadRoom(user);
@@ -358,8 +365,8 @@ io.sockets.on('connection', function (socket) {
     
     if (limitMessages != null && messageCount >= 1000) {
       // Limit socket messages to 1000 per minute.
-      user.socket.emit('error', 'Server command flooding detected! You are ignored for one minute.');
-      console.log(Timestamp() + 'User ' + user.account.username + ' is flooding the server!');
+      socket.emit('error', 'Server command-flooding detected! Your commands are ignored for one minute.');
+      console.log(Timestamp() + 'User ' + user.account.username + ' is command-flooding the server!');
       return;
     } else if (limitMessages == null) {
       // Start timer.
@@ -377,7 +384,7 @@ io.sockets.on('connection', function (socket) {
       // Catch error.
       curDomain.on('error', function (err) {
         console.log(Timestamp() + err.stack + nl);
-        user.socket.emit('error', '<b>Command failed!</b><br />' + err.message + '<br />');
+        socket.emit('error', format.bold('Command failed!') + format.newline + err.message + format.newline);
       });
 
       // Run the command.

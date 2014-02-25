@@ -23,13 +23,13 @@ function holdTarget(user, target, hand) {
   // Target must have a valid 'worn' property.
   var wearable = verifyWearable(target);
   if (!wearable) {
-    user.socket.emit('warning', '<i>' + fullName(target) + ' cannot be held!</i>');
+    socketHandler(user, 'warning', fullName(target) + ' cannot be held!');
     return;
   }
   
   // Player must have hands!
   if (locationEmpty(user.player.worn.hands)) {
-    user.socket.emit('warning', '<i>You have no hands to hold with!</i>');
+    socketHandler(user, 'warning', 'You have no hands to hold with!');
     return;
   }
   
@@ -46,7 +46,7 @@ function holdTarget(user, target, hand) {
     }
   }
   if (!exists) {
-    user.socket.emit('warning', '<i>Cannot find ' + stringifiedTarget + ' here!</i>');
+    socketHandler(user, 'warning', 'Cannot find ' + stringifiedTarget + ' here!');
     return;
   }
   
@@ -57,7 +57,7 @@ function holdTarget(user, target, hand) {
   }
   // At this point some hand must be already selected.
   if (!hand) {
-    user.socket.emit('warning', '<i>None of your hands are available!</i>');
+    socketHandler(user, 'warning', 'None of your hands are available!');
     return;
   }
   
@@ -70,7 +70,7 @@ function holdTarget(user, target, hand) {
   // Add to changed list for DB update.
   targetMoved(user);
   
-  user.socket.emit('info', '<i>You hold ' + fullName(target) + ' in your ' + hand + ' hand.</i>');
+  socketHandler(user, 'info', 'You hold ' + fullName(target) + ' in your ' + hand + ' hand.');
 }
 
 // Attempt to drop a target from my hands.
@@ -79,7 +79,7 @@ function dropTarget(user, target) {
   
   // Player must have hands!
   if (locationEmpty(user.player.worn.hands)) {
-    user.socket.emit('warning', '<i>You have no hands to drop anything from!</i>');
+    socketHandler(user, 'warning', 'You have no hands to drop anything from!');
     return;
   }
   
@@ -102,8 +102,7 @@ function dropTarget(user, target) {
     // Add to changed list for DB update.
     targetMoved(user);
     
-    user.socket.emit('info', '<i>You remove ' + fullName(target) + 
-                                ' from your ' + hand + ' hand.</i>');
+    socketHandler(user, 'info', 'You remove ' + fullName(target) + ' from your ' + hand + ' hand.');
   }
 }
 
@@ -152,7 +151,7 @@ function wearTarget(user, target) {
   // Make sure I can wear it.
   var cantWear = assertWear(user, target);
   if (cantWear) {
-    user.socket.emit('warning', result);
+    socketHandler(user, 'warning', result);
     return;
   }
   
@@ -170,7 +169,7 @@ function wearTarget(user, target) {
   if (hand) {
     // Ignore it, if it is meant for the hands.
     if (target.worn == 'hands') {
-      user.socket.emit('warning', '<i>You are already holding ' + fullName(target) + '.</i>');
+      socketHandler(user, 'warning', 'You are already holding ' + fullName(target) + '.');
       return;
     }
     
@@ -183,8 +182,7 @@ function wearTarget(user, target) {
     // Add to changed list for DB update.
     targetMoved(user);
     
-    user.socket.emit('info', '<i>You wear ' + fullName(target) + ' over your ' +
-                                target.worn + '.</i>');
+    socketHandler(user, 'info', 'You wear ' + fullName(target) + ' over your ' + target.worn + '.');
     return;
   }
   
@@ -209,8 +207,7 @@ function wearTarget(user, target) {
       // Add to changed list for DB update.
       targetMoved(user);
       
-      user.socket.emit('info', '<i>You wear ' + fullName(target) + ' over your ' +
-                                                   target.worn + '.</i>');
+      socketHandler(user, 'info', 'You wear ' + fullName(target) + ' over your ' + target.worn + '.');
       return;
     }
   }
@@ -253,8 +250,7 @@ function removeTarget(user, target) {
         // Add to changed list for DB update.
         targetMoved(user);
         
-        user.socket.emit('info', '<i>You remove ' + fullName(target) + ' to your ' +
-                                     hand + ' hand.</i>');
+        socketHandler(user, 'info', 'You remove ' + fullName(target) + ' to your ' + hand + ' hand.');
         return;
       }
       
@@ -264,12 +260,12 @@ function removeTarget(user, target) {
       // Add to changed list for DB update.
       targetMoved(user);
       
-      user.socket.emit('info', '<i>You drop ' + fullName(target) + '.</i>');
+      socketHandler(user, 'info', 'You drop ' + fullName(target) + '.');
     }
   }
   
   // Otherwise, item not found on me.
-  user.socket.emit('warning', '<i>Could not find [' + stringifiedTarget + '] on you.</i>');
+  socketHandler(user, 'warning', 'Could not find [' + stringifiedTarget + '] on you.');
 }
 
 // Locate an item on a user by ID.INSTANCE, and return an array with the location name, 
@@ -480,7 +476,7 @@ function offerItems(user, target, items) {
     var itemObj = removeItemHeld(user, curItem); // Return the item, or false.
     
     if (!itemObj) {
-      user.socket.emit('warning', '<i>You do not have item [' + curItem + '] on you.</i>');
+      socketHandler(user, 'warning', 'You do not have item [' + curItem + '] on you.');
       
       // Restore removed items into hands, by availability.
       for (var j=0; j < removedItems.length; j++) {
@@ -492,7 +488,7 @@ function offerItems(user, target, items) {
           user.room.targets.push(curItem); // Add to room.
           world.changed.rooms.push(user.room); // Request DB update.
           
-          user.socket.emit('info', '<i>You drop ' + fullNameID(curItem) + '.</i>');
+          socketHandler(user, 'info', 'You drop ' + fullNameID(curItem) + '.');
           continue;
         }
         
@@ -527,18 +523,19 @@ function offerItems(user, target, items) {
         // Save offer to user.events.
         user.player.offers.push(offerObj);
         
+        // More than one item offered.
+        var msg = 'the following items:<br />' + itemsDetails.join(format.newline);
         // Notify target about the offer.
-        var msg = 'the following items:<br />' + itemsDetails.join('<br />'); // More than one item offered.
-        curUser.socket.emit('info', '<b>' + fullNameID(user.player) + '</b> ' + ' offers to give you ' + 
-                              (itemsDetails.length == 1 ? itemsDetails[0] : msg));
-        
-        user.socket.emit('info', '<i>You make an offer to ' + target + '.</i>');
+        socketHandler(curUser, 'info', format.bold(fullNameID(user.player)) + ' offers to give you ' + 
+                                                      (itemsDetails.length == 1 ? itemsDetails[0] : msg));
+                
+        socketHandler(user, 'info', 'You make an offer to ' + target + '.');
         return;
       }
     }
     
     // Player not found in the room.
-    user.socket.emit('warning', '<i>Player ' + target + ' could not be found here!</i>');
+    socketHandler(user, 'warning', 'Player ' + target + ' could not be found here!');
   } else {
     target = parsedTarget;
     
@@ -551,7 +548,7 @@ function offerItems(user, target, items) {
 function cancelOffer(user, offer) {
   // Offer index does not exist.
   if (user.player.offers[offer] == undefined) {
-    user.socket.emit('warning', '<i>Offer on index #' + offer + ' was not found!</i>');
+    socketHandler(user, 'warning', 'Offer on index #' + offer + ' was not found!');
     return;
   }
   
@@ -565,7 +562,7 @@ function cancelOffer(user, offer) {
       user.room.targets.push(curItem); // Add to room.
       world.changed.rooms.push(user.room); // Request DB update.
       
-      user.socket.emit('info', '<i>You drop ' + fullNameID(curItem) + '.</i>');
+      socketHandler(user, 'info', 'You drop ' + fullNameID(curItem) + '.');
       continue;
     }
     
@@ -578,11 +575,11 @@ function cancelOffer(user, offer) {
   
   // Notify other user about the cancellation.
   if (removedItem.target.socket != undefined) {
-    removedItem.target.socket.emit('info', '<i>' + fullNameID(user) + ' has cancelled offer #' + 
-                                              offer + '.</i>');
+    socketHandler(removedItem.target, 'info', format.italic(fullNameID(user)) + 
+                                        ' has cancelled offer #' + offer + '.');
   }
   
-  user.socket.emit('info', '<i>Offer #' + offer + ' has been cancelled.</i>');
+  socketHandler(user, 'info', 'Offer #' + offer + ' has been cancelled.');
 }
 
 // Accept an offer of items from a target or player, 
@@ -606,7 +603,7 @@ function acceptItems(user, target, offer) {
   var parsedTarget = parseTarget(target);
   
   if (isNaN(parsedTarget)) {
-    user.socket.emit('warning', '<i>Target was not found here!</i>');
+    socketHandler(user, 'warning', 'Target was not found here!');
     return;
   }
   
@@ -620,7 +617,7 @@ function acceptItems(user, target, offer) {
     }
   }
   
-  user.socket.emit('warning', '<i>Target was not found here!</i>');
+  socketHandler(user, 'warning', 'Target was not found here!');
 }
 
 // Accept a specific offer, or the first (lowest index) available offer of items from another user.
@@ -649,7 +646,7 @@ function acceptFromUser(user, other, offer) {
   
   // Could not find the offer.
   if (!offerObj) {
-    user.socket.emit('warning', '<i>Offer on index #' + offer + ' was not found!</i>');
+    socketHandler(user, 'warning', 'Offer on index #' + offer + ' was not found!');
     return;
   }
   
@@ -663,7 +660,7 @@ function acceptFromUser(user, other, offer) {
       user.room.targets.push(curItem); // Add to room.
       world.changed.rooms.push(user.room); // Request DB update.
       
-      user.socket.emit('info', '<i>You drop ' + fullNameID(curItem) + '.</i>');
+      socketHandler(user, 'info', 'You drop ' + fullNameID(curItem) + '.');
       continue;
     }
     
@@ -671,16 +668,17 @@ function acceptFromUser(user, other, offer) {
     user.worn.hands[curHand] = curItem;
   }
   
-  // Inform success.
-  other.socket.emit('info', '<i>' + FullNameID(user) + ' has accept your offer #' + offer + '.</i>');
-  user.socket.emit('info', '<i>You have successfully accepted the offer.</i>');
+  // Inform of success.
+  socketHandler(other, 'info', fullNameID(user) + ' has accepted your offer #' + offer + '.');
+  
+  socketHandler(user, 'info', 'You have successfully accepted the offer.');
 }
 
 // Accept a specific offer, or the first (lowest index) available offer of items from a target.
 function acceptFromTarget(user, target, offer) {
   // Offer index does not exist.
   if (offer && target.offers[offer] == undefined) {
-    user.socket.emit('warning', '<i>Offer on index #' + offer + ' was not found!</i>');
+    socketHandler(user, 'warning', 'Offer on index #' + offer + ' was not found!');
     return;
   }
   

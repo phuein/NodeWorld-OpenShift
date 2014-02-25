@@ -1,0 +1,101 @@
+html {
+  height: 98%;
+  overflow: auto;
+}
+
+body {
+  height: 98%;
+  overflow: auto;
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+#menu {
+  border-bottom: solid;
+  width: 99%;
+  text-align: center;
+}
+
+#outputContainer {
+  resize: none;
+  /* border: 1px solid #ccc; */
+  /* overflow-y: scroll; */
+  padding: 0;
+  width: 99%;
+  height: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The 'miniwindows' for output. */
+#outputContainer > div {
+  resize: none;
+  border: 1px solid #ccc;
+  overflow-y: scroll;
+  padding: 0;
+  width: 25%;
+  height: 25%;
+  word-wrap: normal;
+  word-break: break-word;
+}
+
+#inputDiv {
+  width: 99%;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+#inputBox {
+  padding: 0;
+  width: 100%;
+}
+
+#sendButton {
+  width: 100px;
+}
+
+/* Text Classes */
+.b {
+  font-weight: bold;
+}
+.i {
+  font-style: italic;
+}
+.u {
+  text-decoration: underline;
+}
+.s {
+  text-decoration: line-through;    /* Commonly known as Strike-through. */
+}
+
+.object {
+  display: block;
+  unicode-bidi: embed;
+  font-family: monospace;
+  white-space: pre;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.a {
+  color: #00B7FF;
+}
+
+.player {
+  text-decoration: underline;
+}
+
+.target {
+  text-decoration: underline;
+}
+
+#cmdChar {
+  border-bottom: 1px dashed black;
+}
+
+.command {
+  font-weight: bold;
+  text-decoration: underline;
+}

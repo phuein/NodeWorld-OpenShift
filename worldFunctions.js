@@ -221,8 +221,8 @@ function processRoom(user, state) {
     
     // Inform others in the last room.
     for (var i=0; i < world.watch[lastRoomStr].length; i++) {
-      world.watch[lastRoomStr][i].socket.emit('info', '<i>' + user.player.name +
-                                                         ' has moved away.</i>');
+      socketHandler(world.watch[lastRoomStr][i], 'info', user.player.name +
+                                                        ' has moved away.');
     }
     
     // If new room map is different from old room map,
@@ -267,8 +267,7 @@ function processRoom(user, state) {
   }
   // Tell others I am here.
   for (var i=0; i < world.watch[strCoord].length; i++) {
-    world.watch[strCoord][i].socket.emit('info', '<i>Player ' + user.player.name +
-                                                    ' has appeared.</i>');
+    socketHandler(world.watch[strCoord][i], 'info', 'Player ' + user.player.name + ' has appeared.');
   }
   
   // Update current room players array.
@@ -375,14 +374,11 @@ function createRoom(x, y, z, user) {
     
     // Inform the user of success.
     if (x == 0 && y == 0 && z == 0 && user.player.map == 0) {
-      user.socket.emit('info', '<i><b>The first room in this world' +
-                                  ' has been created successfully!</b></i>');
+      socketHandler(user, 'info', 'The first room in the world has been created successfully!');
     } else if (x == 0 && y == 0 && z == 0) {
-      user.socket.emit('info', '<i><b>The first room in the map' +
-                                  ' has been created successfully.</b></i>');
+      socketHandler(user, 'info', 'The first room in the map has been created successfully.');
     } else {
-      user.socket.emit('info', '<i><b>Room at ' + strPos +
-                                  ' has been created successfully.</b></i>');
+      socketHandler(user, 'info', 'Room at ' + strPos + ' has been created successfully.');
     }
     
     processRoom(user, 'new'); // Apply room data.
@@ -434,11 +430,9 @@ function createMap(user) {
     
     // Inform the user about the map's ID.
     if (mapObj['_id'] == 0) {
-      user.socket.emit('info', '<i><b>The first map of this world' +
-                                  ' has been created successfully!</b></i>');
+      socketHandler(user, 'info', 'The first map of this world has been created successfully!');
     } else {
-      user.socket.emit('info', '<i><b>Map #' + mapObj['_id'] +
-                                  ' has been created successfully.</b></i>');
+      socketHandler(user, 'info', 'Map #' + mapObj['_id'] + ' has been created successfully.');
     }
   });
 }
@@ -537,7 +531,7 @@ function loadTarget(user, idInstance, command, extra) {
     }
     
     if (!target) {
-      user.socket.emit('warning', '<i>Creation [' + idInstance + '] could not be found.</i>');
+      socketHandler(user, 'warning', '<i>Creation [' + idInstance + '] could not be found.</i>');
       return;
     }
     

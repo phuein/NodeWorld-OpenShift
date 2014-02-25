@@ -1,4 +1,18 @@
-##### * This project is saved using Sublime Text 3, and has the Project and Workspaces files for it.
+##### * This project is saved using Sublime Text 3, and has the Project and Workspace files for it.
+
+##### * Use a modern text editor with __Code Folding__, for the sake of readability.
+
+##### * A live version, for developers, is available at: http://game.assafkoss.com
+
+# How To Contribute
+
+I am looking for __developers__ with free time and interest in virtual game-worlds.
+
+I am unable to hire, so anyone who joins will gain equal status. The exception is that I am "first among equals", as the creator of Node World.
+
+I am looking for developers who would take interest in working on specific modules. Read below, to get a general perspective on the project, and decide which parts are most interesting for you.
+
+# The Project
 
 ## Dictionary
 
@@ -17,54 +31,38 @@ __MASTER__    - A PLAYER with access to modify certain world aspects, such as TA
 __BUILDER__   - A MASTER with access to create and destroy world TARGETS.<br />
 __GOD__       - A developer with full access rights, with abilities that are game-unrelated, such as reloading code modules.
 
-# Node World
+## Node World
 
-This Node World framework is a __virtual game world__ server that takes upon itself two important tasks:
+Node World is a __virtual game-world framework__, with emphasis on the server-side, with two major goals:
 
-__1.__  The server can provide access to __clients__ of all types: __Text__, __2D__, & __3D__. It handles the logic between them,
-    so that each is represented properly, in front of the others.
+__1.__ It supports & provides seamless integration between client types: Text, 2D, and 3D.
 
-__2.__  The server is __modular__ in its' structure, so that __modifying the world__, becomes a modular action. For example,
-    an admin can add TARGETS (objects, NPCs, MOBs) to the world, but can also modify them live,
-    and even toggle their AI functionality, without touching code.
+__2.__ It utilizes the modular nature of NodeJS, so that world modifications are made in production - live, and each functionality is mostly, if not entirely, independent of functionalities.
 
-Its' _general purpose_ is to redefine the framework of our virtual game worlds, so that we don't get grindy,
-repetetive, story-less, intricate-less, non-modifiable game worlds. Previous games have grown from single-player
-games, which were very limited. Modern games must redefine their structure, in order to accomodate
-the needs of a virtual game world full of live (meat) players.
+The purpose of these goals is two-fold. On one hand, it aims to give new purpose and meaning to online virtual game-worlds, by being more flexible, and thus more robust and unique. On the other hand, it aims to reduce the currently existing repetitiveness and lack of intricate of modern game-worlds.
 
-And because numerically ordered phrases speak better than thousands of lines of code,
-here are more examples of the purpose of this project.
+Following is a short list of examples, showing how this design can manifest itself.
 
-__I.__    While PLAYER functionality is simplistic (same logic as meat world),
-      the modular AI lets users interact with other users, through NPC's.
-      For example, a PLAYER can send another PLAYER on a quest, and guaranteeing the reward,
-      by __using an NPC as an intermediary__.
+I.
+  NPC AI can be toggled and tweaked, live. This lets players use NPCs for purposes that were previously a function of the UI. For example, instead of having a trade window that guarantees the result, or just the word of another player; now, players can use an NPC to arbitrate, and work as a proxy or representative, actually closing the deal.
 
-__II.__   The server comes with __a default text client__, and hopefully a default 2D client, as well,
-      as part of the demonstration. The text client takes from modern MUDs, only being modular
-      and presented as a web-page, using Express. This makes it extremely flexible and powerful.
-      NOTE: Clients only send socket 'messages', and receive finalized data. All verifications and
-      logic are kept within the server.
+II.
+  The text client, composed of HTML, CSS, and JS (jQuery), takes example from modern MUD clients. However, its' structure means that it can be modified easily. Also, being nothing more than simple web page, any device with a browser can run it, or a similar slightly modified version, with full compatibility. This is in many ways true also of the 2D and 3D clients.
 
-__III.__  The WORLD uses efficiency logic, to balance out DB requests, so that they are never too many,
-      but also never too big, and to balance memory usage. For example, the WORLD is split into __MAPS__,
-      which are split into __ROOMS__, and MAPS (with their ROOMS) only get requested, when any USER __needs__ them.
+III.
+  The world is both simple and efficient. It is composed of MAPS, which are composed of ROOMS. ROOMS are composed of USERS and TARGETS.
+  
+  Data is saved, loaded, and sent to users, by order of relevance. ROOMS are a measure of immediate proximity. MAPS are a measure of general proximity, as a 'maximum' value for whom should the data be sent.
+  
+  The world saves & loads data through the DB, without badgering the DB. Saves use a timer and a queue of changes. The entire queue, together, is saved after a delay, as to minimize calls to the DB. Data is loaded from the DB, on a need-to-know basis. In order to minimize the delay between requests (from users) and responses, some data is loaded in sets, such as entire MAPS.
 
-__IV.__   The NodeJS code is split in such a way that allows a full perspective on the entire project,
-      together with the __reloading of the code__, live, from the client, using GOD permissions and the
-      command 'reloadcommands'. This is a developer only command. Another one is 'resetworld',
-      which kicks all clients, empties the WORLD, empties the DB, and reloads the WORLD.
+IV.
+  The server.js file is a sort of bare-minimum of code, in order to activate and sustain the server. It is able to reload the code, live, without disconnecting. The code reloaded is mostly the commands, their relevant sub-modules, and constructs, such as objects (templates) and messages (pre-set text). In order to avoid regular crashes, every command is loaded under a new Domain, which handles exceptions. The exception to this is the first loading, including the first require() calls. This does, however, include the actual reload-code command.
+  
+  The reload-code command, and it's sibling the reset-world commmand, which restarts the server and DB, including data, entirely, without having to manually do so, are guarded under special conditions, naturally.
 
-__V.__    While the server is meant to be flexible, it is not meant to be _wild_. It is aimed for __automacy__
-      and __functionality__; not for "_everything is possible_". The requirements are specific, and
-      each is defined as its' own 'system.' Each such system is loaded as a module. For example,
-      the combat system is (will be) a separate module.
-
-__VI.__   For the sake of developers, for now, all command requests by clients - which enter the command
-      JS functions, are __encapsulated in a domain__, with its' own exception catcher. This works together
-      with the 'reloadcommands' command.
-
+V.
+  The server does not allow "everything and anything". Its' purpose is to be flexible, when it comes to much needed functionality, such as manipulating TARGETS, manipulating AI, and manipulating many of the WORLD properties. Flexible, meaning that such changes do not require coding, nor the reloading of the server. This is possible by using modules, with each module allowing supervised access on the creation and modification of its' functions. For example, a combat module will allow combat in the world, and will even allow defining much of how combat works, but will not allow an entire overhaul of the combat system, without changing the code.
 
 For more information or just to chat, you can contact me at:
 
@@ -73,3 +71,5 @@ phuein@gmail.com
 SKYPE: Phuein
 
 FACEBOOK: Assaf Koss
+
+And I am also available on IRC, on #Node.js & #node.games on Freenode.net.

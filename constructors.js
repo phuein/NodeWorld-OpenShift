@@ -6,11 +6,15 @@
 var constructors = {
 
 //*** SERVER MESSAGES ***//
-  'welcomeMessage': function (name) {
+  'welcome': {
+    'type': 'info',
+    
+    'message': function (name) {
       return  '<b>Welcome to Test Game!</b><br />' + 
-              'Please, use <b>' + cmdChar +
-              'help</b> to list all available commands.<br />' +
-              'You are now known as <b>' + name + '</b>.';
+              'Use <span class=\"command\">' + cmdChar +
+              'help</span> to list all available commands.<br />' +
+              'You are now known as <span class=\"player\">' + name + '</span>.';
+    }
   },
   
   // Used by the help command.
@@ -50,9 +54,6 @@ var constructors = {
           'Hold a visible item in an empty hand of your choosing.',
       'drop TARGET':
           'Drop a held or worn item.',
-      'examine (PLAYER)':
-          'Examine the properties of a registered player. ' + 
-          'Displays your own player properties, if sent without arguments.',
       'offer TARGET ITEM (ITEM) ...':
           'Offer to give an item or items that you hold, to another player or target',
       'cancel OFFER':
@@ -71,11 +72,13 @@ var constructors = {
       'tell USERNAME MESSAGE':
           'Speak to another player, anywhere in the world.',
       'move DIRECTION':
-          'Move in any one direction: N (North), S (South), E (East), W (West), ' + 
-          'NE, NW, SE, SW, U (Up), D (Down).',
+          'Move in any one direction: N, S, E, W; NE, NW, SE, SW; U, D.',
       'emote ACTION (TARGET)':
           'Act out an emotion, or gesture, generally, or to yourself, or towards another player, ' + 
           'or target. Displays the available emotes, if sent without arguments.',
+      'examine (PLAYER)':
+          'Examine the properties of a registered player. ' + 
+          'Displays your own player properties, if sent without arguments.',
       'look (TARGET)':
           'Displays the properties of a target.' + 
           'Displays the current room data, if sent without arguments.',
@@ -88,6 +91,42 @@ var constructors = {
           'Register your current username, and receive your details by email.',
       'help':
           'Display all available commands, according to your account access level.'
+    }
+  },
+  
+  'format': {
+    'newline': '<br />',
+    
+    'bold': function (text) {
+      return '<span class=\"b\">' + text + '</span>';
+    },
+    
+    'italic': function (text) {
+      return '<span class=\"i\">' + text + '</span>';
+    },
+    
+    'strike': function (text) {
+      return '<span class=\"s\">' + text + '</span>';
+    },
+    
+    'underline': function (text) {
+      return '<span class=\"u\">' + text + '</span>';
+    },
+    
+    'object': function (text) {
+      return '<span class=\"object\">' + text + '</span>';
+    },
+    
+    'link': function (text) {
+      return '<span class=\"a\">' + text + '</span>';
+    },
+    
+    'player': function (text) {
+      return '<span class=\"player\">' + text + '</span>';
+    },
+    
+    'target': function (text) {
+      return '<span class=\"target\">' + text + '</span>';
     }
   },
 // *** //

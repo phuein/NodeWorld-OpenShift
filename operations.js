@@ -4,7 +4,7 @@
  *  and always return an expected result.
  */
 
-// Capitalize first letter of a string, and return the resulting string.
+// Capitalize first character of a string, and return the resulting string.
 function upperFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }

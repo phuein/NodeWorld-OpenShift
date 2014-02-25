@@ -3,122 +3,105 @@
 <head>
 <script src="/public/javascripts/jquery-1.10.2.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<link rel="stylesheet" type="text/css" href="/public/stylesheets/index.css">
 <meta charset="utf-8" />
 <title>Node World</title>
-<style>
-  html {
-    height: 98%;
-    overflow: auto;
-  }
-  body {
-    height: 98%;
-    overflow: auto; 
-  }
-
-  #output {
-  	resize: none;
-    border: 1px solid #ccc;
-    overflow-y: scroll;
-  	padding: 0;
-  	width: 99%;
-    height: 90%;
-    font-size: 14px;
-    margin-left:auto;
-    margin-right:auto;
-    word-wrap: normal;
-    word-break: break-word;
-  }
-
-  #inputdiv {
-    width: 99%;
-    margin-left:auto;
-    margin-right:auto;
-  }
-
-  #input {
-  	padding: 0;
-  	width: 100%;
-  }
-  
-  /* Text Classes */
-  .b {
-    
-  }
-  .i {
-    
-  }
-  .u {
-    
-  }
-  .s {
-    
-  }
-  
-  a {
-    
-  }
-  
-  
-</style>
-</head>
-<body>
 <script>
-var title = 'Node World';
-var msg = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
-          '<b>,color (COLORNAME)<br />,bgcolor (COLORNAME)</b><br />' + 
-          '() - Optional. No arguments uses default values.<br />' + 
-          'These and your <b>login</b> are saved in a <b>cookie</b>, and loaded automatically.<br />' + 
-          '<b>Commands</b> start with the command character, which defaults to a comma: ' + 
-          '<span style=\"font-size: 200%;\">,</span><br />' + 
-          'Please, <b>rename</b> into a unique alias, and <b>register</b> your name,' + 
-          ' to get world-building access!';
+  viewMode = 4;           // Number of output divs in view.
+  cmdChar = ',';          // Default is a comma.
+  title = 'Node World';
+  welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
+  
+          '<span class=\"command\">' + cmdChar + 'color (COLORNAME)</span><br />' + 
+          '<span class=\"command\">' + cmdChar + 'bgcolor (COLORNAME)</span><br />' + 
+          
+          '() = Optional. Send without arguments, to restore default values.<br />' + 
+          
+          'These and your <span class=\"command\">' + 
+          cmdChar + 'login</span> are saved in a <b>cookie</b>, ' + 
+          'and loaded automatically.<br />' + 
+          
+          '<b>Commands</b> start with the command character: ' + 
+          '<span style=\"font-size: 200%;\" id=\"cmdChar\">' + cmdChar + '</span><br />' + 
+          
+          'Please, <span class=\"command\">' + cmdChar + 'rename</span> into a unique alias, ' + 
+          'and <span class=\"command\">' + cmdChar + 'register</span> your name,' + 
+          ' to get world-building access!<br />' + 
+          
+          'Use <b>Space</b> to focus on the input box, <b>Escape</b> to lose focus, ' + 
+          'and <i>again</i> to clear it.<br />' + 
+          
+          'The client formats text according to this markup: ' + 
+          '*<b>bold</b>* _<i>italic</i?_ -<del>linethrough</del>-';
+  var availableCommands = [];
+  
+  // Click on cmdChar to display it in inputBox.
+  $('#cmdChar').on('click', function () {
+    // Remember current input text, for scrollback.
+    logInput($('#inputBox').val());
+    // Replace input text with cmdChar.
+    $('#inputBox').val(cmdChar);
+  });
+  
+  // Click on any command to display it in inputBox.
+  $('.command').on('click', function () {
+    // Remember current input text, for scrollback.
+    logInput($('#inputBox').val());
+    
+    var cmdText = $(this).text();
+    // Verify command begins with cmdChar.
+    if ($(this).text().charAt(0) != cmdChar) cmdText = cmdChar + cmdText;
+    // Replace input text with relevant command.
+    $('#inputBox').val(cmdText);
+  });
 
-// After document (DOM) has loaded.
-$( document ).ready(function() {
-  document.title = title;
-  
-  // Inform of client-only information.
-  $('#output').append('<span style=\"color: green;\">' + msg + '</span><br /><br />');
-  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
-  
   // Scroll output on window resize.
   $(window).resize(function() {
-    $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
+    $('#output1').scrollTop($('#output1')[0].scrollHeight);
+    $('#output2').scrollTop($('#output2')[0].scrollHeight);
+    $('#output3').scrollTop($('#output3')[0].scrollHeight);
+    $('#output4').scrollTop($('#output4')[0].scrollHeight);
   });
-
-  // Client-Side Only Cookie Data.
-  if (document.cookie) {
-    // Text color.
-    var textColor = document.cookie.match('(^|;) ?' + 'color' + '=([^;]*)(;|$)');
-    if (textColor && textColor[2]) {
-      $('body').css('color', textColor[2]);
-    }
-    // Background color.
-    var textColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
-    if (textColor && textColor[2]) {
-      $('body').css('background-color', textColor[2]);
-    }
-  }
   
+  // Set focus to inputBox.
   $(window).focus(function() {
-    if (alertRunning) {
-      clearInterval(alertTimer);
-      alertRunning = false;
-      
-      document.title = title;
+    if (document.activeElement && document.activeElement.id != 'input') {
+      $('#inputBox').focus();
     }
   });
 
-  $(window).blur(function() {
-    // EMPTY.
+  // Space to focus(), and Escape to blur() and again to empty inputBox.
+  $(document).keydown(function(e) {
+    // Space to focus(), or Escape to empty.
+    if (document.activeElement && document.activeElement.id != 'input') {
+      if ( e.keyCode == 32 ) {
+         e.preventDefault();
+         $('#inputBox').focus();
+         return;
+      }
+      
+      // Or Escape to empty input, when without focus.
+      if ( e.keyCode == 27 ) {
+         e.preventDefault();
+         $('#inputBox').val(''); // Empty input.
+         return;
+      }
+    }
+    
+    // Escape to blur().
+    if (document.activeElement && document.activeElement.id == 'input') {
+      if ( e.keyCode == 27 ) {
+         e.preventDefault();
+         $('#inputBox').blur();
+         return;
+      }
+    }
   });
-});
-
-//*** SOCKET.IO ***//
-  // Start status timer. //
+  
+  // inputBox.placeholder
+  // Start status timer - only works if socket.connected, after DOM ready.
   statusTimer = setInterval(statusCheck, 100);
   statusTimerRunning = true;
-  
   function statusCheck() {
     if (socket && socket.socket && socket.socket.connected) {
       clearInterval(statusTimer);
@@ -127,227 +110,48 @@ $( document ).ready(function() {
     
     // Reconnecting to server.
     if (socket && socket.socket && socket.socket.reconnecting) {
-      $('#input').prop('placeholder', 'Reconnecting to server...');
+      $('#inputBox').prop('placeholder', 'Reconnecting to server...');
       return;
     }
     
     // Connecting to server.
     if (socket && socket.socket && socket.socket.connecting) {
-      $('#input').prop('placeholder', 'Connecting to server...');
+      $('#inputBox').prop('placeholder', 'Connecting to server...');
       return;
     }
   }
-  // //
   
-  // Connect to socket server.
-  var socket = io.connect('http://diy-phuein.rhcloud.com/', {
-    'sync disconnect on unload' : true,           // Send 'disconnect' to server when browser 'beforeunload'.
-    'auto connect'              : true,           // Automatically establish connection on 'io.connect()'.
-    'reconnect'                 : true,
-    'reconnection limit'        : 60000,          // Maximum ms to wait between reconnection attempts.
-    'reconnection delay'        : 5000,           // Multiplier to add for reconnection attempts.
-    'max reconnection attempts' : 30,             // After this emit 'reconnect_failed' event.
-    'connect timeout'           : 10000           // Wait this long in ms to abord connection attempt.
-  });
-  
-  // On socket connected.
-  socket.on('connect', function () {
-    $('#input').prop('placeholder', 'Enter text here...');
-    $('#input').focus();
-    
-    // Attempt to send login command from saved cookie.
-    if (document.cookie) {
-      var cookieValue = document.cookie.match('(^|;) ?' + 'login' + '=([^;]*)(;|$)');
-      if (cookieValue && cookieValue[2]) {
-        socket.emit('message', cookieValue[2]);
-      }
+  // document.title
+  // Timer for when new message arrives, and window not in focus.
+  alertTimer = null;
+  var alertRunning = false;
+  function titleAlert(message) {
+    if (document.title == title) {
+      // Custom message as alert.
+      document.title = message;
+    } else {
+      document.title = title;       // Restore default title.
     }
-  });
-  
-  //*** MESSAGES ***//
-  
-  /*
-   *  Messages from the server can come in different formats,
-   *  that the client should parse and display accordingly.
-   */
-  
-  // Output arguments: message, color, font, size, italic, bold.
-  
-  // Chat messages, that everyone can see.
-  socket.on('message', function (message) {
-    appendOutput(message, null, null, null, null, null);
-  });
-  
-  // Chat emotes, that everyone can see.
-  socket.on('emote', function (message) {
-    appendOutput(message, 'rgb(0, 130, 130)', null, null, null, null);
-  });
-  
-  // Chat messages, that only I can see.
-  socket.on('tell', function (message) {
-    appendOutput(message, 'rgb(0, 0, 80)', null, null, null, null);
-  });
-  
-  // Warnings about clarification of commands, such as syntax.
-  socket.on('warning', function (message) {
-    appendOutput(message, 'rgb(80, 0, 0)', null, null, true, null);
-  });
-  
-  // Notifications about events, such as a player name change.
-  socket.on('info', function (message) {
-    appendOutput(message, 'rgb(0, 60, 0)', null, null, null, null);
-  });
-  
-  // *** //
-  
-  socket.on('error', function (err) {
-    console.log(err);
-    appendOutput('<b><u>Socket Error:</u></b><br />' + err + '<br />', 'rgb(120, 0, 0)');
-  });
-  
-  socket.on('disconnect', function () {
-    appendOutput('<i>Lost connection to server!</i>');
-    
-    if (socket && socket.socket && !socket.socket.reconnecting) {
-      $('#input').prop('placeholder', "Not connected to server...");
-      $('#input').blur();
-    }
-    
-    if (!statusTimerRunning) {
-      statusTimer = setInterval(statusCheck, 100);
-      statusTimerRunning = true;
-    }
-  });
-// *** //
-
-// Add Timestamp to messages. Scroll down.
-function appendOutput(message, color, font, size, italic, bold) {
-  var curDate = new Date();
-  // Make sure the format is HH:MM:SS.
-  var curTime = ( curDate.getHours() < 10 ? '0' + curDate.getHours() : curDate.getHours() ) + ':' + 
-      ( curDate.getMinutes() < 10 ? '0' + curDate.getMinutes() : curDate.getMinutes() );
-      //  + ':' + ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
-  
-  // Find and convert URLs to links.
-  if (typeof message === 'string') {
-    parsedMessage = parseURL(message);
-  } else {
-    parsedMessage = JSON.stringify(message);
   }
-  
-  // Add the text with styling arguments.
-  $('#output').append('<b>&lt;' + curTime + '&gt;</b> ' + 
-                      '<span style=\"' + 
-                      (color  ? 'color: '       + color     + ';' : '') +
-                      (font   ? 'font-family: ' + font      + ';' : '') +
-                      (size   ? 'font-size: '   + size      + ';' : '') +
-                      (italic ? 'font-style: '  + 'italic'  + ';' : '') +
-                      (bold   ? 'font-weight: ' + 'bold'    + ';' : '') +
-                      '\"">' +
-                      parsedMessage + '</span><br />');
-  
-  $('#output').scrollTop($('#output')[0].scrollHeight); // Scroll down.
-  
-  if (!alertRunning && !document.hasFocus()) {
-    alertRunning = true;
-    alertTimer = setInterval(titleAlert, 1000, message);      // Blink title text, if unfocused.
-  }
-  
-  // Replace any unloaded images in output box with their alt text.
-  $('#output img').error(function() {
-    $(this).replaceWith($(this).prop('alt'));
-  });
-}
-
-// Timer for when new message arrives, and window not in focus.
-alertTimer = null;
-var alertRunning = false;
-
-function titleAlert(message) {
-  if (document.title == title) {
-    // Custom message as alert.
-    document.title = message;
-  } else {
-    document.title = title;       // Restore default title.
-  }
-}
-
-// Find and convert URLs to links, and try to display images.
-// Mixes JS with Regex for readability of Regex.
-function parseURL(message) {
-  // This function has been tested with an image and the following example:
-  /* var message = 'Lets see...<br />' + 
-    'yo. yo.boo yo.boo.hey yoo/moo yo.me/ yo.me/moo <br /> ' + 
-    'http :://::// http://wow https://.. ftp:/hey ftp://hey-hey <br /> ' + 
-    'http://42t3.g43.g43 http://... http://g43..g43 <br /> ' + 
-    'ha@ ha@ha hey@yo. @.@... la@@.la mailmeat:as@bo.com <br /> ' + 
-    'www www.. www. www.www.www.w wrw.www.hey wutwwwlol';
-  */
-  
-  // e.g. word://anything.word
-  var prefix = /\w+[:][/][/]\S+[.]\w+/igm;
-  // e.g. google.com/
-  var shortUrl = /\w+[.]\w+[/]|www[.]\w+[.]\w+/igm;
-  // e.g. anything@word.word
-  var email = /\S+@\w+[.]\w+/igm;
-  
-  // e.g. anything.jpg
-  var image = /\S+[.](jpg|jpeg|bmp|gif|png|apng|svg|ico)/igm;
-  
-  var strArray = message.split(' ');      // Split into words.
-  
-  // Check each word.
-  for (var i=0; i < strArray.length; i++) {
-    var curWord = strArray[i];
-    var matchedProtocol = false;
-    
-    if (curWord.search(image) >= 0) {
-      strArray[i] = '<img style=\"min-width: 20px; min-height: 20px; max-width: 100px; ' + 
-              'max-height: 100px;\"' + ' src=\"' + curWord + '\" alt=\"' + curWord + '\">';
+  // Cleanup title stuff.
+  $(window).focus(function() {
+    if (alertRunning) {
+      clearInterval(alertTimer);
+      alertRunning = false;
       
-      // Either URL or shortUrl - make image a link to itself.
-      if (curWord.search(prefix) >= 0) {
-        strArray[i] = '<a href=\"' + curWord + '\" target=\"_blank\">' + strArray[i] + '</a>';
-      } else if (curWord.search(shortUrl) >= 0) {
-        strArray[i] = '<a href=\"http://' + curWord + '\" target=\"_blank\">' + strArray[i] + '</a>';
-      }
-      
-      continue;
+      document.title = title;
     }
-    
-    if (curWord.search(prefix) >= 0) {
-      strArray[i] = '<a href=\"' + curWord + '\" target=\"_blank\">' + curWord + '</a>';
-      continue;
-    }
-    
-    if (curWord.search(shortUrl) >= 0) {
-      strArray[i] = '<a href=\"http://' + curWord + '\" target=\"_blank\">' + curWord + '</a>';
-      continue;
-    }
-    
-    if (curWord.search(email) >= 0) {
-      strArray[i] = '<a href=\"mailto:' + curWord + '\">' + curWord + '</a>';
-      continue;
-    }
-  }
+  });
   
-  var result = strArray.join(' ');
-  
-  return result;
-}
-
-// General Variables
-var sentCommands = [""]; // First command is an empty line.
-var curCommandIndex = 0;
-
-//*** COMMAND HISTORY ***//
+  var sentCommands = [""]; // First command is an empty line.
+  var curCommandIndex = 0;
   // Using Up or Down arrow keys with input textbox to scroll through command history.
   function commandHistory(e) {
       if (e.which == 38) { // Up Key - Go back in history.
         e.preventDefault(); // Don't let the cursor jump around.
 
         if (curCommandIndex > 0) {
-          $('#input').val(sentCommands[curCommandIndex-1]);
+          $('#inputBox').val(sentCommands[curCommandIndex-1]);
           curCommandIndex -= 1;
         }
       }
@@ -355,51 +159,425 @@ var curCommandIndex = 0;
         e.preventDefault(); // Don't let the cursor jump around.
 
         if (curCommandIndex < sentCommands.length) {
-          $('#input').val(sentCommands[curCommandIndex+1] || ""); // Last press clears the textbox.
+          $('#inputBox').val(sentCommands[curCommandIndex+1] || ""); // Last press clears the textbox.
           curCommandIndex += 1;
         }
       }
   }
-// *** //
-
-//*** FOCUS & UNFOCUS & CLEAR ***//
-  // Set focus to input box on window returned focus.
-  $(window).focus(function() {
-    if (document.activeElement && document.activeElement.id != 'input') {
-      $('#input').focus();
-    }
-  });
-
-  // Handle keypresses. MAYBE CHANGE TO e.which THAT WORKS WITH MOUSE FOR JQUERY.
-  $(document).keydown(function(e) {
-    // Space key to gain focus, only if it doesn't already have the focus.
-    if (document.activeElement && document.activeElement.id != 'input') {
-      if ( e.keyCode == 32 ) {
-         e.preventDefault();
-         $('#input').focus();
+  
+  // Find first alphabet letter, and capitalise it.
+  function capitaliseFirstLetter(str) {
+    var a = /[A-z]/;      // Any alphabet letter of either case.
+    
+    var index = str.search(a);
+    
+    // No letters in string.
+    if (index == -1) return str;
+    
+    var newStr =  (index === 0 ? '' : str.slice(0, index)) + 
+                  str.charAt(index).toUpperCase() + 
+                  (index == str.length-1 ? '' : str.slice(index+1));
+    
+    return newStr;
+  }
+  
+  // Find and convert URLs to links, and try to display images.
+  // Mixes JS with Regex for readability of Regex.
+  function parseURL(message) {
+    // This function has been tested with an image and the following example:
+    /* var message = 'Lets see...<br />' + 
+      'yo. yo.boo yo.boo.hey yoo/moo yo.me/ yo.me/moo <br /> ' + 
+      'http :://::// http://wow https://.. ftp:/hey ftp://hey-hey <br /> ' + 
+      'http://42t3.g43.g43 http://... http://g43..g43 <br /> ' + 
+      'ha@ ha@ha hey@yo. @.@... la@@.la mailmeat:as@bo.com <br /> ' + 
+      'www www.. www. www.www.www.w wrw.www.hey wutwwwlol';
+    */
+    
+    // e.g. word://anything.word
+    var prefix = /\w+[:][/][/]\S+[.]\w+/igm;
+    // e.g. anything.anything/ or www.anything.anything or anything.com or anything.co.anything
+    var shortUrl = /\w+[.]\w+[/]|www[.]\w+[.]\w+|\w+[.]com|\w+[.]co[.]\w+|\w+[.]net|\w+[.]org/igm;
+    // e.g. anything@word.word
+    var email = /\S+@\w+[.]\w+/igm;
+    
+    // e.g. anything.jpg
+    var image = /\S+[.](jpg|jpeg|bmp|gif|png|apng|svg|ico)/igm;
+    
+    var strArray = message.split(' ');      // Split into words.
+    
+    // Check each word.
+    for (var i=0; i < strArray.length; i++) {
+      var curWord = strArray[i];
+      var matchedProtocol = false;
+      
+      if (curWord.search(image) >= 0) {
+        strArray[i] = '<img style=\"min-width: 20px; min-height: 20px; max-width: 100px; ' + 
+                'max-height: 100px;\"' + ' src=\"' + curWord + '\" alt=\"' + curWord + '\">';
+        
+        // Either URL or shortUrl - make image a link to itself.
+        if (curWord.search(prefix) >= 0) {
+          strArray[i] = '<a href=\"' + curWord + '\" target=\"_blank\">' + strArray[i] + '</a>';
+        } else if (curWord.search(shortUrl) >= 0) {
+          strArray[i] = '<a href=\"http://' + curWord + '\" target=\"_blank\">' + strArray[i] + '</a>';
+        }
+        
+        continue;
       }
       
-      // Or Escape to empty input, when without focus.
-      if ( e.keyCode == 27 ) {
-         e.preventDefault();
-         $('#input').val(''); // Empty input.
+      if (curWord.search(prefix) >= 0) {
+        strArray[i] = '<a href=\"' + curWord + '\" target=\"_blank\">' + curWord + '</a>';
+        continue;
+      }
+      
+      if (curWord.search(shortUrl) >= 0) {
+        strArray[i] = '<a href=\"http://' + curWord + '\" target=\"_blank\">' + curWord + '</a>';
+        continue;
+      }
+      
+      if (curWord.search(email) >= 0) {
+        strArray[i] = '<a href=\"mailto:' + curWord + '\">' + curWord + '</a>';
+        continue;
       }
     }
     
-    // Escape to lose focus, if already has focus.
-    if (document.activeElement && document.activeElement.id == 'input') {
-      if ( e.keyCode == 27 ) {
-         e.preventDefault();
-         $('#input').blur();
+    var result = strArray.join(' ');
+    
+    return result;
+  }
+
+  // Replace set symbols with html tags.
+  // * = bold. _ = italic. - = linethrough.
+  function parseText(message) {
+    var bold = /[*]{1}(\w+)[*]{1}/gim;
+    
+    var italic = /[_]{1}(\w+)[_]{1}/gim;
+    
+    var linethrough = /[-]{1}(\w+)[-]{1}/gim;
+    
+    var parsedMessage = message.replace(bold, '<span class=\"b\">$1</span>');
+        parsedMessage = parsedMessage.replace(italic, '<span class=\"i\">$1</span>');
+        parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
+    
+    return parsedMessage;
+  }
+
+  // Underlines objects, and classes them as either 'player' or 'target'.
+  function parseObjects(message) {
+    var player = /\[{1}(\w+)\]{1}/igm;
+    var target = /\[{1}(\d+[.]\d+)\]{1}/igm;
+    
+    var parsedMessage = message.replace(player, '<span class=\"player\">$1</span>');
+        parsedMessage = parsedMessage.replace(target, '<span class=\"target\">$1</span>');
+    
+    return parsedMessage;
+  }
+  
+  // Make only available commands clickable.
+  function parseCommands(message) {
+    var messageArray = message.split(' ');
+    
+    for (var i=0; i < messageArray.length; i++) {
+      var curWord = messageArray[i];
+      // Word matches an availble command.
+      if (availableCommands.indexOf(curWord) >= 0) {
+        messageArray[i] = '<span class=\"command\">' + curWord + '</span>';
       }
     }
-  });
-// *** //
+    
+    var parsedMessage = messageArray.join(' ');
+    
+    return parsedMessage;
+  }
+  
+  // Parse messages & objects. Add Timestamp to messages.
+  // Scroll down. Append HTML to output# or default to output1.
+  function appendOutput(output, number) {
+    if (!number) var number = 1;
+    
+    var curDate = new Date();
+    // Make sure the format is HH:MM:SS.
+    var curTime = ( curDate.getHours() < 10 ? '0' + curDate.getHours() : curDate.getHours() ) + ':' + 
+        ( curDate.getMinutes() < 10 ? '0' + curDate.getMinutes() : curDate.getMinutes() );
+        //  + ':' + ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
+    
+    if (output.message) {
+      // Find and convert URLs to links.
+      parsedMessage = parseCommands( parseText( parseURL( encodeURI( parseObjects(output.message) ) ) ) );
+    } else {
+      if (typeof output === 'string') {
+        parsedMessage = parseCommands( parseText( parseURL( encodeURI( parseObjects(output) ) ) ) );
+      } else {
+        parsedMessage = JSON.stringify(output);
+      }
+    }
+    
+    // Add the text with styling arguments.
+    $('#output' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
+                        '<span style=\"' + 
+                        (output.color  ? 'color: '       + output.color     + ';' : '') +
+                        (output.font   ? 'font-family: ' + output.font      + ';' : '') +
+                        (output.size   ? 'font-size: '   + output.size      + ';' : '') +
+                        // (italic ? 'font-style: '  + 'italic'  + ';' : '') +
+                        // (bold   ? 'font-weight: ' + 'bold'    + ';' : '') +
+                        '\" class=\"' + 
+                          (output.italic ? 'i ' : '') + 
+                          (output.bold ? 'b ' : '') + 
+                        '\">' + 
+                        parsedMessage + '</span><br />');
+    
+    $('#output' + number).scrollTop($('#output' + number)[0].scrollHeight); // Scroll down.
+    
+    if (!alertRunning && !document.hasFocus()) {
+      alertRunning = true;
+      // Blink title text & message, if unfocused.
+      alertTimer = setInterval(titleAlert, 1000, output.slice(0, 10));
+    }
+    
+    // Replace any unloaded images in output box with their alt text.
+    $('#output' + number + ' img').error(function() {
+      $(this).replaceWith($(this).prop('alt'));
+    });
+  }
 </script>
-<div id="output"></div>
-<div id="inputdiv">
-<form action="/" id="inputform" method="POST">
-  <input autofocus placeholder="Connecting to server, please wait..." type="text" id="input" onkeydown="commandHistory(event)" />
+</head>
+<body>
+<script>
+  // After document (DOM) has loaded.
+  $(document).ready(function() {
+    document.title = title;
+    
+    // Inform of client-only information.
+    $('#output1').append('<span style=\"color: green;\">' + welcomeMessage + '</span><br /><br />');
+    $('#output1').scrollTop($('#output1')[0].scrollHeight); // Scroll down.
+    
+    // Client-Side Only Cookie Data.
+    if (document.cookie) {
+      // Text color.
+      var textColor = document.cookie.match('(^|;) ?' + 'color' + '=([^;]*)(;|$)');
+      if (textColor && textColor[2]) {
+        $('body').css('color', textColor[2]);
+      }
+      // Background color.
+      var bgColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
+      if (bgColor && bgColor[2]) {
+        $('body').css('background-color', bgColor[2]);
+      }
+    }
+    
+    // Connect to socket server.
+    var socket = io.connect('http://diy-phuein.rhcloud.com/', {
+      'sync disconnect on unload' : true,           // Send 'disconnect' to server when browser 'beforeunload'.
+      'auto connect'              : true,           // Automatically establish connection on 'io.connect()'.
+      'reconnect'                 : true,
+      'reconnection limit'        : 60000,          // Maximum ms to wait between reconnection attempts.
+      'reconnection delay'        : 5000,           // Multiplier to add for reconnection attempts.
+      'max reconnection attempts' : 30,             // After this emit 'reconnect_failed' event.
+      'connect timeout'           : 10000           // Wait this long in ms to abord connection attempt.
+    });
+    
+    // Socket connected.
+    socket.on('connect', function () {
+      $('#inputBox').prop('placeholder', 'Enter text here...');
+      $('#inputBox').focus();
+      
+      // Attempt to send login command from saved cookie.
+      if (document.cookie) {
+        var cookieValue = document.cookie.match('(^|;) ?' + 'login' + '=([^;]*)(;|$)');
+        if (cookieValue && cookieValue[2]) {
+          socket.emit('message', cookieValue[2]);
+        }
+      }
+      
+      // Request an array of available commands by user access level.
+      socket.emit('message', ',help getAvailableCommandsOnly');
+    });
+    
+    // Socket Events //
+    socket.on('error', function (err) {
+      console.log(err);
+      
+      var output = {
+        'message': '<b><u>Socket Error:</u></b><br />' + err + '<br />',
+        'color': 'rgb(120, 0, 0)'
+      };
+      
+      appendOutput(output, 3);
+    });
+    
+    socket.on('disconnect', function () {
+      appendOutput('<i>Lost connection to server!</i>', 3);
+      
+      if (socket && socket.socket && !socket.socket.reconnecting) {
+        $('#inputBox').prop('placeholder', "Not connected to server...");
+        $('#inputBox').blur();
+      }
+      
+      if (!statusTimerRunning) {
+        statusTimer = setInterval(statusCheck, 100);
+        statusTimerRunning = true;
+      }
+    });
+    
+    /* Formatting: Only 'message' is required - the rest are optional.
+      {
+       'message' : message, 
+       'color'   : colorName,
+       'font'    : fontName, 
+       'size'    : size, 
+       'italic'  : boolean, 
+       'bold'    : boolean
+      }
+     */
+    
+    // Chat messages, that everyone can see.
+    socket.on('message', function (message) {
+      var output = {
+        'message': capitaliseFirstLetter(message)
+      };
+      
+      appendOutput(output, 1);
+    });
+    
+    // Chat emotes, that everyone can see.
+    socket.on('emote', function (message) {
+      var output = {
+        'message': message,
+        'color': 'rgb(0, 130, 130)'
+      };
+      
+      appendOutput(output, 1);
+    });
+    
+    // Chat messages, that only me and the target can see.
+    socket.on('tell', function (message) {
+      var output = {
+        'message': message,
+        'color': 'rgb(0, 0, 80)'
+      };
+      
+      appendOutput(output, 1);
+    });
+    
+    // Warnings for troubleshooting, such as command syntax.
+    socket.on('warning', function (message) {
+      parsedMessage = parseObjects(message);      // Mark objects.
+      
+      var output = {
+        'message': parsedMessage,
+        'color': 'rgb(80, 0, 0)'
+      };
+      
+      appendOutput(output, 1);
+    });
+    
+    // Notifications about events, such as a player name change.
+    socket.on('info', function (message) {
+      var output = {
+        'message': message,
+        'color': 'rgb(0, 60, 0)'
+      };
+      
+      appendOutput(output, 1);
+    });
+    
+    // The server's command character. Used to identify messages as commands.
+    socket.on('cmdChar', function (message) {
+      cmdChar = message;
+      $('#cmdChar').text(cmdChar);
+      console.log('cmdChar Updated!');
+    });
+    
+    // The commands that are currently available to the user, by access level.
+    socket.on('availableCommands', function (message) {
+      availableCommands = message;    // An array is expected.
+    });
+    
+    // Information about player events, such as look and examine commands.
+    socket.on('event', function (message) {
+      var output = {
+        'message': message
+      };
+      
+      appendOutput(output, 2);
+    });
+  });
+
+  // User Events //
+  $('.player').on('click', function () {
+    // Backup and clear inputBox.
+    var curInput = $('#inputBox').val;
+    $('#inputBox').val('');
+    // Add to inputBox.
+    $('#inputBox').val(',examine ' + $(this).text());
+    // Send.
+    $('#inputForm').submit();
+    // Restore previous inputBox value.
+    $('#inputBox').val(curInput);
+  });
+
+  $('.target').on('click', function () {
+    // Backup and clear inputBox.
+    var curInput = $('#inputBox').val;
+    $('#inputBox').val('');
+    // Add to input box.
+    $('#inputBox').val(',look ' + $(this).text());
+    // Send.
+    $('#inputForm').submit();
+    // Restore previous inputBox value.
+    $('#inputBox').val(curInput);
+  });
+  
+  // Toggle between single div and multiple divs for output view.
+  function toggleView() {
+    if (viewMode == 4) {
+      viewMode = 1;
+      $('#output2').hide(1000);
+      $('#output3').hide(1000);
+      $('#output4').hide(1000);
+      
+      $('#output1').animate({
+        width: '100%',
+        height: '100%'
+      }, 1000);
+    }
+    
+    if (viewMode == 1) {
+      viewMode = 4;
+      $('#output2').show(1000);
+      $('#output3').show(1000);
+      $('#output4').show(1000);
+      
+      $('#output1').animate({
+        width: '25%',
+        height: '25%'
+      }, 1000);
+    }
+  }
+</script>
+<div id="menu">
+  <span onclick="toggleView()">Single View</span>
+  
+  <span title="Use the help command to list your options: ,help">I'm in. What do I do now?</span>
+  <span title="Use the create command: ,create Candy">How can I create stuff?</span>
+  <span title="Use the modify command: ,modify 0.0 description Strange stuff.">How do I edit stuff?</span>
+  <span title="You are in the first room in the first map of this world.">Where am I?</span>
+  
+  <!-- <span title="Scale Font Size."><span>+</span> / <span>-</span></span> -->
+</div>
+<div id="outputContainer">
+  <!-- Chat -->
+  <div id="output1">output1</div>
+  <!-- Player Events (look, examine) -->
+  <div id="output2">output2</div>
+  <!-- System Events & Errors -->
+  <div id="output3">output3</div>
+  <!-- Map -->
+  <div id="output4">output4</div>
+</div>
+<div id="inputDiv">
+<form action="/" id="inputForm" method="POST">
+  <input autofocus placeholder="Connecting to server, please wait..." type="text" id="inputBox" onkeydown="commandHistory(event)" />
+  <input type="submit" value="SEND" id="sendButton">
 </form>
 </div>
 <script>
@@ -412,13 +590,17 @@ var clientCommands = {
     if (argArray[0]) color = argArray[0];
     
     $('body').css('color', color);
-    $('#input').css('color', color);
+    $('#inputBox').css('color', color);
     
     saveCookie('textcolor', color);
     
     // Inform user of change.
-    appendOutput('Text color changed to <b>' + color + '</b>.', 
-                          'darkgreen', null, null, true, null);
+    var output = {
+      'message': 'Text color changed to <b>' + color + '</b>.',
+      'color': 'darkgreen'
+    };
+    
+    appendOutput(output, 3);
   },
   
   ',bgcolor': function (argArray) {
@@ -428,22 +610,26 @@ var clientCommands = {
     if (argArray[0]) color = argArray[0];
     
     $('body').css('background-color', color);
-    $('#input').css('background-color', color);
+    $('#inputBox').css('background-color', color);
     
     saveCookie('bgcolor', color);
     
     // Inform user of change.
-    appendOutput('Background color changed to <b>' + color + '</b>.', 
-                                'darkgreen', null, null, true, null);
+    var output = {
+      'message': 'Background color changed to <b>' + color + '</b>.',
+      'color': 'darkgreen'
+    };
+    
+    appendOutput(output, 3);
   }
 };
 
 // Send user input to server by Socket.
-$('form').on('submit',function(e) {
+$('#inputForm').on('submit', function(e) {
     e.preventDefault(); // Stop regular form submission.
     
     // var inputvalue = $('input[id=input]').val(); WAS USED IN SOCKET.EMIT FOR SOME REASON.
-    var inputText = $('#input').val().trim();
+    var inputText = $('#inputBox').val().trim();
     
     // Return the first or word, or the only one word.
     var firstWord = (inputText.indexOf(' ') >= 0 ? 
@@ -459,13 +645,13 @@ $('form').on('submit',function(e) {
       socket.emit('message', inputText);
     }
     
-    // Remember login input, for next page load.
+    // Remember input text history, for scrollback.
     logInput(inputText);
     
     // Save logins into cookie.
     if (inputText.indexOf(',login') == '0') saveCookie('login', inputText);
     
-    $('#input').val(''); // Empty input.
+    $('#inputBox').val(''); // Empty input.
 });
 
 // Logs command history.
@@ -484,14 +670,8 @@ function saveCookie(name, value) {
   
   document.cookie = name      + '='  + value + ';' + 
                  //'path'     + '='  + path  + ';' + 
-                   'expires'  + '='  + expires.toUTCString(); + ';';
+                   'expires'  + '='  + expires.toUTCString() + ';';
 }
 </script>
 </body>
 </html>
-
-
-
-
-
-
