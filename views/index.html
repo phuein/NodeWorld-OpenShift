@@ -7,7 +7,7 @@
 <meta charset="utf-8" />
 <title>Node World</title>
 <script>
-  viewMode = 1;           // Number of output divs in view.
+  viewMode = 1;           // Number of outputs in view.
   cmdChar = ',';          // Default is a comma.
   title = 'Node World';
   welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
@@ -34,6 +34,20 @@
           'The client formats text according to this markup: ' + 
           '*<b>bold</b>* _<i>italic</i?_ -<del>linethrough</del>-';
   var availableCommands = [];
+  
+  // Direct messages to outputs.
+  var outputs = {
+    'errors':           1,
+    'disconnect':       1,
+    'message':          1,
+    'emote':            1,
+    'tell':             1,
+    'warning':          1,
+    'info':             1,
+    'events':           1,
+    'welcomeMessage':   1,
+    'clientCommands':   1
+  };
   
   // Click on cmdChar to display it in inputBox.
   $('#cmdChar').on('click', function () {
@@ -344,8 +358,10 @@
     document.title = title;
     
     // Inform of client-only information.
-    $('#output1').append('<span style=\"color: green;\">' + welcomeMessage + '</span><br /><br />');
-    $('#output1').scrollTop($('#output1')[0].scrollHeight); // Scroll down.
+    $('#output' + outputs.welcomeMessage).append('<span style=\"color: green;\">' + 
+                                            welcomeMessage + '</span><br /><br />');
+    $('#output' + outputs.welcomeMessage).scrollTop($('#output' + 
+                                            outputs.welcomeMessage)[0].scrollHeight); // Scroll down.
     
     // Client-Side Only Cookie Data.
     if (document.cookie) {
@@ -398,11 +414,11 @@
         'color': 'rgb(120, 0, 0)'
       };
       
-      appendOutput(output, 3);
+      appendOutput(output, outputs.errors);
     });
     
     socket.on('disconnect', function () {
-      appendOutput('<i>Lost connection to server!</i>', 3);
+      appendOutput('<i>Lost connection to server!</i>', outputs.disconnect);
       
       if (socket && socket.socket && !socket.socket.reconnecting) {
         $('#inputBox').prop('placeholder', "Not connected to server...");
@@ -432,7 +448,7 @@
         'message': capitaliseFirstLetter(message)
       };
       
-      appendOutput(output, 1);
+      appendOutput(output, outputs.message);
     });
     
     // Chat emotes, that everyone can see.
@@ -442,7 +458,7 @@
         'color': 'rgb(0, 130, 130)'
       };
       
-      appendOutput(output, 1);
+      appendOutput(output, outputs.emote);
     });
     
     // Chat messages, that only me and the target can see.
@@ -452,7 +468,7 @@
         'color': 'rgb(0, 0, 80)'
       };
       
-      appendOutput(output, 1);
+      appendOutput(output, outputs.tell);
     });
     
     // Warnings for troubleshooting, such as command syntax.
@@ -464,7 +480,7 @@
         'color': 'rgb(80, 0, 0)'
       };
       
-      appendOutput(output, 1);
+      appendOutput(output, outputs.warning);
     });
     
     // Notifications about events, such as a player name change.
@@ -474,7 +490,7 @@
         'color': 'rgb(0, 60, 0)'
       };
       
-      appendOutput(output, 1);
+      appendOutput(output, outputs.info);
     });
     
     // The server's command character. Used to identify messages as commands.
@@ -495,7 +511,7 @@
         'message': message
       };
       
-      appendOutput(output, 2);
+      appendOutput(output, output.events);
     });
   });
 
@@ -527,6 +543,13 @@
   // Toggle between single div and multiple divs for output view.
   function toggleView() {
     if (viewMode == 4) {
+      outputs.errors          = 2;
+      outputs.disconnect      = 2;
+      outputs.events          = 3;
+      outputs.clientCommands  = 2;
+  
+      $('#viewChanger').text = 'Multiple View';
+      
       viewMode = 1;
       
       $('#output2').hide(1000);
@@ -542,6 +565,13 @@
     }
     
     if (viewMode == 1) {
+      outputs.errors          = 1;
+      outputs.disconnect      = 1;
+      outputs.events          = 1;
+      outputs.clientCommands  = 1;
+      
+      $('#viewChanger').text = 'Single View';
+      
       viewMode = 4;
       
       $('#output1').css('top', '0px');
@@ -577,7 +607,7 @@
 </head>
 <body>
 <div id="menu">
-  <span onclick="toggleView()">Multiple View</span>
+  <span id="viewChanger" onclick="toggleView()">Multiple View</span>
   <!--
   <span title="Use the help command to list your options: ,help">I'm in. What do I do now?</span>
   <span title="Use the create command: ,create Candy">How can I create stuff?</span>
@@ -588,13 +618,13 @@
 </div>
 <div id="outputContainer">
   <!-- Chat -->
-  <div id="output1">output1</div>
-  <!-- Player Events (look, examine) -->
-  <div id="output2">output2</div>
+  <div id="output1"></div>
   <!-- System Events & Errors -->
-  <div id="output3">output3</div>
+  <div id="output2"></div>
+  <!-- Player Events (look, examine) -->
+  <div id="output3"></div>
   <!-- Map -->
-  <div id="output4">output4</div>
+  <div id="output4"></div>
 </div>
 <div id="inputDiv">
 <form action="/" id="inputForm" method="POST">
@@ -622,7 +652,7 @@ var clientCommands = {
       'color': 'darkgreen'
     };
     
-    appendOutput(output, 3);
+    appendOutput(output, outputs.clientCommands);
   },
   
   ',bgcolor': function (argArray) {
@@ -642,7 +672,7 @@ var clientCommands = {
       'color': 'darkgreen'
     };
     
-    appendOutput(output, 3);
+    appendOutput(output, outputs.clientCommands);
   }
 };
 
