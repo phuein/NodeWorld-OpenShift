@@ -7,7 +7,7 @@
 <meta charset="utf-8" />
 <title>Node World</title>
 <script>
-  viewMode = 4;           // Number of output divs in view.
+  viewMode = 1;           // Number of output divs in view.
   cmdChar = ',';          // Default is a comma.
   title = 'Node World';
   welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
@@ -528,6 +528,7 @@
   function toggleView() {
     if (viewMode == 4) {
       viewMode = 1;
+      
       $('#output2').hide(1000);
       $('#output3').hide(1000);
       $('#output4').hide(1000);
@@ -542,14 +543,28 @@
     
     if (viewMode == 1) {
       viewMode = 4;
+      
+      $('#output1').css('width', '50%');
+      $('#output1').css('height', '50%');
+      
+      $('#output2').css('width', '50%');
+      $('#output2').css('height', '50%');
+      $('#output2').css('display', 'inline');
       $('#output2').show(1000);
+      
+      $('#output3').css('width', '50%');
+      $('#output3').css('height', '50%');
       $('#output3').show(1000);
+      
+      $('#output4').css('width', '50%');
+      $('#output4').css('height', '50%');
+      $('#output2').css('display', 'inline');
       $('#output4').show(1000);
       
       $('#output1').animate({
-        width: '25%',
-        height: '25%'
-      }, 1000);
+        width: '50%',
+        height: '50%'
+      }, 500);
       
       return;
     }
@@ -558,7 +573,7 @@
 </head>
 <body>
 <div id="menu">
-  <span onclick="toggleView()">Single View</span>
+  <span onclick="toggleView()">Multiple View</span>
   <!--
   <span title="Use the help command to list your options: ,help">I'm in. What do I do now?</span>
   <span title="Use the create command: ,create Candy">How can I create stuff?</span>
