@@ -38,7 +38,7 @@ body {
   height: 50%;
   word-wrap: normal;
   word-break: break-word;
-  position: absolute;
+  position: relative;
 }
 
 #output1 {
