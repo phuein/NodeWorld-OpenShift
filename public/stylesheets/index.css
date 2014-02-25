@@ -26,6 +26,7 @@ body {
   padding: 0;
   width: 99%;
   height: 80%;
+  position: relative;
   margin-left: auto;
   margin-right: auto;
 }
@@ -38,7 +39,7 @@ body {
   padding: 0;
   word-wrap: normal;
   word-break: break-word;
-  position: relative;
+  position: absolute;
 }
 
 #output1 {
