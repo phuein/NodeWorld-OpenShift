@@ -258,7 +258,7 @@
         parsedMessage = parsedMessage.replace(italic, '<span class=\"i\">$1</span>');
         parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
     
-    parsedMessage = document.createTextNode(parsedMessage).textContent;
+    parsedMessage = document.createTextNode(parsedMessage).nodeValue;
     
     return parsedMessage;
   }
@@ -683,8 +683,10 @@
   <div id="outerInput">
     <div id="innerInput">
       <form action="/" id="inputForm" method="POST">
-        <input autofocus placeholder="Connecting to server, please wait..." type="text" 
-                                      id="inputBox" onkeydown="commandHistory(event)" />
+        <span id="inputBoxContainer">
+          <input autofocus placeholder="Connecting to server, please wait..." type="text" 
+          id="inputBox" onkeydown="commandHistory(event)" />
+        </span>
         <input type="submit" value="SEND" id="sendButton">
       </form>
     </div>
