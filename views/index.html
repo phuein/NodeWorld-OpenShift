@@ -48,47 +48,32 @@
     'welcomeMessage':   1,
     'clientCommands':   1
   };
-  
-  // Click on cmdChar to display it in inputBox.
-  $('#cmdChar').on('click', function () {
-    // Remember current input text, for scrollback.
-    logInput($('#inputBox').val());
-    // Replace input text with cmdChar.
-    $('#inputBox').val(cmdChar);
-  });
-  
-  // Click on any command to display it in inputBox.
-  $('.command').on('click', function () {
-    // Remember current input text, for scrollback.
-    logInput($('#inputBox').val());
-    
-    var cmdText = $(this).text();
-    // Verify command begins with cmdChar.
-    if ($(this).text().charAt(0) != cmdChar) cmdText = cmdChar + cmdText;
-    // Replace input text with relevant command.
-    $('#inputBox').val(cmdText);
-  });
 
   // Scroll output on window resize.
   $(window).resize(function() {
+    /*
     $('#output1').scrollTop($('#output1')[0].scrollHeight);
     $('#output2').scrollTop($('#output2')[0].scrollHeight);
     $('#output3').scrollTop($('#output3')[0].scrollHeight);
     $('#output4').scrollTop($('#output4')[0].scrollHeight);
+    */
+    $('innerOutputs > div > div').each(function (index) {
+      $(this).scrollTop($(this).scrollHeight);
+    });
   });
   
   // Set focus to inputBox.
   $(window).focus(function() {
-    if (document.activeElement && document.activeElement.id != 'input') {
+    if (document.activeElement && document.activeElement.id != 'inputBox') {
       $('#inputBox').focus();
     }
   });
 
-  // Space to focus(), and Escape to blur() and again to empty inputBox.
+  // Space or Enter to focus(), and Escape to blur(), and again to empty inputBox.
   $(document).keydown(function(e) {
-    // Space to focus(), or Escape to empty.
-    if (document.activeElement && document.activeElement.id != 'input') {
-      if ( e.keyCode == 32 ) {
+    // Space or Enter to focus(), or Escape to empty.
+    if (document.activeElement && document.activeElement.id != 'inputBox') {
+      if ( e.keyCode == 32 || e.keyCode == 13 ) {
          e.preventDefault();
          $('#inputBox').focus();
          return;
@@ -103,7 +88,7 @@
     }
     
     // Escape to blur().
-    if (document.activeElement && document.activeElement.id == 'input') {
+    if (document.activeElement && document.activeElement.id == 'inputBox') {
       if ( e.keyCode == 27 ) {
          e.preventDefault();
          $('#inputBox').blur();
@@ -259,7 +244,8 @@
     return result;
   }
 
-  // Replace set symbols with html tags.
+  // Replace set symbols with HTML tags,
+  // and parse HTML tags into regular text.
   // * = bold. _ = italic. - = linethrough.
   function parseText(message) {
     var bold = /[*]{1}(\w+)[*]{1}/gim;
@@ -272,6 +258,8 @@
         parsedMessage = parsedMessage.replace(italic, '<span class=\"i\">$1</span>');
         parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
     
+    parsedMessage = document.createTextNode(parsedMessage);
+    
     return parsedMessage;
   }
 
@@ -280,8 +268,10 @@
     var player = /\[{1}(\w+)\]{1}/igm;
     var target = /\[{1}(\d+[.]\d+)\]{1}/igm;
     
-    var parsedMessage = message.replace(player, '<span class=\"player\">$1</span>');
-        parsedMessage = parsedMessage.replace(target, '<span class=\"target\">$1</span>');
+    var parsedMessage = message.replace(player, 
+                        '<span class=\"player\" onclick=\"userEvent(this)\">[$1]</span>');
+        parsedMessage = parsedMessage.replace(target, 
+                        '<span class=\"target\" onclick=\"userEvent(this)\">[$1]</span>');
     
     return parsedMessage;
   }
@@ -294,7 +284,7 @@
       var curWord = messageArray[i];
       // Word matches an availble command.
       if (availableCommands.indexOf(curWord) >= 0) {
-        messageArray[i] = '<span class=\"command\">' + curWord + '</span>';
+        messageArray[i] = '<span class=\"command\" onclick=\"userEvent(this)\">' + curWord + '</span>';
       }
     }
     
@@ -302,6 +292,11 @@
     
     return parsedMessage;
   }
+  
+  // Replace any unloaded images, in output, with their alt text.
+  $('#innerOutputs').on('error', 'img', function() {
+    $(this).replaceWith($(this).prop('alt'));
+  });
   
   // Parse messages & objects. Add Timestamp to messages.
   // Scroll down. Append text to output# or default to output1.
@@ -316,17 +311,23 @@
     
     if (output.message) {
       // Find and convert URLs to links.
-      parsedMessage = parseCommands( parseText( parseURL( parseObjects(output.message) ) ) );
+      parsedMessage = parseText(
+                        parseCommands(
+                          parseURL(
+                            parseObjects(output.message) ) ) );
     } else {
       if (typeof output === 'string') {
-        parsedMessage = parseCommands( parseText( parseURL( parseObjects(output) ) ) );
+        parsedMessage = parseText(
+                          parseCommands(
+                            parseURL(
+                              parseObjects(output) ) ) );
       } else {
         parsedMessage = JSON.stringify(output);
       }
     }
     
     // Add the text (parsing HTML) with styling arguments.
-    $('#output' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
+    $('#innerOutput' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
                         '<span style=\"' + 
                         (output.color  ? 'color: '       + output.color     + ';' : '') +
                         (output.font   ? 'font-family: ' + output.font      + ';' : '') +
@@ -337,20 +338,15 @@
                           (output.italic ? 'i ' : '') + 
                           (output.bold ? 'b ' : '') + 
                         '\">' + 
-                        document.createTextNode(parsedMessage) + '</span><br />');
+                        parsedMessage + '</span><br />');
     
-    $('#output' + number).scrollTop($('#output' + number)[0].scrollHeight); // Scroll down.
+    $('#innerOutput' + number).scrollTop($('#innerOutput' + number)[0].scrollHeight); // Scroll down.
     
     if (!alertRunning && !document.hasFocus()) {
       alertRunning = true;
       // Blink title text & message, if unfocused.
       alertTimer = setInterval(titleAlert, 1000, output.message.slice(0, 10));
     }
-    
-    // Replace any unloaded images in output box with their alt text.
-    $('#output' + number + ' img').error(function() {
-      $(this).replaceWith($(this).prop('alt'));
-    });
   }
   
   // After document (DOM) has loaded.
@@ -358,10 +354,10 @@
     document.title = title;
     
     // Inform of client-only information.
-    $('#output' + outputs.welcomeMessage).append('<span style=\"color: green;\">' + 
-                                            welcomeMessage + '</span><br /><br />');
-    $('#output' + outputs.welcomeMessage).
-        scrollTop($('#output' + outputs.welcomeMessage)[0].scrollHeight); // Scroll down.
+    $('#innerOutput' + outputs.welcomeMessage).append('<span style=\"color: green;\">' + 
+                                                  welcomeMessage + '</span><br /><br />');
+    $('#innerOutput' + outputs.welcomeMessage).scrollTop($('#innerOutput' + 
+                                    outputs.welcomeMessage)[0].scrollHeight); // Scroll down.
     
     // Client-Side Only Cookie Data.
     if (document.cookie) {
@@ -514,31 +510,53 @@
       appendOutput(output, outputs.events);
     });
   });
-
-  // User Events //
-  $('.player').on('click', function () {
+  
+  // Backs-up and clears inputBox, to send a command, and restore previous text.
+  function sendCommand(command) {
     // Backup and clear inputBox.
     var curInput = $('#inputBox').val;
     $('#inputBox').val('');
+    
     // Add to inputBox.
-    $('#inputBox').val(',examine ' + $(this).text());
+    $('#inputBox').val(command);
+    
     // Send.
     $('#inputForm').submit();
+    
     // Restore previous inputBox value.
     $('#inputBox').val(curInput);
-  });
-
-  $('.target').on('click', function () {
-    // Backup and clear inputBox.
-    var curInput = $('#inputBox').val;
-    $('#inputBox').val('');
-    // Add to input box.
-    $('#inputBox').val(',look ' + $(this).text());
-    // Send.
-    $('#inputForm').submit();
-    // Restore previous inputBox value.
-    $('#inputBox').val(curInput);
-  });
+  }
+  
+  // User Events //
+  function userEvent(element) {
+    if ($(element).hasClass('player')) {
+      sendCommand(cmdChar + 'examine ' + $(element).text());
+      return;
+    }
+    
+    if ($(element).hasClass('target')) {
+      sendCommand(cmdChar + 'look ' + $(element).text());
+      return;
+    }
+    
+    if ($(element).hasClass('command')) {
+      var cmdText = $(element).text();
+      
+      // Verify command begins with cmdChar.
+      if (cmdText.charAt(0) != cmdChar) cmdText = cmdChar + cmdText;
+      
+      sendCommand(cmdChar + cmdText);
+      return;
+      
+      /*  JUST DISPLAY, INSTEAD OF SEND.
+      // Remember current input text, for scrollback.
+      logInput($('#inputBox').val());
+      
+      // Replace input text with relevant command.
+      $('#inputBox').val(cmdText);
+      */
+    }
+  }
   
   // Toggle between single div and multiple divs for output view.
   function toggleView() {
@@ -555,17 +573,17 @@
       
       var time = 1000;
       
-      $('#output2').hide(time);
-      $('#output3').hide(time);
-      $('#output4').hide(time);
+      $('#outerOutput2').hide(time);
+      $('#outerOutput3').hide(time);
+      $('#outerOutput4').hide(time);
       
-      $('#output1').animate({
+      $('#outerOutput1').animate({
         width: '100%',
         height: '100%'
       }, time);
       
-      $('#output1').animate({
-        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
+      $('#innerOutput1').animate({
+        scrollTop: $('#innerOutput1')[0].scrollHeight      // Scroll down.
       }, time);
       
       return;
@@ -584,46 +602,46 @@
       
       var time = 1000;
       
-      $('#output1').css('top', '0px');
-      $('#output1').css('left', '0px');
+      $('#outerOutput1').css('top', '0px');
+      $('#outerOutput1').css('left', '0px');
       
-      $('#output2').css('width', '50%');
-      $('#output2').css('height', '50%');
-      $('#output2').css('left', '50%');
-      $('#output2').css('top', '0px');
-      $('#output2').show(time);
+      $('#outerOutput2').css('width', '50%');
+      $('#outerOutput2').css('height', '50%');
+      $('#outerOutput2').css('left', '50%');
+      $('#outerOutput2').css('top', '0px');
+      $('#outerOutput2').show(time);
       
-      $('#output3').css('width', '50%');
-      $('#output3').css('height', '50%');
-      $('#output3').css('left', '0px');
-      $('#output3').css('top', '50%');
-      $('#output3').show(time);
+      $('#outerOutput3').css('width', '50%');
+      $('#outerOutput3').css('height', '50%');
+      $('#outerOutput3').css('left', '0px');
+      $('#outerOutput3').css('top', '50%');
+      $('#outerOutput3').show(time);
       
-      $('#output4').css('width', '50%');
-      $('#output4').css('height', '50%');
-      $('#output4').css('top', '50%');
-      $('#output4').css('left', '50%');
-      $('#output4').show(time);
+      $('#outerOutput4').css('width', '50%');
+      $('#outerOutput4').css('height', '50%');
+      $('#outerOutput4').css('top', '50%');
+      $('#outerOutput4').css('left', '50%');
+      $('#outerOutput4').show(time);
       
-      $('#output1').animate({
+      $('#outerOutput1').animate({
         width: '50%',
         height: '50%'
       }, time / 2);
       
-      $('#output1').animate({
-        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
+      $('#innerOutput1').animate({
+        scrollTop: $('#innerOutput1')[0].scrollHeight      // Scroll down.
       }, time);
       
-      $('#output2').animate({
-        scrollTop: $('#output2')[0].scrollHeight      // Scroll down.
+      $('#innerOutput2').animate({
+        scrollTop: $('#innerOutput2')[0].scrollHeight      // Scroll down.
       }, time);
       
-      $('#output3').animate({
-        scrollTop: $('#output3')[0].scrollHeight      // Scroll down.
+      $('#innerOutput3').animate({
+        scrollTop: $('#innerOutput3')[0].scrollHeight      // Scroll down.
       }, time);
       
-      $('#output4').animate({
-        scrollTop: $('#output4')[0].scrollHeight      // Scroll down.
+      $('#innerOutput4').animate({
+        scrollTop: $('#innerOutput4')[0].scrollHeight      // Scroll down.
       }, time);
       
       return;
@@ -632,31 +650,43 @@
 </script>
 </head>
 <body>
-<div id="menu">
-  <span id="viewChanger" onclick="toggleView()">Multiple View</span>
-  <!--
-  <span title="Use the help command to list your options: ,help">I'm in. What do I do now?</span>
-  <span title="Use the create command: ,create Candy">How can I create stuff?</span>
-  <span title="Use the modify command: ,modify 0.0 description Strange stuff.">How do I edit stuff?</span>
-  <span title="You are in the first room in the first map of this world.">Where am I?</span>
-  -->
-  <!-- <span title="Scale Font Size."><span>+</span> / <span>-</span></span> -->
-</div>
-<div id="outputContainer">
-  <!-- Chat -->
-  <div id="output1"></div>
-  <!-- System Events & Errors -->
-  <div id="output2"></div>
-  <!-- Player Events (look, examine) -->
-  <div id="output3"></div>
-  <!-- Map -->
-  <div id="output4"></div>
-</div>
-<div id="inputDiv">
-<form action="/" id="inputForm" method="POST">
-  <input autofocus placeholder="Connecting to server, please wait..." type="text" id="inputBox" onkeydown="commandHistory(event)" />
-  <input type="submit" value="SEND" id="sendButton">
-</form>
+<div id="content">
+  <div id="outerMenu">
+    <div id="innerMenu">
+      <span id="viewChanger" onclick="toggleView()">Multiple View</span>
+      
+      <!--
+      <span title="Use the help command to list your options: ,help">I'm in. What do I do now?</span>
+      <span title="Use the create command: ,create Candy">How can I create stuff?</span>
+      <span title="Use the modify command: ,modify 0.0 description Strange stuff.">How do I edit stuff?</span>
+      <span title="You are in the first room in the first map of this world.">Where am I?</span>
+      -->
+      <!-- <span title="Scale Font Size."><span>+</span> / <span>-</span></span> -->
+    </div>
+  </div>
+  
+  <div id="outerOutputs">
+    <div id="innerOutputs">
+      <!-- Chat -->
+      <div id="outerOutput1"><div id="innerOutput1"></div></div>
+      <!-- System Events & Errors -->
+      <div id="outerOutput2"><div id="innerOutput2"></div></div>
+      <!-- Player Events (look, examine) -->
+      <div id="outerOutput3"><div id="innerOutput3"></div></div>
+      <!-- Map -->
+      <div id="outerOutput4"><div id="innerOutput4"></div></div>
+    </div>
+  </div>
+  
+  <div id="outerInput">
+    <div id="innerInput">
+      <form action="/" id="inputForm" method="POST">
+        <input autofocus placeholder="Connecting to server, please wait..." type="text" 
+                                      id="inputBox" onkeydown="commandHistory(event)" />
+        <input type="submit" value="SEND" id="sendButton">
+      </form>
+    </div>
+  </div>
 </div>
 <script>
 // Client-side-only commands, which do not get sent to server.

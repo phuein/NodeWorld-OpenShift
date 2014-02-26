@@ -1,71 +1,95 @@
 html {
-  width: 99%;
-  height: 99%;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
 body {
-  width: 99%;
-  height: 99%;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-#menu > span {
-  border-bottom: solid;
-  width: 99%;
+div {
+  resize: none;
+}
+
+#content {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* MENU */
+#outerMenu {
+  width: 100%;
   height: 10%;
+}
+
+#innerMenu {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+#innerMenu > span {
+  border-bottom: solid;
   text-align: center;
   cursor: pointer;
 }
 
-#outputContainer {
-  resize: none;
-  /* border: 1px solid #ccc; */
-  /* overflow-y: scroll; */
-  padding: 0;
-  width: 99%;
+/* OUTPUT */
+#outerOutputs {
+  width: 100%;
   height: 80%;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-/* The 'miniwindows' for output. */
-#outputContainer > div {
-  resize: none;
+#innerOutputs {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Output Views */
+#innerOutputs > div {
+  display: none;            /* Hide all outputs, and show only outerOutput1, by default. */
+  width: 100%;
+  height: 100%;
   border: 1px solid #ccc;
-  overflow-y: scroll;
-  padding: 0;
-  word-wrap: normal;
-  word-break: break-word;
   position: absolute;
 }
 
-#outputContainer > div {
-  display: none;
+#innerOutputs > div > div {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  word-wrap: normal;
+  word-break: break-word;
 }
 
-#outputContainer > #output1 {
+/* Display #outerOutput1 by default. */
+#innerOutputs > #outerOutput1 {
   display: block;
+}
+
+/* INPUT */
+#outerInput {
+  width: 100%;
+  height: 10%;
+}
+
+#innerInput {
   width: 100%;
   height: 100%;
 }
 
-#inputDiv {
-  width: 99%;
-  height: 10%;
-  margin-left:auto;
-  margin-right:auto;
-}
-
 #inputBox {
-  padding: 0;
-  width: 100%;
+  width: 90%;
 }
 
 #sendButton {
-  width: 100px;
+  width: 10%;
 }
 
 /* Text Classes */
@@ -97,6 +121,10 @@ a {
   color: #00B7FF;
 }
 
+#cmdChar {
+  border-bottom: 1px dashed black;
+}
+
 .player {
   text-decoration: underline;
   cursor: pointer;
@@ -105,10 +133,6 @@ a {
 .target {
   text-decoration: underline;
   cursor: pointer;
-}
-
-#cmdChar {
-  border-bottom: 1px dashed black;
 }
 
 .command {
