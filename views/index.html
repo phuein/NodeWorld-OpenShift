@@ -259,7 +259,7 @@
         parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
     
     parsedMessage = document.createTextNode(parsedMessage);
-    
+    console.log(parsedMessage);
     return parsedMessage;
   }
 
@@ -301,7 +301,6 @@
   // Parse messages & objects. Add Timestamp to messages.
   // Scroll down. Append text to output# or default to output1.
   function appendOutput(output, number) {
-    console.log(output.message || output);
     if (!number) var number = 1;
     
     var curDate = new Date();
