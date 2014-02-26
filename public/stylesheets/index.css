@@ -19,17 +19,17 @@ div {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  display: table;
 }
 
 /* MENU */
 #outerMenu {
   width: 100%;
-  height: 10%;
+  display: table-row;
 }
 
 #innerMenu {
   width: 100%;
-  height: 100%;
   text-align: center;
 }
 
@@ -42,7 +42,9 @@ div {
 /* OUTPUT */
 #outerOutputs {
   width: 100%;
-  height: 80%;
+  height: 100%;
+  display: table-row;
+  vertical-align: middle;
 }
 
 #innerOutputs {
@@ -76,6 +78,7 @@ div {
 /* INPUT */
 #outerInput {
   width: 100%;
+  display: table-row;
 }
 
 #innerInput {
