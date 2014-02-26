@@ -76,20 +76,25 @@ div {
 /* INPUT */
 #outerInput {
   width: 100%;
-  height: 10%;
 }
 
 #innerInput {
   width: 100%;
-  height: 100%;
+  display: table;
+}
+
+#inputForm {
+  width: 100%;
 }
 
 #inputBox {
-  width: 90%;
+  width: 100%;
+  display: table-cell;
 }
 
 #sendButton {
-  width: 10%;
+  width: 5%;
+  display: table-cell;
 }
 
 /* Text Classes */
