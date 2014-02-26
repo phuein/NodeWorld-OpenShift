@@ -258,7 +258,7 @@
         parsedMessage = parsedMessage.replace(italic, '<span class=\"i\">$1</span>');
         parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
     
-    parsedMessage = document.createTextNode(parsedMessage);
+    parsedMessage = document.createTextNode(parsedMessage).textContent;
     
     return parsedMessage;
   }
@@ -309,6 +309,8 @@
         ( curDate.getMinutes() < 10 ? '0' + curDate.getMinutes() : curDate.getMinutes() );
         //  + ':' + ( curDate.getSeconds() < 10 ? '0' + curDate.getSeconds() : curDate.getSeconds() );
     
+    var parsedMessage;
+    
     if (output.message) {
       // Find and convert URLs to links.
       parsedMessage = parseText(
@@ -325,7 +327,7 @@
         parsedMessage = JSON.stringify(output);
       }
     }
-    console.log(parsedMessage);
+
     // Add the text (parsing HTML) with styling arguments.
     $('#innerOutput' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
                         '<span style=\"' + 
