@@ -304,7 +304,7 @@
   }
   
   // Parse messages & objects. Add Timestamp to messages.
-  // Scroll down. Append HTML to output# or default to output1.
+  // Scroll down. Append text to output# or default to output1.
   function appendOutput(output, number) {
     if (!number) var number = 1;
     
@@ -325,7 +325,7 @@
       }
     }
     
-    // Add the text with styling arguments.
+    // Add the text (parsing HTML) with styling arguments.
     $('#output' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
                         '<span style=\"' + 
                         (output.color  ? 'color: '       + output.color     + ';' : '') +
@@ -337,7 +337,7 @@
                           (output.italic ? 'i ' : '') + 
                           (output.bold ? 'b ' : '') + 
                         '\">' + 
-                        parsedMessage + '</span><br />');
+                        document.createTextNode(parsedMessage) + '</span><br />');
     
     $('#output' + number).scrollTop($('#output' + number)[0].scrollHeight); // Scroll down.
     

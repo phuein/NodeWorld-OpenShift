@@ -11,7 +11,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-#menu {
+#menu > span {
   border-bottom: solid;
   width: 99%;
   height: 10%;
@@ -99,10 +99,12 @@ a {
 
 .player {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .target {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 #cmdChar {
@@ -112,4 +114,5 @@ a {
 .command {
   font-weight: bold;
   text-decoration: underline;
+  cursor: pointer;
 }
