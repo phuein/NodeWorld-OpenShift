@@ -164,22 +164,6 @@
       }
   }
   
-  // Find first alphabet letter, and capitalise it.
-  function capitaliseFirstLetter(str) {
-    var a = /[A-z]/;      // Any alphabet letter of either case.
-    
-    var index = str.search(a);
-    
-    // No letters in string.
-    if (index == -1) return str;
-    
-    var newStr =  (index === 0 ? '' : str.slice(0, index)) + 
-                  str.charAt(index).toUpperCase() + 
-                  (index == str.length-1 ? '' : str.slice(index+1));
-    
-    return newStr;
-  }
-  
   // Find and convert URLs to links, and try to display images.
   // Mixes JS with Regex for readability of Regex.
   function parseURL(message) {
@@ -244,11 +228,35 @@
     return result;
   }
 
-  // Replace set symbols with HTML tags,
+  // Replace words surrounded by client's markup with HTML tags,
   // and parse HTML tags into regular text.
   // * = bold. _ = italic. - = linethrough.
   function parseText(message) {
-    var bold = /[*]{1}(\w+)[*]{1}/gim;
+    var strArray = message.split(' ');      // Split into words.
+    
+    // Check each word.
+    for (var i=0; i < strArray.length; i++) {
+      var curWord = strArray[i];
+      
+      if (curWord.charAt(0) == '*' && curWord.charAt(curWord.length-1) == '*' && 
+          curWord.charAt(1) != '*' && curWord.charAt(curWord.length-2) != '*') {
+        strArray[i] = '<span class=\"b\">' + strArray[i] + '</span>';
+      }
+      
+      if (curWord.charAt(0) == '_' && curWord.charAt(curWord.length-1) == '_' && 
+          curWord.charAt(1) != '_' && curWord.charAt(curWord.length-2) != '_') {
+        strArray[i] = '<span class=\"i\">' + strArray[i] + '</span>';
+      }
+      
+      if (curWord.charAt(0) == '-' && curWord.charAt(curWord.length-1) == '-' && 
+          curWord.charAt(1) != '-' && curWord.charAt(curWord.length-2) != '-') {
+        strArray[i] = '<span class=\"s\">' + strArray[i] + '</span>';
+      }
+    }
+    
+    parsedMessage = strArray.join(' ');
+    /*
+    var bold = /\b[*]{1}(\w+)[*]{1}\b/gim;
     
     var italic = /[_]{1}(\w+)[_]{1}/gim;
     
@@ -257,7 +265,7 @@
     var parsedMessage = message.replace(bold, '<span class=\"b\">$1</span>');
         parsedMessage = parsedMessage.replace(italic, '<span class=\"i\">$1</span>');
         parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
-    
+    */
     parsedMessage = document.createTextNode(parsedMessage).nodeValue;
     
     return parsedMessage;
@@ -269,9 +277,9 @@
     var target = /\[{1}(\d+[.]\d+)\]{1}/igm;
     
     var parsedMessage = message.replace(player, 
-                        '<span class=\"player\" onclick=\"userEvent(this)\">[$1]</span>');
+                        '[<span class=\"player\" onclick=\"userEvent(this)\">$1</span>]');
         parsedMessage = parsedMessage.replace(target, 
-                        '<span class=\"target\" onclick=\"userEvent(this)\">[$1]</span>');
+                        '[<span class=\"target\" onclick=\"userEvent(this)\">$1</span>]');
     
     return parsedMessage;
   }
@@ -443,7 +451,7 @@
     // Chat messages, that everyone can see.
     socket.on('message', function (message) {
       var output = {
-        'message': capitaliseFirstLetter(message)
+        'message': message
       };
       
       appendOutput(output, outputs.message);
