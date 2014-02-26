@@ -259,7 +259,7 @@
         parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
     
     parsedMessage = document.createTextNode(parsedMessage);
-    console.log(parsedMessage);
+    
     return parsedMessage;
   }
 
@@ -325,7 +325,7 @@
         parsedMessage = JSON.stringify(output);
       }
     }
-    
+    console.log(parsedMessage);
     // Add the text (parsing HTML) with styling arguments.
     $('#innerOutput' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
                         '<span style=\"' + 
