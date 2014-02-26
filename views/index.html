@@ -344,7 +344,7 @@
     if (!alertRunning && !document.hasFocus()) {
       alertRunning = true;
       // Blink title text & message, if unfocused.
-      alertTimer = setInterval(titleAlert, 1000, output.slice(0, 10));
+      alertTimer = setInterval(titleAlert, 1000, output.message.slice(0, 10));
     }
     
     // Replace any unloaded images in output box with their alt text.
