@@ -80,14 +80,17 @@ div {
 
 #innerInput {
   width: 100%;
+  display: table;
 }
 
 #inputForm {
   width: 100%;
+  display: table-row;
 }
 
 #inputBoxContainer {
-  display: block;
+  display: table-cell;
+  width: 100%;
 }
 
 #inputBox {
@@ -95,8 +98,7 @@ div {
 }
 
 #sendButton {
-  min-width: 5%;
-  float: right;
+  
 }
 
 /* Text Classes */
