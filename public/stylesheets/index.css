@@ -67,10 +67,11 @@ div {
 
 #inputBox {
   width: 90%;
+  margin: 0px;
 }
 
 #sendButton {
-  /* Empty. */
+  margin: 0px;
 }
 
 /* Text Classes */
