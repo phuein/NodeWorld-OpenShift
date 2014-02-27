@@ -35,7 +35,9 @@ div {
 #innerMenu {
   width: 100%;
   text-align: center;
+  vertical-align: bottom;
   display: table-cell;
+  margin-bottom: 1em;
 }
 
 #innerMenu > span {
@@ -108,7 +110,7 @@ div {
 }
 
 #sendButton {
-  
+  /* Any width value will ruin automatic table display. */
 }
 
 /* Text Classes */
