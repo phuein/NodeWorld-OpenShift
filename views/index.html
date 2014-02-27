@@ -301,17 +301,6 @@
     return parsedMessage;
   }
   
-  // Attach event to clickable elements.
-  // Delegated, so it applies to new elements.
-  $('#innerOutputs > div > div').on('click', '.player, .target, .command', function() {
-    userEvent(this);
-  });
-  
-  // Replace any unloaded images, in output, with their alt text.
-  $('#innerOutputs').on('error', 'img', function() {
-    $(this).replaceWith($(this).prop('alt'));
-  });
-  
   // Parse messages & objects. Add Timestamp to messages.
   // Scroll down. Append text to output# or default to output1.
   function appendOutput(output, number) {
@@ -365,7 +354,21 @@
     }
   }
   
-  // After document (DOM) has loaded.
+  // Attach events to DOM elements.
+  $(document).ready(function() {
+    // Attach event to clickable elements.
+    // Delegated, so it applies to new elements.
+    $('#innerOutputs > div > div').on('click', '.player, .target, .command', function() {
+      userEvent(this);
+    });
+    
+    // Replace any unloaded images, in output, with their alt text.
+    $('#innerOutputs > div > div').on('error', 'img', function() {
+      $(this).replaceWith($(this).prop('alt'));
+    });
+  }
+  
+  // Welcome & connect to server.
   $(document).ready(function() {
     document.title = title;
     
