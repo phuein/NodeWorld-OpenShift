@@ -675,9 +675,8 @@
 </script>
 </head>
 <body>
-<table id="content">
-<tr id="menuContainer">
-  <td id="menu">
+<div id="content">
+  <div id="menu">
     <span id="viewChanger" onclick="toggleView()">Multiple View</span>
     
     <!--
@@ -687,10 +686,8 @@
     <span title="You are in the first room in the first map of this world.">Where am I?</span>
     -->
     <!-- <span title="Scale Font Size."><span>+</span> / <span>-</span></span> -->
-  </td>
-</tr>
-<tr id="outputsContainer">
-  <td id="outputs">
+  </div>
+  <div id="outputs">
     <!-- Chat -->
     <div id="output1"></div>
     <!-- System Events & Errors -->
@@ -700,26 +697,15 @@
     <!-- Map -->
     <div id="output4"></div>
     </div>
-  </td>
-</tr>
-<tr id="inputContainer">
-  <td id="input">
+  </div>
+  <div id="input">
     <form style="width: 100%" action="/" id="inputForm" method="POST">
-      <table style="width: 100%">
-        <tr>
-          <td id="inputBoxTD">
-            <input autofocus placeholder="Connecting to server, please wait..." type="text" 
+      <input type="submit" value="SEND" id="sendButton">
+      <input autofocus placeholder="Connecting to server, please wait..." type="text" 
             id="inputBox" onkeydown="commandHistory(event)" />
-          </td>
-          <td>
-            <input type="submit" value="SEND" id="sendButton">
-          </td>
-        </tr>
-      </table>
     </form>
-  </td>
-</tr>
-</table>
+  </div>
+</div>
 <script>
 // Client-side-only commands, which do not get sent to server.
 var clientCommands = {
