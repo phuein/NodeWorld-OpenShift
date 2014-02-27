@@ -366,6 +366,10 @@
     $('#innerOutputs > div > div').on('error', 'img', function() {
       $(this).replaceWith($(this).prop('alt'));
     });
+    
+    // Show only first output view, by default.
+    $('#innerOutputs > div').css('display', 'none');
+    $('#innerOutputs > outerOutput1').css('display', 'initial');
   });
   
   // Welcome & connect to server.

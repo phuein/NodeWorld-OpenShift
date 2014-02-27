@@ -63,7 +63,6 @@ div {
 
 /* Output Views */
 #innerOutputs > div {
-  display: none;            /* Hide all outputs, and show only outerOutput1, by default. */
   width: 100%;
   height: 100%;
   border: 1px solid #ccc;
@@ -76,12 +75,6 @@ div {
   overflow-y: scroll;
   word-wrap: normal;
   word-break: break-word;
-  display: none;
-}
-
-/* Display #outerOutput1 by default. */
-#innerOutputs > #outerOutput1 {
-  display: block;
 }
 
 /* INPUT */
