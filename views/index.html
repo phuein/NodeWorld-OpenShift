@@ -54,8 +54,10 @@
     });
     
     // Resize elements.
-    $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
-    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth(true) - 1);
+    $('#outputs').css('height', $('#content').height() - $('#menu').height() - 
+                                              $('#input').height() - 4 + 'px');
+    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth(true) - 
+                      ($('#inputBox').outerWidth(true) - $('#inputBox').width) - 4 + 'px');
   });
   
   // Set focus to inputBox.
@@ -370,8 +372,10 @@
     $('#outputs > #output1').show();
     
     // Resize elements.
-    $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
-    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth(true) - 1);
+    $('#outputs').css('height', $('#content').height() - $('#menu').height() - 
+                                              $('#input').height() - 4 + 'px');
+    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth(true) - 
+                      ($('#inputBox').outerWidth(true) - $('#inputBox').width) - 4 + 'px');
   });
   
   // Welcome & connect to server.
