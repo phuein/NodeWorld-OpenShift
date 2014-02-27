@@ -62,6 +62,7 @@ div {
   overflow: hidden;
   margin: 0px;
   background-color: white;
+  display: block;
 }
 
 #outputs > div {
