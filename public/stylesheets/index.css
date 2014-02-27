@@ -134,12 +134,8 @@ a:hover   { color: #0B6699; }
 a:active  { color: #0B88CC; }
 
 #cmdChar {
-  display: inline-table;
-}
-
-#cmdCharSpan {
   vertical-align: middle;
-  display: table-row;
+  display: inline-table;
 }
 
 .object {
