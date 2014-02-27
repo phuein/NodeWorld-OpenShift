@@ -134,8 +134,8 @@ a:hover   { color: #0B6699; }
 a:active  { color: #0B88CC; }
 
 #cmdChar {
-  border: 1px dotted black;
   vertical-align: middle;
+  display: table-cell;
 }
 
 .object {
