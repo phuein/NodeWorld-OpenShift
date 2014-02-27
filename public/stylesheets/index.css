@@ -134,6 +134,10 @@ a:hover   { color: #0B6699; }
 a:active  { color: #0B88CC; }
 
 #cmdChar {
+  display: inline-table;
+}
+
+#cmdChar > span {
   vertical-align: middle;
   display: table-cell;
 }
