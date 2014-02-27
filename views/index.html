@@ -52,6 +52,8 @@
     $('#outputs > div').each(function (index) {
       $(this).scrollTop($(this)[0].scrollHeight);
     });
+    
+    $('#outputs').css('height', $('#content').height - $('#menu').height - $('#input').height);
   });
   
   // Set focus to inputBox.
@@ -348,7 +350,7 @@
     }
   }
   
-  // Attach events to DOM elements.
+  // Attach events to DOM elements, and workaround CSS.
   $(document).ready(function() {
     // Attach event to clickable elements.
     // Delegated, so it applies to new elements.
@@ -364,6 +366,9 @@
     // Show only first output view, by default.
     $('#outputs > div').hide();
     $('#outputs > #output1').show();
+    
+    // Size outputs div to scale.
+    $('#outputs').css('height', $('#content').height - $('#menu').height - $('#input').height);
   });
   
   // Welcome & connect to server.
