@@ -607,9 +607,9 @@ function randomName(name) {
 function escapeHTML(str) {
   if (typeof str !== 'string') str = str.toString();
   
-  return str.replace(/</g, '&lt;')
+  return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
-            .replace(/&/g, '&amp;')
             .replace(/"/g, '&quot;');
 }
 
