@@ -53,7 +53,9 @@
       $(this).scrollTop($(this)[0].scrollHeight);
     });
     
+    // Resize elements.
     $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
+    $('#inputBox').css('width', $('#content').width() - $('#sendButton').width() - 1);
   });
   
   // Set focus to inputBox.
@@ -367,8 +369,9 @@
     $('#outputs > div').hide();
     $('#outputs > #output1').show();
     
-    // Size outputs div to scale.
+    // Resize elements.
     $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
+    $('#inputBox').css('width', $('#content').width() - $('#sendButton').width() - 1);
   });
   
   // Welcome & connect to server.
@@ -704,9 +707,9 @@
   </div>
   <div id="input">
     <form action="/" id="inputForm" method="POST">
+      <input autofocus placeholder="Connecting to server, please wait..." type="text" 
+            id="inputBox" onkeydown="commandHistory(event)" />
       <input type="submit" value="SEND" id="sendButton">
-      <div id="inputBoxDIV"><input autofocus placeholder="Connecting to server, please wait..." type="text" 
-            id="inputBox" onkeydown="commandHistory(event)" /></div>
     </form>
   </div>
 </div>

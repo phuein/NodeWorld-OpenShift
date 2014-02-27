@@ -65,16 +65,12 @@ div {
   width: 100%;
 }
 
-#inputBoxDIV {
-  overflow: hidden;
-}
-
 #inputBox {
-  width: 100%;
+  width: 90%;
 }
 
 #sendButton {
-  float: right;
+  /* Empty. */
 }
 
 /* Text Classes */
