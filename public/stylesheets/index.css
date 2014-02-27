@@ -23,20 +23,18 @@ div {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  display: table;
 }
 
 /* MENU */
 #outerMenu {
   width: 100%;
-  display: table-row;
+  vertical-align: top;
 }
 
 #innerMenu {
   width: 100%;
   text-align: center;
   vertical-align: bottom;
-  display: table-cell;
   padding-bottom: 0.5em;
 }
 
@@ -50,7 +48,6 @@ div {
 #outerOutputs {
   width: 100%;
   height: 100%;
-  display: table-row;
   vertical-align: middle;
 }
 
@@ -58,7 +55,6 @@ div {
   width: 100%;
   height: 100%;
   position: relative;
-  display: table-cell;
 }
 
 /* Output Views */
@@ -79,13 +75,12 @@ div {
 
 /* INPUT */
 #outerInput {
+  vertical-align: bottom;
   width: 100%;
-  display: table-row;
 }
 
 #innerInput {
   width: 100%;
-  display: table-cell;
   display: table;
 }
 
