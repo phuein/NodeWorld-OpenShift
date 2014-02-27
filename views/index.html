@@ -533,7 +533,7 @@
   // Backs-up and clears inputBox, to send a command, and restore previous text.
   function sendCommand(command) {
     // Backup and clear inputBox.
-    var curInput = $('#inputBox').val;
+    var curInput = $('#inputBox').val();
     $('#inputBox').val('');
     
     // Add to inputBox.
@@ -566,7 +566,7 @@
       // Verify command begins with cmdChar.
       if (cmdText.charAt(0) != cmdChar) cmdText = cmdChar + cmdText;
       
-      sendCommand(cmdChar + cmdText);
+      sendCommand(cmdText);
       return;
       
       /*  JUST DISPLAY, INSTEAD OF SEND.
