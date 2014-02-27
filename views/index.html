@@ -275,19 +275,9 @@
     }
     
     parsedMessage = strArray.join(' ');
-    /*
-    var bold = /\b[*]{1}(\w+)[*]{1}\b/gim;
     
-    var italic = /[_]{1}(\w+)[_]{1}/gim;
-    
-    var linethrough = /[-]{1}(\w+)[-]{1}/gim;
-    
-    var parsedMessage = message.replace(bold, '<span class=\"b\">$1</span>');
-        parsedMessage = parsedMessage.replace(italic, '<span class=\"i\">$1</span>');
-        parsedMessage = parsedMessage.replace(linethrough, '<span class=\"s\">$1</span>');
-    */
-    parsedMessage = document.createTextNode(parsedMessage).wholeText;
-    
+    parsedMessage = $('<div>').text(parsedMessage).html();
+        
     return parsedMessage;
   }
 
