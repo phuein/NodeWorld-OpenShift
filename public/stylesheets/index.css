@@ -81,6 +81,10 @@ div {
   width: 100%;
 }
 
+#inputBox {
+  width: 100%;
+}
+
 /* Text Classes */
 .b {
   font-weight: bold;
