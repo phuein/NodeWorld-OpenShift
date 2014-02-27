@@ -55,7 +55,8 @@
     
     // Resize elements.
     $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
-    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth() - 1);
+    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth() - 
+                            ($('#inputBox').outerWidth() - $('#inputBox').width()) - 1);
   });
   
   // Set focus to inputBox.
@@ -371,7 +372,8 @@
     
     // Resize elements.
     $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
-    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth() - 1);
+    $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth() - 
+                            ($('#inputBox').outerWidth() - $('#inputBox').width()) - 1);
   });
   
   // Welcome & connect to server.
