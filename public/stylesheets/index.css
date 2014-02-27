@@ -76,6 +76,7 @@ div {
   overflow-y: scroll;
   word-wrap: normal;
   word-break: break-word;
+  display: none;
 }
 
 /* Display #outerOutput1 by default. */
