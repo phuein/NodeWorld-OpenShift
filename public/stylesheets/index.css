@@ -25,82 +25,55 @@ div {
   overflow: hidden;
 }
 
-/* MENU */
-#outerMenu {
+#menuContainer {
   width: 100%;
-  vertical-align: top;
 }
 
-#innerMenu {
+#menu {
   width: 100%;
   text-align: center;
   vertical-align: bottom;
   padding-bottom: 0.5em;
 }
 
-#innerMenu > span {
-  border-bottom: solid;
+#menu > span {
+  border-bottom: 1px solid black;
   text-align: center;
   cursor: pointer;
 }
 
-/* OUTPUT */
-#outerOutputs {
+#outputsContainer {
   width: 100%;
-  top: 100%;
-  bottom: 100%;
-  vertical-align: middle;
+  height: 100%;
 }
 
-#innerOutputs {
+#outputs {
   width: 100%;
   height: 100%;
   position: relative;
 }
 
-/* Output Views */
-#innerOutputs > div {
+#outputs > div {
   width: 100%;
   height: 100%;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
   position: absolute;
-}
-
-#innerOutputs > div > div {
-  width: 100%;
-  height: 100%;
   overflow-y: scroll;
   word-wrap: normal;
   word-break: break-word;
 }
 
-/* INPUT */
-#outerInput {
+#inputContainer {
   vertical-align: bottom;
   width: 100%;
 }
 
-#innerInput {
-  width: 100%;
-  display: table;
-}
-
-#inputForm {
-  width: 100%;
-  display: table-row;
-}
-
-#inputBoxContainer {
-  display: table-cell;
+#input {
   width: 100%;
 }
 
-#inputBox {
+#inputBoxTD {
   width: 100%;
-}
-
-#sendButton {
-  /* Any width value will ruin automatic table display. */
 }
 
 /* Text Classes */

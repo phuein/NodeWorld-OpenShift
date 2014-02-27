@@ -47,15 +47,9 @@
     'clientCommands':   1
   };
 
-  // Scroll output on window resize.
+  // Scroll outputs on window resize.
   $(window).resize(function() {
-    /*
-    $('#output1').scrollTop($('#output1')[0].scrollHeight);
-    $('#output2').scrollTop($('#output2')[0].scrollHeight);
-    $('#output3').scrollTop($('#output3')[0].scrollHeight);
-    $('#output4').scrollTop($('#output4')[0].scrollHeight);
-    */
-    $('#innerOutputs > div > div').each(function (index) {
+    $('#outputs > div').each(function (index) {
       $(this).scrollTop($(this).scrollHeight);
     });
   });
@@ -332,7 +326,7 @@
     }
 
     // Add the text (parsing HTML) with styling arguments.
-    $('#innerOutput' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
+    $('#output' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
                         '<span style=\"' + 
                         (output.color  ? 'color: '       + output.color     + ';' : '') +
                         (output.font   ? 'font-family: ' + output.font      + ';' : '') +
@@ -345,7 +339,7 @@
                         '\">' + 
                         parsedMessage + '</span><br />');
     
-    $('#innerOutput' + number).scrollTop($('#innerOutput' + number)[0].scrollHeight); // Scroll down.
+    $('#output' + number).scrollTop($('#output' + number)[0].scrollHeight); // Scroll down.
     
     if (!alertRunning && !document.hasFocus()) {
       alertRunning = true;
@@ -358,18 +352,18 @@
   $(document).ready(function() {
     // Attach event to clickable elements.
     // Delegated, so it applies to new elements.
-    $('#innerOutputs > div > div').on('click', '.player, .target, .command', function() {
+    $('#outputs > div').on('click', '.player, .target, .command', function() {
       userEvent(this);
     });
     
     // Replace any unloaded images, in output, with their alt text.
-    $('#innerOutputs > div > div').on('error', 'img', function() {
+    $('#outputs > div').on('error', 'img', function() {
       $(this).replaceWith($(this).prop('alt'));
     });
     
     // Show only first output view, by default.
-    $('#innerOutputs > div').hide();
-    $('#innerOutputs > #outerOutput1').show();
+    $('#outputs > div').hide();
+    $('#outputs > #output1').show();
   });
   
   // Welcome & connect to server.
@@ -377,9 +371,9 @@
     document.title = title;
     
     // Inform of client-only information.
-    $('#innerOutput' + outputs.welcomeMessage).append('<span style=\"color: green;\">' + 
+    $('#output' + outputs.welcomeMessage).append('<span style=\"color: green;\">' + 
                                                   welcomeMessage + '</span><br /><br />');
-    $('#innerOutput' + outputs.welcomeMessage).scrollTop($('#innerOutput' + 
+    $('#output' + outputs.welcomeMessage).scrollTop($('#output' + 
                                     outputs.welcomeMessage)[0].scrollHeight); // Scroll down.
     
     // Client-Side Only Cookie Data.
@@ -598,23 +592,23 @@
       outputs.events          = 1;
       outputs.clientCommands  = 1;
   
-      $('#viewChanger').text('Multiple View');
+      $('#viewChanger').text('Multiple Views');
       
       viewMode = 1;
       
       var time = 1000;
       
-      $('#outerOutput2').hide(time);
-      $('#outerOutput3').hide(time);
-      $('#outerOutput4').hide(time);
+      $('#output2').hide(time);
+      $('#output3').hide(time);
+      $('#output4').hide(time);
       
-      $('#outerOutput1').animate({
+      $('#output1').animate({
         width: '100%',
         height: '100%'
       }, time);
       
-      $('#innerOutput1').animate({
-        scrollTop: $('#innerOutput1')[0].scrollHeight      // Scroll down.
+      $('#output1').animate({
+        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
       }, time);
       
       return;
@@ -633,46 +627,46 @@
       
       var time = 1000;
       
-      $('#outerOutput1').css('top', '0px');
-      $('#outerOutput1').css('left', '0px');
+      $('#output1').css('top', '0px');
+      $('#output1').css('left', '0px');
       
-      $('#outerOutput2').css('width', '50%');
-      $('#outerOutput2').css('height', '50%');
-      $('#outerOutput2').css('left', '50%');
-      $('#outerOutput2').css('top', '0px');
-      $('#outerOutput2').show(time);
+      $('#output2').css('width', '50%');
+      $('#output2').css('height', '50%');
+      $('#output2').css('left', '50%');
+      $('#output2').css('top', '0px');
+      $('#output2').show(time);
       
-      $('#outerOutput3').css('width', '50%');
-      $('#outerOutput3').css('height', '50%');
-      $('#outerOutput3').css('left', '0px');
-      $('#outerOutput3').css('top', '50%');
-      $('#outerOutput3').show(time);
+      $('#output3').css('width', '50%');
+      $('#output3').css('height', '50%');
+      $('#output3').css('left', '0px');
+      $('#output3').css('top', '50%');
+      $('#output3').show(time);
       
-      $('#outerOutput4').css('width', '50%');
-      $('#outerOutput4').css('height', '50%');
-      $('#outerOutput4').css('top', '50%');
-      $('#outerOutput4').css('left', '50%');
-      $('#outerOutput4').show(time);
+      $('#output4').css('width', '50%');
+      $('#output4').css('height', '50%');
+      $('#output4').css('top', '50%');
+      $('#output4').css('left', '50%');
+      $('#output4').show(time);
       
-      $('#outerOutput1').animate({
+      $('#output1').animate({
         width: '50%',
         height: '50%'
       }, time / 2);
       
-      $('#innerOutput1').animate({
-        scrollTop: $('#innerOutput1')[0].scrollHeight      // Scroll down.
+      $('#output1').animate({
+        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
       }, time);
       
-      $('#innerOutput2').animate({
-        scrollTop: $('#innerOutput2')[0].scrollHeight      // Scroll down.
+      $('#output2').animate({
+        scrollTop: $('#output2')[0].scrollHeight      // Scroll down.
       }, time);
       
-      $('#innerOutput3').animate({
-        scrollTop: $('#innerOutput3')[0].scrollHeight      // Scroll down.
+      $('#output3').animate({
+        scrollTop: $('#output3')[0].scrollHeight      // Scroll down.
       }, time);
       
-      $('#innerOutput4').animate({
-        scrollTop: $('#innerOutput4')[0].scrollHeight      // Scroll down.
+      $('#output4').animate({
+        scrollTop: $('#output4')[0].scrollHeight      // Scroll down.
       }, time);
       
       return;
@@ -681,46 +675,51 @@
 </script>
 </head>
 <body>
-<div id="content">
-  <div id="outerMenu">
-    <div id="innerMenu">
-      <span id="viewChanger" onclick="toggleView()">Multiple View</span>
-      
-      <!--
-      <span title="Use the help command to list your options: ,help">I'm in. What do I do now?</span>
-      <span title="Use the create command: ,create Candy">How can I create stuff?</span>
-      <span title="Use the modify command: ,modify 0.0 description Strange stuff.">How do I edit stuff?</span>
-      <span title="You are in the first room in the first map of this world.">Where am I?</span>
-      -->
-      <!-- <span title="Scale Font Size."><span>+</span> / <span>-</span></span> -->
+<table id="content">
+<tr id="menuContainer">
+  <td id="menu">
+    <span id="viewChanger" onclick="toggleView()">Multiple View</span>
+    
+    <!--
+    <span title="Use the help command to list your options: ,help">I'm in. What do I do now?</span>
+    <span title="Use the create command: ,create Candy">How can I create stuff?</span>
+    <span title="Use the modify command: ,modify 0.0 description Strange stuff.">How do I edit stuff?</span>
+    <span title="You are in the first room in the first map of this world.">Where am I?</span>
+    -->
+    <!-- <span title="Scale Font Size."><span>+</span> / <span>-</span></span> -->
+  </td>
+</tr>
+<tr id="outputsContainer">
+  <td id="outputs">
+    <!-- Chat -->
+    <div id="output1"></div>
+    <!-- System Events & Errors -->
+    <div id="output2"></div>
+    <!-- Player Events (look, examine) -->
+    <div id="output3"></div>
+    <!-- Map -->
+    <div id="output4"></div>
     </div>
-  </div>
-  
-  <div id="outerOutputs">
-    <div id="innerOutputs">
-      <!-- Chat -->
-      <div id="outerOutput1"><div id="innerOutput1"></div></div>
-      <!-- System Events & Errors -->
-      <div id="outerOutput2"><div id="innerOutput2"></div></div>
-      <!-- Player Events (look, examine) -->
-      <div id="outerOutput3"><div id="innerOutput3"></div></div>
-      <!-- Map -->
-      <div id="outerOutput4"><div id="innerOutput4"></div></div>
-    </div>
-  </div>
-  
-  <div id="outerInput">
-    <div id="innerInput">
-      <form action="/" id="inputForm" method="POST">
-        <div id="inputBoxContainer">
-          <input autofocus placeholder="Connecting to server, please wait..." type="text" 
-          id="inputBox" onkeydown="commandHistory(event)" />
-        </div>
-        <input type="submit" value="SEND" id="sendButton">
-      </form>
-    </div>
-  </div>
-</div>
+  </td>
+</tr>
+<tr id="inputContainer">
+  <td id="input">
+    <form action="/" id="inputForm" method="POST">
+      <table style="width: 100%">
+        <tr>
+          <td id="inputBoxTD">
+            <input autofocus placeholder="Connecting to server, please wait..." type="text" 
+            id="inputBox" onkeydown="commandHistory(event)" />
+          </td>
+          <td>
+            <input type="submit" value="SEND" id="sendButton">
+          </td>
+        </tr>
+      </table>
+    </form>
+  </td>
+</tr>
+</table>
 <script>
 // Client-side-only commands, which do not get sent to server.
 var clientCommands = {
