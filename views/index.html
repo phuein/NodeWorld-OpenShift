@@ -229,8 +229,7 @@
     return result;
   }
 
-  // Replace words surrounded by client's markup with HTML tags,
-  // and escape unallowed HTML into regular text.
+  // Replace words surrounded by client's markup with HTML tags.
   // * = bold. _ = italic. - = linethrough.
   function parseText(message) {
     var parsedMessage = message;
