@@ -67,12 +67,13 @@ div {
   width: 100%;
 }
 
-#inputBox {
+#inputBoxSpan {
   width: 100%;
+  float: left;
 }
 
-#sendButton {
-  float: right;
+#inputBox {
+  width: 100%;
 }
 
 /* Text Classes */
