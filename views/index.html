@@ -238,19 +238,39 @@
     for (var i=0; i < strArray.length; i++) {
       var curWord = strArray[i];
       
+      var firstChar = curWord.charAt(0);
+      var secondChar = curWord.charAt(1);
+      var beforelastChar = curWord.charAt(curWord.length-1);
+      var lastChar = curWord.charAt(curWord.length-2);
+      
+      // Bold & Italic, very flexible in markup style.
+      if ((firstChar == '*'      || firstChar == '_')      &&
+          (secondChar == '*'     || secondChar == '_')     &&
+          (beforelastChar == '*' || beforelastChar == '_') &&
+          (lastChar == '*'       || lastChar == '_')       ) {
+        strArray[i] = '<span class=\"b i\">' + curWord.slice(1, -1) + '</span>';
+        continue;
+      }
+      
+      // Bold.
       if (curWord.charAt(0) == '*' && curWord.charAt(curWord.length-1) == '*' && 
           curWord.charAt(1) != '*' && curWord.charAt(curWord.length-2) != '*') {
-        strArray[i] = '<span class=\"b\">' + strArray[i] + '</span>';
+        strArray[i] = '<span class=\"b\">' + curWord.slice(1, -1) + '</span>';
+        continue;
       }
       
+      // Italic.
       if (curWord.charAt(0) == '_' && curWord.charAt(curWord.length-1) == '_' && 
           curWord.charAt(1) != '_' && curWord.charAt(curWord.length-2) != '_') {
-        strArray[i] = '<span class=\"i\">' + strArray[i] + '</span>';
+        strArray[i] = '<span class=\"i\">' + curWord.slice(1, -1) + '</span>';
+        continue;
       }
       
+      // Strikethrough.
       if (curWord.charAt(0) == '-' && curWord.charAt(curWord.length-1) == '-' && 
           curWord.charAt(1) != '-' && curWord.charAt(curWord.length-2) != '-') {
-        strArray[i] = '<span class=\"s\">' + strArray[i] + '</span>';
+        strArray[i] = '<span class=\"s\">' + curWord.slice(1, -1) + '</span>';
+        continue;
       }
     }
     
