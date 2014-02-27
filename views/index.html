@@ -303,7 +303,7 @@
   
   // Attach event to clickable elements.
   // Delegated, so it applies to new elements.
-  $('#innerOutputs').on('click', '.player, .target, .command', function() {
+  $('#innerOutputs > div > div').on('click', '.player, .target, .command', function() {
     userEvent(this);
   });
   
