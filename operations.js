@@ -605,9 +605,9 @@ function randomName(name) {
 
 // Returns the string with <>&" escaped for HTML.
 function escapeHTML(str) {
-  return String(str).replace(/</gm, '&lt;')
-                    .replace(/>/gm, '&gt;')
-                    .replace(/&/gm, '&amp;')
+  return String(str).replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/&/g, '&amp;')
                     .replace(/"/g, '&quot;');
 }
 

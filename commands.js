@@ -746,7 +746,7 @@ commands.user = {
     }
     
     // Escape <>&" for HTML.
-    //msg = escapeHTML(msg);
+    msg = escapeHTML(msg);
     
     // Send to all others.
     socketHandler(user, 'message', fullNameID(user) + ': ' + msg, 'broadcast');
