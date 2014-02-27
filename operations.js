@@ -605,10 +605,12 @@ function randomName(name) {
 
 // Returns the string with <>&" escaped for HTML.
 function escapeHTML(str) {
-  return String(str).replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/&/g, '&amp;')
-                    .replace(/"/g, '&quot;');
+  if (typeof str !== 'string') str = str.toString();
+  
+  return str.replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;');
 }
 
 //*** EXPORTS ***//
