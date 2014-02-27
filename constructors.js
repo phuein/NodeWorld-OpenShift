@@ -117,10 +117,6 @@ var constructors = {
       return '<span class=\"object\">' + text + '</span>';
     },
     
-    'link': function (text) {
-      return '<span class=\"a\">' + text + '</span>';
-    },
-    
     'player': function (text) {
       return '<span class=\"player\">' + text + '</span>';
     },

@@ -127,23 +127,22 @@ div {
   text-decoration: line-through;    /* Commonly known as Strike-through. */
 }
 
+a         { color: #0B4861; }   /* Default. */
+a:link    { color: #0B4861; }
+a:visited { color: #053341; }
+a:hover   { color: #0B6699; }
+a:active  { color: #0B88CC; }
+
+#cmdChar {
+  border: 1px dotted black;
+  vertical-align: middle;
+}
+
 .object {
   display: block;
   unicode-bidi: embed;
   font-family: monospace;
   white-space: pre;
-}
-
-a {
-  color: #00B7FF;
-}
-
-.a {
-  color: #00B7FF;
-}
-
-#cmdChar {
-  border-bottom: 1px dashed black;
 }
 
 .player {
