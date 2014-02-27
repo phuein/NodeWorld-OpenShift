@@ -548,8 +548,8 @@
   
   // User Events //
   function userEvent(element) {
-    console.log($(element));
-    console.log($(element.text()));
+    console.log( $(element) );
+    console.log( $(element).text() );
     if ($(element).hasClass('player')) {
       sendCommand(cmdChar + 'examine ' + $(element).text());
       return;
