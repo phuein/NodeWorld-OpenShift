@@ -2,8 +2,8 @@ html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  padding: 0;
-  margin: 0;
+  padding: 0px;
+  margin: 0px;
 }
 
 body {
@@ -11,8 +11,8 @@ body {
   height: 100%;
   overflow: hidden;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  padding: 0;
-  margin: 0;
+  padding: 0px;
+  margin: 0px;
 }
 
 div {
@@ -47,28 +47,30 @@ div {
 #outputsContainer {
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
+  top: 0px;
+  left: 0px;
   position: relative;
   overflow: hidden;
 }
 
 #outputs {
-  top: 0;
-  left: 0;
+  top: 0px;
+  left: 0px;
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
+  margin: 0px;
+  background-color: white;
 }
 
 #outputs > div {
   width: 100%;
-  zoom: 1;
+  height: 100%;
   border: 1px solid #cccccc;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0px;
+  left: 0px;
   overflow-y: scroll;
   word-wrap: normal;
   word-break: break-word;
