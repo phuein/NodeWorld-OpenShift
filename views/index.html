@@ -350,7 +350,7 @@
     if (!alertRunning && !document.hasFocus()) {
       alertRunning = true;
       // Blink title text & message, if unfocused.
-      alertTimer = setInterval(titleAlert, 1000, output.message.slice(0, 10));
+      alertTimer = setInterval(titleAlert, 1000, output.message.slice(0, 20));
     }
   }
   
@@ -368,8 +368,11 @@
     });
     
     // Show only first output view, by default.
-    $('#innerOutputs > div').hide();
-    $('#innerOutputs > #outerOutput1').show();
+    //$('#innerOutputs > div').hide();
+    //$('#innerOutputs > #outerOutput1').show();
+    $('#innerOutputs > #outerOutput2').hide();
+    $('#innerOutputs > #outerOutput3').hide();
+    $('#innerOutputs > #outerOutput4').hide();
   });
   
   // Welcome & connect to server.
