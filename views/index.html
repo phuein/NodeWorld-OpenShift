@@ -42,6 +42,7 @@
     'message':          1,
     'emote':            1,
     'tell':             1,
+    'say':              1,
     'warning':          1,
     'info':             1,
     'events':           1,
@@ -229,10 +230,10 @@
   }
 
   // Replace words surrounded by client's markup with HTML tags,
-  // and escape HTML into regular text.
+  // and escape unallowed HTML into regular text.
   // * = bold. _ = italic. - = linethrough.
   function parseText(message) {
-    var parsedMessage = $('<div>').text(message).html();
+    var parsedMessage = '';
     
     var strArray = parsedMessage.split(' ');      // Split into words.
     
@@ -326,17 +327,12 @@
     
     if (!output.message) {
       parsedMessage = (typeof output === 'string' ? output : JSON.stringify(output));
-    } else if (output.escapeHTML) {
-      // Parse chat message.
+    } else {
+      // Parse message.
       parsedMessage = parseURL(
                         parseCommands(
                           parseObjects(
                             parseText(output.message) ) ) );
-    } else {
-      // Parse non-chat message.
-      parsedMessage = parseURL(
-                        parseCommands(
-                          parseObjects(output.message) ) );
     }
 
     // Add the text (parsing HTML) with styling arguments.
@@ -468,8 +464,7 @@
     // Chat messages, that everyone can see.
     socket.on('message', function (message) {
       var output = {
-        'message': message,
-        'escapeHTML': true           // Chat does not allow HTML markup.
+        'message': message
       };
       
       appendOutput(output, outputs.message);
@@ -489,11 +484,20 @@
     socket.on('tell', function (message) {
       var output = {
         'message': message,
-        'color': 'rgb(0, 0, 80)',
-        'escapeHTML': true           // Chat does not allow HTML markup.
+        'color': 'rgb(0, 0, 80)'
       };
       
       appendOutput(output, outputs.tell);
+    });
+    
+    // Chat messages, that only me and those near me can see.
+    socket.on('say', function (message) {
+      var output = {
+        'message': message,
+        'color': 'rgb(0, 20, 100)'
+      };
+      
+      appendOutput(output, outputs.say);
     });
     
     // Warnings for troubleshooting, such as command syntax.

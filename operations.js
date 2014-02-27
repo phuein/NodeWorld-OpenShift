@@ -603,6 +603,14 @@ function randomName(name) {
   return name;
 }
 
+// Returns the string with <>&" escaped for HTML.
+function escapeHTML(str) {
+  return String(str).replace(/</gm, '&lt;')
+                    .replace(/>/gm, '&gt;')
+                    .replace(/&/gm, '&amp;')
+                    .replace(/"/g, '&quot;');
+}
+
 //*** EXPORTS ***//
   exports.upperFirst        =   upperFirst;
   exports.toType            =   toType;
@@ -624,4 +632,5 @@ function randomName(name) {
   exports.updateUser        =   updateUser;
   exports.commandExists     =   commandExists;
   exports.randomName        =   randomName;
+  exports.escapeHTML        =   escapeHTML;
 // *** //

@@ -745,6 +745,9 @@ commands.user = {
       }
     }
     
+    // Escape <>&" for HTML.
+    msg = escapeHTML(msg);
+    
     // Send to all others.
     socketHandler(user, 'message', fullNameID(user) + ': ' + msg, 'broadcast');
     
@@ -788,16 +791,19 @@ commands.user = {
       }
     }
     
+    // Escape <>&" for HTML.
+    msg = escapeHTML(msg);
+    
     // Speak to the room, only.
     for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
       var curPlayer = world.watch[strPos(user.player.room)][i];
       
       if (curPlayer.account.username != user.account.username) {
         // Show my message to others.
-        socketHandler(curPlayer, 'message', fullNameID(user) + ' says: ' + msg);
+        socketHandler(curPlayer, 'say', fullNameID(user) + ' says: ' + msg);
       } else {
         // Show me my message.
-        socketHandler(user, 'message', format.bold('You say: ') + msg);
+        socketHandler(user, 'say', format.bold('You say: ') + msg);
       }
     }
   },
@@ -823,6 +829,9 @@ commands.user = {
     }
     
     var username = caseName(cmdArray[1]); // Make it case-compatibale for usernames, for example 'Bob'.
+    
+    // Escape <>&" for HTML.
+    msg = escapeHTML(msg);
     
     // Find player by username in world.users.
     var targetUser = world.users[username];
