@@ -277,9 +277,9 @@
     var target = /\[{1}(\d+[.]\d+)\]{1}/igm;
     
     var parsedMessage = message.replace(player, 
-                        '[<span class=\"player\" onclick=\"userEvent(this)\">$1</span>]');
+                        '[<span class=\"player\">$1</span>]');
         parsedMessage = parsedMessage.replace(target, 
-                        '[<span class=\"target\" onclick=\"userEvent(this)\">$1</span>]');
+                        '[<span class=\"target\">$1</span>]');
     
     return parsedMessage;
   }
@@ -292,7 +292,7 @@
       var curWord = messageArray[i];
       // Word matches an availble command.
       if (availableCommands.indexOf(curWord) >= 0) {
-        messageArray[i] = '<span class=\"command\" onclick=\"userEvent(this)\">' + curWord + '</span>';
+        messageArray[i] = '<span class=\"command\">' + curWord + '</span>';
       }
     }
     
@@ -300,6 +300,12 @@
     
     return parsedMessage;
   }
+  
+  // Attach event to clickable elements.
+  // Delegated, so it applies to new elements.
+  $('#innerOutputs').on('click', '.player, .target, .command', function() {
+    userEvent(this);
+  });
   
   // Replace any unloaded images, in output, with their alt text.
   $('#innerOutputs').on('error', 'img', function() {
@@ -539,6 +545,8 @@
   
   // User Events //
   function userEvent(element) {
+    console.log($(element));
+    console.log($(element.text());
     if ($(element).hasClass('player')) {
       sendCommand(cmdChar + 'examine ' + $(element).text());
       return;

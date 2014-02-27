@@ -1224,13 +1224,14 @@ commands.user = {
       
       updateUser(user, newUser); // Update!
       
-      socketHandler(user, 'info', 'You have changed your name to ' + format.bold(user.player.name) + '.');
+      socketHandler(user, 'info', 'You have changed your name to ' + format.player(user.player.name) + '.');
       // And alert everybody else about this...
       socketHandler(user, 'info', format.bold(oldName) + ' is now known as ' + 
                             format.bold(user.player.name) + '.', 'broadcast');
     });
   },
-  /*  Rename into a non-registered username, changing player name, as well.
+  /*  Rename into a non-registered username, changing player name, as well,
+   *  or only renaming the player name of a registered user.
   */
 
   // login USERNAME PASSWORD

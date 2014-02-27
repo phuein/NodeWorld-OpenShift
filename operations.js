@@ -302,12 +302,12 @@ function fullNameID(target) {
   if (target.player) {
     var username = '';
     if (result != target.account.username) {
-      username = ' [' + target.account.username + ']';
+      username = ' [' + format.player(target.account.username) + ']';
     }
     
     result = result + username;
   } else {
-    result = result + ' [' + strTarget(target) + ']';
+    result = result + ' [' + format.target(strTarget(target)) + ']';
   }
   
   return result;
