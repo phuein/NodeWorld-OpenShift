@@ -50,8 +50,7 @@
   // Scroll outputs on window resize.
   $(window).resize(function() {
     $('#outputs > div').each(function (index) {
-      console.log('RESIZE!');
-      $(this).scrollTop($(this).scrollHeight);
+      $(this).scrollTop($(this)[0].scrollHeight);
     });
   });
   
