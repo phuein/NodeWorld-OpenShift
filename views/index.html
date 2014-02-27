@@ -21,9 +21,6 @@
           cmdChar + 'login</span> are saved in a <b>cookie</b>, ' + 
           'and loaded automatically.<br />' + 
           
-          '<b>Commands</b> start with the command character: ' + 
-          '<span style=\"font-size: 200%;\" id=\"cmdChar\">' + cmdChar + '</span><br />' + 
-          
           'Please, <span class=\"command\">' + cmdChar + 'rename</span> into a unique alias, ' + 
           'and <span class=\"command\">' + cmdChar + 'register</span> your name,' + 
           ' to get world-building access!<br />' + 
@@ -524,8 +521,6 @@
     // The server's command character. Used to identify messages as commands.
     socket.on('cmdChar', function (message) {
       cmdChar = message;
-      $('#cmdChar').text(cmdChar);
-      console.log('cmdChar Updated!');
     });
     
     // The commands that are currently available to the user, by access level.
