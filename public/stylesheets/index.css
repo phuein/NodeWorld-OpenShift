@@ -137,9 +137,9 @@ a:active  { color: #0B88CC; }
   display: inline-table;
 }
 
-#cmdChar > span {
+#cmdCharSpan {
   vertical-align: middle;
-  display: table-cell;
+  display: table-row;
 }
 
 .object {
