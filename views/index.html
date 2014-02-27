@@ -53,7 +53,7 @@
       $(this).scrollTop($(this)[0].scrollHeight);
     });
     
-    $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height());
+    $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
   });
   
   // Set focus to inputBox.
@@ -368,7 +368,7 @@
     $('#outputs > #output1').show();
     
     // Size outputs div to scale.
-    $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height());
+    $('#outputs').css('height', $('#content').height() - $('#menu').height() - $('#input').height() - 1);
   });
   
   // Welcome & connect to server.
