@@ -353,7 +353,7 @@ io.sockets.on('connection', function (socket) {
   socket.emit('cmdChar', cmdChar);
   
   // Inform everybody about the new user.
-  socket.broadcast.emit('info', user.player.name + ' has joined.');
+  socket.broadcast.emit('info', command.fullNameID(user.player.name) + ' has joined.');
   
   // Handle room and map loading, or creation, accordingly. Does a 'look', as well.
   command.loadRoom(user);
@@ -366,7 +366,7 @@ io.sockets.on('connection', function (socket) {
     if (limitMessages != null && messageCount >= 1000) {
       // Limit socket messages to 1000 per minute.
       socket.emit('error', 'Server command-flooding detected! Your commands are ignored for one minute.');
-      console.log(Timestamp() + 'User ' + user.account.username + ' is command-flooding the server!');
+      console.log(Timestamp() + 'User ' + command.fullNameID(user) + ' is command-flooding the server!');
       return;
     } else if (limitMessages == null) {
       // Start timer.

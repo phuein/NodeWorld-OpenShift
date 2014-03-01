@@ -303,6 +303,8 @@ function fullNameID(target) {
     var username = '';
     if (result != target.account.username) {
       username = ' [' + format.player(target.account.username) + ']';
+    } else {
+      result = format.player(result);
     }
     
     result = result + username;
@@ -426,10 +428,11 @@ function verifyWearable(target) {
   return true;
 }
 
-// Assert if a location on an object (user, target, room, etc')
+// Assert if an object (Object, Array, String)
 // does't exist or is empty. Returns true if empty, or false otherwise.
-function locationEmpty(location) {
-  if (!location || JSON.stringify(location) == '{}' || JSON.stringify(location) == '[]') {
+function isEmpty(obj) {
+  if (obj === null || obj === undefined || obj == '' || 
+      JSON.stringify(obj) == '{}' || JSON.stringify(obj) == '[]') {
     return true;
   }
   
@@ -611,6 +614,24 @@ function escapeHTML(str) {
             .replace(/"/g, '&quot;');
 }
 
+// Returns a pretty string of which body parts wear which items.
+function strWearing(user) {
+  var str = '';
+  
+  if (!user.player.worn) {
+    str = 'Nothing.';
+    return str;
+  }
+  
+  for (var location in user.player.worn) {
+    var item = user.player.worn[location];
+    
+    if (!isEmpty(item)) str += upperFirst(location) + ': ' + JSON.stringify(item);
+  }
+  
+  return str;
+}
+
 //*** EXPORTS ***//
   exports.upperFirst        =   upperFirst;
   exports.toType            =   toType;
@@ -628,9 +649,10 @@ function escapeHTML(str) {
   exports.strTarget         =   strTarget;
   exports.parseTarget       =   parseTarget;
   exports.verifyWearable    =   verifyWearable;
-  exports.locationEmpty     =   locationEmpty;
+  exports.isEmpty           =   isEmpty;
   exports.updateUser        =   updateUser;
   exports.commandExists     =   commandExists;
   exports.randomName        =   randomName;
   exports.escapeHTML        =   escapeHTML;
+  exports.strWearing        =   strWearing;
 // *** //

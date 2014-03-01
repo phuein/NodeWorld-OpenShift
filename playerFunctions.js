@@ -28,7 +28,7 @@ function holdTarget(user, target, hand) {
   }
   
   // Player must have hands!
-  if (locationEmpty(user.player.worn.hands)) {
+  if (isEmpty(user.player.worn.hands)) {
     socketHandler(user, 'warning', 'You have no hands to hold with!');
     return;
   }
@@ -78,7 +78,7 @@ function dropTarget(user, target) {
   var stringifiedTarget = strTarget(target);
   
   // Player must have hands!
-  if (locationEmpty(user.player.worn.hands)) {
+  if (isEmpty(user.player.worn.hands)) {
     socketHandler(user, 'warning', 'You have no hands to drop anything from!');
     return;
   }

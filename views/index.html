@@ -7,13 +7,13 @@
 <meta charset="utf-8" />
 <title>Node World</title>
 <script>
-  viewMode = 1;           // Number of outputs in view.
-  cmdChar = ',';          // Default is a comma.
-  title = 'Node World';
-  welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
+  var viewMode = 1;           // Number of outputs in view.
+  var cmdChar = ',';          // Default is a comma.
+  var title = 'Node World';
+  var welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
   
-          '<span class=\"command\">' + cmdChar + 'color </span>(COLORNAME)<br />' + 
-          '<span class=\"command\">' + cmdChar + 'bgcolor </span>(COLORNAME)<br />' + 
+          '<span class=\"command\">' + cmdChar + 'color</span> (COLORNAME)<br />' + 
+          '<span class=\"command\">' + cmdChar + 'bgcolor</span> (COLORNAME)<br />' + 
           
           '() = Optional. Send without arguments, to restore default values.<br />' + 
           
@@ -25,12 +25,17 @@
           'and <span class=\"command\">' + cmdChar + 'register</span> your name,' + 
           ' to get world-building access!<br /><br />' + 
           
-          'Use <b>Space</b> to focus on the input box, <b>Escape</b> to lose focus, ' + 
-          'and <i>again</i> to clear it.<br /><br />' + 
+          'Use <span class=\"b\">Space</span> or ' + 
+          '<span class=\"b\">Enter</span> to focus on the input box, ' + 
+          '<span class=\"b\">Escape</span> to lose focus, ' + 
+          'and <span class=\"i\">again</span> to clear it.<br /><br />' + 
           
           'The client formats text according to this markup: ' + 
-          '*<b>bold</b>* _<i>italic</i>_ -<del>linethrough</del>-';
-  var availableCommands = [];
+          '*<span class=\"b\">bold</span>* ' + 
+          '_<span class=\"i\">italic</span>_ ' + 
+          '-<span class=\"s\">linethrough</span>-';
+  
+  var availableCommands = [];     // Holds all commands available to the user.
   
   var extraMargin = 6;    // Extra pixels, when resizing main elements.
   
@@ -250,7 +255,7 @@
           (secondChar == '*'     || secondChar == '_')     &&
           (beforelastChar == '*' || beforelastChar == '_') &&
           (lastChar == '*'       || lastChar == '_')       ) {
-        strArray[i] = '<span class=\"b i\">' + curWord.slice(1, -1) + '</span>';
+        strArray[i] = '<span class=\"b i\">' + curWord.slice(2, -2) + '</span>';
         continue;
       }
       
@@ -521,7 +526,7 @@
     socket.on('tell', function (message) {
       var output = {
         'message': message,
-        'color': 'rgb(0, 0, 80)'
+        'color': 'rgb(0, 120, 120)'
       };
       
       appendOutput(output, outputs.tell);
@@ -531,7 +536,7 @@
     socket.on('say', function (message) {
       var output = {
         'message': message,
-        'color': 'rgb(0, 20, 100)'
+        'color': 'rgb(20, 100, 100)'
       };
       
       appendOutput(output, outputs.say);

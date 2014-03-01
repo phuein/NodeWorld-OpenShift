@@ -1025,8 +1025,11 @@ commands.user = {
     // By default examine myself.
     if (!cmdArray[1] || caseName(cmdArray[1]) == user.account.username) {
       socketHandler(user, 'event', 'You examine yourself...' + format.newline + 
-                                format.object(JSON.stringify(user.player, null, 2)));
-                                // .replace(/[\[\]{}]/g, '')));
+                                'Name: ' + fullName(user) + format.newline + 
+                                'Description: ' + user.player.description + format.newline + 
+                                'Map: ' + user.player.map + format.newline + 
+                                'Position: ' + JSON.stringify(user.player.room) + format.newline + 
+                                'Wearing: ' + strWearing(user) + format.newline);
       return;
     }
     
@@ -1035,12 +1038,15 @@ commands.user = {
     
     // Locate the username in current room.
     for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
-      var curPlayer = world.watch[strPos(user.player.room)][i];
+      var curUser = world.watch[strPos(user.player.room)][i];
       
-      if (curPlayer.account.name == fixedName) {
-        socketHandler(user, 'event', 'Examining ' + fullNameID(curPlayer) + '...' + format.newline + 
-                                      format.object(JSON.stringify(curPlayer.player, null, 2)));
-                                      // .replace(/[\[\]{}]/g, '')));
+      if (curUser.account.name == fixedName) {
+        socketHandler(user, 'event', 'Examining ' + fullNameID(curUser) + '...' + format.newline + 
+                                      'Name: ' + fullName(curUser) + format.newline + 
+                                      'Description: ' + curUser.player.description + format.newline + 
+                                      'Map: ' + curUser.player.map + format.newline + 
+                                      'Position: ' + JSON.stringify(curUser.player.room) + format.newline + 
+                                      'Wearing: ' + strWearing(curUser) + format.newline);
         return;
       }
     }
