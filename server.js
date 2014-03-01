@@ -353,7 +353,7 @@ io.sockets.on('connection', function (socket) {
   socket.emit('cmdChar', cmdChar);
   
   // Inform everybody about the new user.
-  socket.broadcast.emit('info', command.fullNameID(user.player.name) + ' has joined.');
+  socket.broadcast.emit('info', command.fullNameID(user) + ' has joined.');
   
   // Handle room and map loading, or creation, accordingly. Does a 'look', as well.
   command.loadRoom(user);
