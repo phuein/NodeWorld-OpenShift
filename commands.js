@@ -1046,7 +1046,7 @@ commands.user = {
     }
     
     // Otherwise, player was not found.
-    socketHandler(user, 'warning', 'Player ' + format.player(cmdArray[1]) + ' was not found in this room.');
+    socketHandler(user, 'warning', 'Player ' + format.player(cmdArray[1]) + ' was not found here.');
   },
   /*  Examine the properties of players, or myself by default.
    */
