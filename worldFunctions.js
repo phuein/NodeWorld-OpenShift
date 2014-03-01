@@ -221,7 +221,7 @@ function processRoom(user, state) {
     
     // Inform others in the last room.
     for (var i=0; i < world.watch[lastRoomStr].length; i++) {
-      socketHandler(world.watch[lastRoomStr][i], 'info', user.player.name +
+      socketHandler(world.watch[lastRoomStr][i], 'info', fullNameID(user) +
                                                         ' has moved away.');
     }
     
