@@ -1026,10 +1026,13 @@ commands.user = {
     if (!cmdArray[1] || caseName(cmdArray[1]) == user.account.username) {
       socketHandler(user, 'event', 'You examine yourself...' + format.newline + 
                                 'Name: ' + fullName(user) + format.newline + 
-                                'Description: ' + user.player.description + format.newline + 
+                                'Description: ' + 
+                                (user.player.description ? user.player.description : 'None.') + 
+                                format.newline + 
                                 'Map: ' + user.player.map + format.newline + 
                                 'Position: ' + JSON.stringify(user.player.room) + format.newline + 
-                                'Wearing: ' + format.newline + strWearing(user) + format.newline);
+                                'Wearing: ' + 
+                                (user.player.worn ? format.newline + strWearing(user) : 'Nothing.'));
       return;
     }
     
@@ -1042,11 +1045,14 @@ commands.user = {
       
       if (curUser.account.username == fixedName) {
         socketHandler(user, 'event', 'Examining ' + fullNameID(curUser) + '...' + format.newline + 
-                                      'Name: ' + fullName(curUser) + format.newline + 
-                                      'Description: ' + curUser.player.description + format.newline + 
-                                      'Map: ' + curUser.player.map + format.newline + 
-                                      'Position: ' + JSON.stringify(curUser.player.room) + format.newline + 
-                                      'Wearing: ' + format.newline + strWearing(curUser) + format.newline);
+                                'Name: ' + fullName(curUser) + format.newline + 
+                                'Description: ' + 
+                                (curUser.player.description ? curUser.player.description : 'None.') + 
+                                format.newline + 
+                                'Map: ' + curUser.player.map + format.newline + 
+                                'Position: ' + JSON.stringify(curUser.player.room) + format.newline + 
+                                'Wearing: ' + 
+                                (curUser.player.worn ? format.newline + strWearing(curUser) : 'Nothing.'));
         return;
       }
     }
@@ -1081,12 +1087,12 @@ commands.user = {
       targets = ( !targets ? 'Nothing.' : targets.slice(0, -2) ); // Remove last ', '.
       
       var description = 'None';
-      if (curRoom.description && curRoom.description != '') {
+      if (curRoom.description && curRoom.description !== '') {
         description = curRoom.description;
       }
       
-      var commands = ( curRoom.commands.length == 0 ? 'None.' : curRoom.commands.join(', ') + '.' );
-      var exits = ( curRoom.exits.length == 0 ? 'None.' : curRoom.exits.join(', ') + '.' );
+      var commands = ( curRoom.commands.length === 0 ? 'None.' : curRoom.commands.join(', ') + '.' );
+      var exits = ( curRoom.exits.length === 0 ? 'None.' : curRoom.exits.join(', ') + '.' );
       
       // Display room data.
       socketHandler(user, 'event', format.bold('Title: ' + title) + format.newline + 
@@ -1113,44 +1119,18 @@ commands.user = {
         
         // Create the display text.
         var targetText = '';
-        /*
-        for (var propertyName in curTarget) {
-          var curProperty = curTarget[propertyName];
-          
-          // Options: [object Array], [object String], [object Object]
-          var propertyData = '';
-          switch (toType(curProperty)) {
-            case '[object String]':
-              propertyData = '\"' + curProperty + '\"';
-              break;
-            
-            case '[object Array]':
-              propertyData = '[' + curProperty.join(', ') + ']';
-              break;
-            
-            case '[object Object]':
-              propertyData = '<pre style="font-size: 80%; display: inline;">' +
-                              JSON.stringify(curProperty, null, 2) + '</pre>';
-              break;
-            
-            default:
-              propertyData = curProperty;
-          }
-          
-          targetText += '<b>' + propertyName + ':</b> ' +  propertyData + '<br />';
-        }*/
         
+        var description = ( curTarget.description ? curTarget.description : 'None.' );
         var commands = ( curTarget.commands.length == 0 ? 'None.' : curTarget.commands.join(', ') + '.' );
         
         // Display target data.
         socketHandler(user, 'event', format.bold(fullNameID(curTarget)) + format.newline + 
-        'Description: '   + curTarget.description               + format.newline +
-        'Position: '      + JSON.stringify(curTarget.position)  + format.newline +
-        'Commands: '      + commands                            + format.newline +
-        'Size: '          + curTarget.size                      + format.newline + 
-        'Trade: '         + JSON.stringify(curTarget.trade)     + format.newline);
+        'Description: '   + description                           + format.newline +
+        'Position: '      + JSON.stringify(curTarget.position)    + format.newline +
+        'Commands: '      + commands                              + format.newline +
+        'Size: '          + curTarget.size                        + format.newline + 
+        'Trade: '         + JSON.stringify(curTarget.trade)       + format.newline);
         
-        // user.socket.emit('event', targetText + '<br />');
         return;
       }
     }

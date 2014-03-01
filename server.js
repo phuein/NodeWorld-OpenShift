@@ -398,7 +398,7 @@ io.sockets.on('connection', function (socket) {
     }
     
     // Default to chat message.
-    command.handleCommands(',chat ' + message, user);
+    command.handleCommands(cmdChar + 'chat ' + message, user);
   });
   
   // When a client socket disconnects.

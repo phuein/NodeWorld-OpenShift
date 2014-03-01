@@ -615,12 +615,12 @@ function escapeHTML(str) {
 }
 
 // Returns a pretty string of which body parts wear which items.
+// Returns false if no 'worn' property.
 function strWearing(user) {
   var str = '';
   
   if (!user.player.worn) {
-    str = 'Nothing.';
-    return str;
+    return false;
   }
   
   for (var location in user.player.worn) {
