@@ -626,7 +626,7 @@ function strWearing(user) {
   for (var location in user.player.worn) {
     var item = user.player.worn[location];
     
-    if (!isEmpty(item)) str += upperFirst(location) + ': ' + JSON.stringify(item);
+    if (!isEmpty(item)) str += upperFirst(location) + ': ' + JSON.stringify(item) + format.newline;
   }
   
   return str;

@@ -378,7 +378,7 @@
                         parsedMessage + '</span><br />');
     
     // Avoid badgering user, if already scrolled up somewhat.
-    if (scrolledDown <= 100) scrollDown($('#output' + number), 200);
+    if (scrolledDown <= 50) scrollDown($('#output' + number), 1000);
     
     // Activate title alert.
     if (!alertRunning && !document.hasFocus()) {
@@ -536,7 +536,7 @@
     socket.on('say', function (message) {
       var output = {
         'message': message,
-        'color': 'rgb(20, 100, 100)'
+        'color': 'rgb(0, 60, 60)'
       };
       
       appendOutput(output, outputs.say);

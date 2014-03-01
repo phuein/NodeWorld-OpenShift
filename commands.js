@@ -1029,7 +1029,7 @@ commands.user = {
                                 'Description: ' + user.player.description + format.newline + 
                                 'Map: ' + user.player.map + format.newline + 
                                 'Position: ' + JSON.stringify(user.player.room) + format.newline + 
-                                'Wearing: ' + strWearing(user) + format.newline);
+                                'Wearing: ' + format.newline + strWearing(user) + format.newline);
       return;
     }
     
@@ -1040,13 +1040,13 @@ commands.user = {
     for (var i=0; i < world.watch[strPos(user.player.room)].length; i++) {
       var curUser = world.watch[strPos(user.player.room)][i];
       
-      if (curUser.account.name == fixedName) {
+      if (curUser.account.username == fixedName) {
         socketHandler(user, 'event', 'Examining ' + fullNameID(curUser) + '...' + format.newline + 
                                       'Name: ' + fullName(curUser) + format.newline + 
                                       'Description: ' + curUser.player.description + format.newline + 
                                       'Map: ' + curUser.player.map + format.newline + 
                                       'Position: ' + JSON.stringify(curUser.player.room) + format.newline + 
-                                      'Wearing: ' + strWearing(curUser) + format.newline);
+                                      'Wearing: ' + format.newline + strWearing(curUser) + format.newline);
         return;
       }
     }
