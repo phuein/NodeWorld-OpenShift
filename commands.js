@@ -1254,10 +1254,16 @@ commands.user = {
     // Returns a username with first letter uppercase and the rest lowercase.
     var fixedUsername = caseName(cmdArray[1]);
     
-    // Check that the username isn't already being used,
-    // unless I am the one using it (register -> login.)
+    // I am already logged into this username.
+    if (world.users[fixedUsername] == user) {
+      socketHandler(user, 'warning', 'You are already logged in with that username.');
+      return;
+    }
+    
+    // Username is already being used,
+    // unless I am the one using it (register -> login).
     if (world.users[fixedUsername] && user.account.username != fixedUsername) {
-      socketHandler(user, 'warning', 'That username is already being used right now!');
+      socketHandler(user, 'warning', 'That username is already being used, right now.');
       return;
     }
 

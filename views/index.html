@@ -32,6 +32,8 @@
           '*<b>bold</b>* _<i>italic</i>_ -<del>linethrough</del>-';
   var availableCommands = [];
   
+  var extraMargin = 6;    // Extra pixels, when resizing main elements.
+  
   // Direct messages to outputs.
   var outputs = {
     'errors':           1,
@@ -50,14 +52,15 @@
   // Scroll outputs on window resize.
   $(window).resize(function() {
     $('#outputs > div').each(function (index) {
-      $(this).scrollTop($(this)[0].scrollHeight);
+      scrollDown($(this), 200);
     });
     
     // Resize elements.
     $('#outputs').css('height', $('#content').height() - $('#menu').height() - 
-                                              $('#input').height() - 5 + 'px');
+                                              $('#input').height() - extraMargin + 'px');
+    
     $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth(true) - 
-                      ($('#inputBox').outerWidth(true) - $('#inputBox').width()) - 5 + 'px');
+                      ($('#inputBox').outerWidth(true) - $('#inputBox').width()) - extraMargin + 'px');
   });
   
   // Set focus to inputBox.
@@ -308,6 +311,33 @@
     return parsedMessage;
   }
   
+  // If user is not quite scrolled away from bottom,
+  // (avoid annoying the user, if scrolled back)
+  // then scroll down all the way.
+  // Element is jQuery object. Delay is optional, for animation.
+  function scrollDown(element, delay) {
+    var scrolledDown =  element[0].scrollHeight - 
+                        element.scrollTop() - 
+                        element.height();      // Equals 0, if fully scrolled down, or bigger otherwise.
+    
+    // Delay must be numeric.
+    if (isNaN(delay)) var delay = null;
+    
+    if (scrolledDown <= 40) {
+      if (delay) {
+        // Animate.
+        element.animate({
+          'scrollTop': element[0].scrollHeight
+        }, delay, function () {
+          $(this).scrollTop($(this)[0].scrollHeight);     // Verify scroll down, after delay.
+        });
+      } else {
+        // Immediate.
+        element.scrollTop(element[0].scrollHeight);
+      }
+    }
+  }
+  
   // Parse messages & objects. Add Timestamp to messages.
   // Scroll down. Append text to output# or default to output1.
   function appendOutput(output, number) {
@@ -345,8 +375,9 @@
                         '\">' + 
                         parsedMessage + '</span><br />');
     
-    $('#output' + number).scrollTop($('#output' + number)[0].scrollHeight); // Scroll down.
+    scrollDown($('#output' + number), 200);
     
+    // Activate title alert.
     if (!alertRunning && !document.hasFocus()) {
       alertRunning = true;
       // Blink title text & message, if unfocused.
@@ -373,9 +404,10 @@
     
     // Resize elements.
     $('#outputs').css('height', $('#content').height() - $('#menu').height() - 
-                                              $('#input').height() - 5 + 'px');
+                                              $('#input').height() - extraMargin + 'px');
+    
     $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth(true) - 
-                      ($('#inputBox').outerWidth(true) - $('#inputBox').width()) - 5 + 'px');
+                      ($('#inputBox').outerWidth(true) - $('#inputBox').width()) - extraMargin + 'px');
   });
   
   // Welcome & connect to server.
@@ -619,9 +651,7 @@
         height: '100%'
       }, time);
       
-      $('#output1').animate({
-        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
-      }, time);
+      scrollDown($('#output1'), time);
       
       return;
     }
@@ -665,21 +695,10 @@
         height: '50%'
       }, time / 2);
       
-      $('#output1').animate({
-        scrollTop: $('#output1')[0].scrollHeight      // Scroll down.
-      }, time);
-      
-      $('#output2').animate({
-        scrollTop: $('#output2')[0].scrollHeight      // Scroll down.
-      }, time);
-      
-      $('#output3').animate({
-        scrollTop: $('#output3')[0].scrollHeight      // Scroll down.
-      }, time);
-      
-      $('#output4').animate({
-        scrollTop: $('#output4')[0].scrollHeight      // Scroll down.
-      }, time);
+      scrollDown($('#output1'), time);
+      scrollDown($('#output2'), time);
+      scrollDown($('#output3'), time);
+      scrollDown($('#output4'), time);
       
       return;
     }
