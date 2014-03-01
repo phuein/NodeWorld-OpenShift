@@ -429,10 +429,18 @@ function verifyWearable(target) {
 }
 
 // Assert if an object (Object, Array, String)
-// does't exist or is empty. Returns true if empty, or false otherwise.
+// does't exist or is empty, and recusrively checks its' children.
+// Returns true if empty, or false otherwise.
 function isEmpty(obj) {
-  if (obj === null || obj === undefined || obj == '' || 
+  if (obj === null || obj === undefined || obj === '' || 
       JSON.stringify(obj) == '{}' || JSON.stringify(obj) == '[]') {
+    // Check children.
+    if (toType(obj) == '[object Object]' || toType(obj) == '[object Array]') {
+      for (var child in obj) {
+        if (isEmpty(obj[child])) return false;
+      }
+    }
+    
     return true;
   }
   
