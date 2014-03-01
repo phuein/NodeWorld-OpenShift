@@ -311,35 +311,27 @@
     return parsedMessage;
   }
   
-  // If user is not quite scrolled away from bottom,
-  // (avoid annoying the user, if scrolled back)
-  // then scroll down all the way.
   // Element is jQuery object. Delay is optional, for animation.
   function scrollDown(element, delay) {
-    var scrolledDown =  element[0].scrollHeight - 
-                        element.scrollTop() - 
-                        element.height();      // Equals 0, if fully scrolled down, or bigger otherwise.
-    
     // Delay must be numeric.
     if (isNaN(delay)) var delay = null;
     
-    if (scrolledDown <= 100) {
-      if (delay) {
-        // Animate.
-        element.animate({
-          'scrollTop': element[0].scrollHeight
-        }, delay, function () {
-          element.scrollTop(element[0].scrollHeight);     // Verify scroll down, after delay.
-        });
-      } else {
-        // Immediate.
-        element.scrollTop(element[0].scrollHeight);
-      }
+    if (delay) {
+      // Animate.
+      element.animate({
+        'scrollTop': element[0].scrollHeight
+      }, delay, function () {
+        element.scrollTop(element[0].scrollHeight);     // Verify scroll down, after delay.
+      });
+    } else {
+      // Immediate.
+      element.scrollTop(element[0].scrollHeight);
     }
   }
   
-  // Parse messages & objects. Add Timestamp to messages.
-  // Scroll down. Append text to output# or default to output1.
+  // Add Timestamp to messages. Parse message.
+  // Scroll down, if not scrolled-up somewhat (avoid badgering user.)
+  // Append text to output# or default to output1.
   function appendOutput(output, number) {
     if (!number) var number = 1;
     
@@ -360,6 +352,11 @@
                           parseObjects(
                             parseText(output.message) ) ) );
     }
+    
+    // Equals 0, if fully scrolled down, or bigger otherwise.
+    var scrolledDown =  $('#output' + number)[0].scrollHeight - 
+                        $('#output' + number).scrollTop() - 
+                        $('#output' + number).height();
 
     // Add the text (parsing HTML) with styling arguments.
     $('#output' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
@@ -375,7 +372,8 @@
                         '\">' + 
                         parsedMessage + '</span><br />');
     
-    scrollDown($('#output' + number), 200);
+    // Avoid badgering user, if already scrolled up somewhat.
+    if (scrolledDown <= 100) scrollDown($('#output' + number), 200);
     
     // Activate title alert.
     if (!alertRunning && !document.hasFocus()) {
