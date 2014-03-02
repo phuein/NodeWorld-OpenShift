@@ -193,7 +193,10 @@ var viewModes = {
     }, time);
     
     // Show messages from other views.
-    $('.restoredMessage').show(time / 2);
+    $('.restoredMessage').show(time / 2, function () {
+      // BUGFIX: They get inline-block by default.
+      $(this).css('display', 'inline');
+    });
     
     scrollDown($('#output1'), time);
     

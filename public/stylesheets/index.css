@@ -89,7 +89,7 @@ div {
 }
 
 .restoredMessage {
-  display: inline;
+  /* EMPTY */
 }
 
 a         { color: #0B4861; }   /* Default. */
