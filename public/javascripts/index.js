@@ -193,7 +193,9 @@ var viewModes = {
     }, time);
     
     // Show messages from other views.
-    $('.restoredMessage').show(time / 2);
+    $('.restoredMessage').show(time / 2, function () {
+      $(this).css('display', 'initial');
+    });
     
     scrollDown($('#output1'), time);
     
@@ -234,7 +236,9 @@ var viewModes = {
     }, time / 2);
     
     // Hide messages from other views, in output1.
-    $('.restoredMessage').hide(time / 2);
+    $('.restoredMessage').hide(time / 2, function () {
+      $(this).css('display', 'none');
+    });
     
     scrollDown($('#output1'), time);
     scrollDown($('#output2'), time);
