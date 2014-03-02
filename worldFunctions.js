@@ -267,7 +267,7 @@ function processRoom(user, state) {
   }
   // Tell others I am here.
   for (var i=0; i < world.watch[strCoord].length; i++) {
-    socketHandler(world.watch[strCoord][i], 'info', 'Player ' + user.player.name + ' has appeared.');
+    socketHandler(world.watch[strCoord][i], 'info', fullNameID(user) + ' has appeared.');
   }
   
   // Update current room players array.
