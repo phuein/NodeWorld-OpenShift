@@ -660,7 +660,9 @@ $(document).ready(function() {
     }
   });
   
-  $('#inputBox').on('keydown', commandHistory(event));
+  $('#inputBox').on('keydown', function (event) {
+     commandHistory(event);
+  });
   
   $('#viewChanger').on('click', toggleView);
   
