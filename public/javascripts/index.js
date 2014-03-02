@@ -195,7 +195,10 @@ var viewModes = {
     // Show messages from other views.
     $('.restoredMessage').css('display', 'inline').animate({
       'opacity': 1
-    }, time/2);
+    }, time/2, function() {
+      // Make sure it ends as it should.
+      $(this).css('display', 'inline').css('opacity', 1);
+    });
     
     scrollDown($('#output1'), time);
     
@@ -236,7 +239,12 @@ var viewModes = {
     }, time / 2);
     
     // Hide messages from other views, in output1.
-    $('.restoredMessage').css('display', 'none').css('opacity', '0');
+    $('.restoredMessage').animate({
+      'opacity': 0
+    }, time/2, function () {
+      // Make sure it ends as it should.
+      $(this).css('display', 'none').css('opacity', 0);
+    });
     
     scrollDown($('#output1'), time);
     scrollDown($('#output2'), time);
