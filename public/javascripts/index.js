@@ -497,18 +497,19 @@ function appendOutput(output, number) {
                       outputObj.scrollTop() - 
                       outputObj.height();
   
-  // Add the text hidden to output1, for restored display, when viewMode==1.
+  // Add the message to output1, as a restoredMessage class.
+  // It is displayed, only if output1 is the only shown view.
   if (number != 1) {
-    $('#output1').append('<b>&lt;' + curTime + '&gt;</b> ' + 
+    $('#output1').append('<span class=\"restoredMessage\"><b>&lt;' + curTime + '&gt;</b> ' + 
                     '<span style=\"' +
                     (output.color  ? 'color: '       + output.color     + ';' : '') +
                     (output.font   ? 'font-family: ' + output.font      + ';' : '') +
                     (output.size   ? 'font-size: '   + output.size      + ';' : '') +
-                    '\" class=\"' + 'restoredMessage ' + // Hidden, if viewMode!=1.
+                    '\" class=\"' + 
                       (output.italic ? 'i ' : '') + 
                       (output.bold ? 'b ' : '') + 
                     '\">' + 
-                    parsedMessage + '</span><br />');
+                    parsedMessage + '</span><br /></span>');
   }
 
   // Add the text (parsing HTML) with styling arguments.
