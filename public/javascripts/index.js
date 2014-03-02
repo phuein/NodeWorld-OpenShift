@@ -98,12 +98,14 @@ alertTimer = null;
 var alertRunning = false;
 
 // Start status timer for inputBox placeholder.
-statusTimer = setInterval(statusCheck, 100);
+statusTimer = setInterval(statusCheck, 500);
 statusTimerRunning = true;
 
 /* FUNCTIONS */
 
 function statusCheck() {
+  if (!socket) return;
+  
   if (socket && socket.socket && socket.socket.connected) {
     clearInterval(statusTimer);
     statusTimerRunning = false;
@@ -680,7 +682,7 @@ $(document).ready(function() {
     var viewModeCookie = document.cookie.match('(^|;) ?' + 'viewMode' + '=([^;]*)(;|$)');
     if (viewModeCookie) {
       // Toggle, only if different. NOTE: Works only while 2 options available.
-      if (viewModeCookie != viewMode) viewModes[viewModeCookie.toString()]();
+      if (viewModeCookie[2] != viewMode) viewModes[viewModeCookie[2].toString()]();
     }
   }
 });
