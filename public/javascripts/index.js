@@ -516,8 +516,8 @@ function appendOutput(output, number) {
     
     // Clean most HTML tags from message.
     var cleanMessage = output.message || output;
-    console.log(cleanMessage.match(/<span.*>(.*)\/<span>/gi));
-    cleanMessage = cleanMessage.replace(/<\w+>/gi, '').replace(/<span.*>(.*)\/<span>/gi, '$1');
+    console.log(cleanMessage.match(/<span.*>(.*)<\/span>/gi));
+    cleanMessage = cleanMessage.replace(/<\w+>/gi, '').replace(/<span.*>(.*)<\/span>/gi, '$1');
     cleanMessage = cleanMessage.slice(0, 20);
     
     // Blink title text & message, if unfocused.
