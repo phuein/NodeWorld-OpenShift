@@ -171,11 +171,10 @@ function saveCookie(name, value) {
                    'expires'  + '='  + expires.toUTCString() + ';';
 }
 
-// Toggle between single div and multiple divs for output view,
-// and save to cookie. Optionally, use argument to set views.
-function toggleView() {
-  // Set 1 view mode.
-  if (viewMode == 4) {
+// Switch view modes.
+// Usage: viewModes[viewMode]() or viewModes['1']()
+var viewModes = {
+  '1': function () {
     $('#viewChanger').text('Multiple Views');
     
     viewMode = 1;
@@ -197,12 +196,9 @@ function toggleView() {
     scrollDown($('#output1'), time);
     
     saveCookie('viewMode', viewMode);
-    
-    return;
-  }
+  },
   
-  // Set 4 view mode.
-  if (viewMode == 1) {
+  '4': function () {
     $('#viewChanger').text('Single View');
     
     viewMode = 4;
@@ -244,8 +240,16 @@ function toggleView() {
     scrollDown($('#output4'), time);
     
     saveCookie('viewMode', viewMode);
-    
-    return;
+  }
+};
+
+// Toggles between available viewing modes.
+function toggleView() {
+  if (viewMode == 1) {
+    viewModes['4']();
+  } else {
+    // viewMode == 4
+    viewModes['1']();
   }
 }
 
@@ -543,28 +547,6 @@ $(document).ready(function() {
   // Welcome user, and inform of client usage.
   appendOutput('<span style=\"color: green;\">' + welcomeMessage + '</span><br />', outputs.welcomeMessage);
   
-  // Client-Side Only Cookie Data.
-  if (document.cookie) {
-    // Text color.
-    var textColor = document.cookie.match('(^|;) ?' + 'color' + '=([^;]*)(;|$)');
-    if (textColor && textColor[2]) {
-      $('body').css('color', textColor[2]);
-    }
-    
-    // Background color.
-    var bgColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
-    if (bgColor && bgColor[2]) {
-      $('body').css('background-color', bgColor[2]);
-    }
-    
-    // Number of views.
-    var viewModeCookie = document.cookie.match('(^|;) ?' + 'viewMode' + '=([^;]*)(;|$)');
-    if (viewModeCookie) {
-      // Toggle, only if different. NOTE: Works only while 2 options available.
-      if (viewModeCookie != viewMode) toggleView();
-    }
-  }
-  
   // Cleanup title stuff.
   $(window).focus(function() {
     if (alertRunning) {
@@ -675,6 +657,32 @@ $(document).ready(function() {
       }
     }
   });
+  
+  $('#inputBox').on('keydown', commandHistory(e));
+  
+  $('#viewChanger').on('click', toggleView);
+  
+  // Client-Side Only Cookie Data.
+  if (document.cookie) {
+    // Text color.
+    var textColor = document.cookie.match('(^|;) ?' + 'color' + '=([^;]*)(;|$)');
+    if (textColor && textColor[2]) {
+      $('body').css('color', textColor[2]);
+    }
+    
+    // Background color.
+    var bgColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
+    if (bgColor && bgColor[2]) {
+      $('body').css('background-color', bgColor[2]);
+    }
+    
+    // Number of views.
+    var viewModeCookie = document.cookie.match('(^|;) ?' + 'viewMode' + '=([^;]*)(;|$)');
+    if (viewModeCookie) {
+      // Toggle, only if different. NOTE: Works only while 2 options available.
+      if (viewModeCookie != viewMode) viewModes[viewModeCookie]();
+    }
+  }
 });
 
 // Connect to server, and setup listeners. //
