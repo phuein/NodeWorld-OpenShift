@@ -501,9 +501,9 @@ function appendOutput(output, number) {
   // It is displayed, only if output1 is the only shown view.
   if (number != 1) {
     // NOTE: Can't change stylesheet rules, so need this for new elements.
-    var display = (viewMode == 1 ? 'initial' : 'none');
+    var hide = 'style=\"display: none;\"';
     
-    $('#output1').append('<span class=\"restoredMessage\" style=\"display: ' + display + '\">' + 
+    $('#output1').append('<span class=\"restoredMessage\" ' + (viewMode != 1 ? hide : '') + '>' + 
                     '<b>&lt;' + curTime + '&gt;</b> ' + '<span style=\"' +
                     (output.color  ? 'color: '       + output.color     + ';' : '') +
                     (output.font   ? 'font-family: ' + output.font      + ';' : '') +
