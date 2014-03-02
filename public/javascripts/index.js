@@ -193,9 +193,7 @@ var viewModes = {
     }, time);
     
     // Show messages from other views.
-    $('.restoredMessage').show(time / 2, function () {
-      $(this).css('display', 'initial');
-    });
+    $('.restoredMessage').show(time / 2);
     
     scrollDown($('#output1'), time);
     
@@ -236,9 +234,7 @@ var viewModes = {
     }, time / 2);
     
     // Hide messages from other views, in output1.
-    $('.restoredMessage').hide(time / 2, function () {
-      $(this).css('display', 'none');
-    });
+    $('.restoredMessage').hide(time / 2);
     
     scrollDown($('#output1'), time);
     scrollDown($('#output2'), time);
@@ -504,8 +500,11 @@ function appendOutput(output, number) {
   // Add the message to output1, as a restoredMessage class.
   // It is displayed, only if output1 is the only shown view.
   if (number != 1) {
-    $('#output1').append('<span class=\"restoredMessage\"><b>&lt;' + curTime + '&gt;</b> ' + 
-                    '<span style=\"' +
+    // NOTE: Can't change stylesheet rules, so need this for new elements.
+    var display = (viewMode == 1 ? 'initial' : 'none');
+    
+    $('#output1').append('<span class=\"restoredMessage\" style=\"display: ' + display + '\">' + 
+                    '<b>&lt;' + curTime + '&gt;</b> ' + '<span style=\"' +
                     (output.color  ? 'color: '       + output.color     + ';' : '') +
                     (output.font   ? 'font-family: ' + output.font      + ';' : '') +
                     (output.size   ? 'font-size: '   + output.size      + ';' : '') +
