@@ -613,16 +613,17 @@ $(document).ready(function() {
   
   // Scroll outputs on window resize.
   $(window).resize(function() {
-    $('#outputs > div').each(function (index) {
-      scrollDown($(this), 200);
-    });
-    
     // Resize elements.
     $('#outputs').css('height', $('#content').height() - $('#menu').height() - 
                                               $('#input').height() - extraMargin + 'px');
     
     $('#inputBox').css('width', $('#content').width() - $('#sendButton').outerWidth(true) - 
                       ($('#inputBox').outerWidth(true) - $('#inputBox').width()) - extraMargin + 'px');
+    
+    // Scroll down views.
+    $('#outputs > div').each(function (index) {
+      scrollDown($(this), 200);
+    });
   });
 
   // Set focus to inputBox.
