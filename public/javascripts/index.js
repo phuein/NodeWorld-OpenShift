@@ -680,7 +680,7 @@ $(document).ready(function() {
     var viewModeCookie = document.cookie.match('(^|;) ?' + 'viewMode' + '=([^;]*)(;|$)');
     if (viewModeCookie) {
       // Toggle, only if different. NOTE: Works only while 2 options available.
-      if (viewModeCookie != viewMode) viewModes[viewModeCookie]();
+      if (viewModeCookie != viewMode) viewModes[viewModeCookie.toString()]();
     }
   }
 });
