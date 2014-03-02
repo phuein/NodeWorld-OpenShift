@@ -666,23 +666,37 @@ $(document).ready(function() {
   
   // Client-Side Only Cookie Data.
   if (document.cookie) {
+    var cookie = document.cookie.split(';');
+    
+    // Cookie element names and values.
+    var cookies = {};
+    
+    for (var i=0; i < cookie.length; i++) {
+      var curElement = cookie[i];
+      
+      var curName = curElement.slice(0, curElement.indexOf('='));
+      var curValue = curElement.slice(curElement.indexOf('=')+1);
+      
+      cookies[curName] = curValue;
+    }
+    
     // Text color.
-    var textColor = document.cookie.match('(^|;) ?' + 'color' + '=([^;]*)(;|$)');
-    if (textColor && textColor[2]) {
-      $('body').css('color', textColor[2]);
+    var color = (cookies.color !== undefined ? cookies.color : '');
+    if (color !== '') {
+      $('body').css('color', color);
     }
     
     // Background color.
-    var bgColor = document.cookie.match('(^|;) ?' + 'bgcolor' + '=([^;]*)(;|$)');
-    if (bgColor && bgColor[2]) {
-      $('body').css('background-color', bgColor[2]);
+    var bgColor = (cookies.bgcolor !== undefined ? cookies.bgcolor : '');
+    if (bgColor !== '') {
+      $('body').css('background-color', bgColor);
     }
     
     // Number of views.
-    var viewModeCookie = document.cookie.match('(^|;) ?' + 'viewMode' + '=([^;]*)(;|$)');
-    if (viewModeCookie) {
+    var viewModeCookie = (cookies.viewMode !== undefined ? cookies.viewMode : '');
+    if (viewModeCookie !== '') {
       // Toggle, only if different. NOTE: Works only while 2 options available.
-      if (viewModeCookie[2] != viewMode) viewModes[viewModeCookie[2].toString()]();
+      if (viewModeCookie != viewMode) viewModes[viewModeCookie]();
     }
   }
 });
