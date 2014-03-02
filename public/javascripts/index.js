@@ -493,6 +493,11 @@ function appendOutput(output, number) {
   }
   
   // Equals 0, if fully scrolled down, or bigger otherwise.
+  var scrolledDownOutput1 = $('#output1')[0].scrollHeight - 
+                            $('#output1').scrollTop() - 
+                            $('#output1').height();
+  
+  // Equals 0, if fully scrolled down, or bigger otherwise.
   var scrolledDown =  outputObj[0].scrollHeight - 
                       outputObj.scrollTop() - 
                       outputObj.height();
@@ -513,6 +518,9 @@ function appendOutput(output, number) {
                       (output.bold ? 'b ' : '') + 
                     '\">' + 
                     parsedMessage + '</span><br /></span>');
+    
+    // Avoid badgering user, if already scrolled up somewhat.
+    if (scrolledDownOutput1 <= 50) scrollDown($('#output1'), 1000);
   }
 
   // Add the text (parsing HTML) with styling arguments.
