@@ -660,8 +660,8 @@ $(document).ready(function() {
     }
   });
   
-  $('#inputBox').on('keydown', function (event) {
-     commandHistory(event);
+  $('#inputBox').on('keydown', function (e) {
+     commandHistory(e);
   });
   
   $('#viewChanger').on('click', toggleView);
