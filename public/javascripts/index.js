@@ -193,10 +193,7 @@ var viewModes = {
     }, time);
     
     // Show messages from other views.
-    $('.restoredMessage').show(time / 2, function () {
-      // BUGFIX: They get inline-block by default.
-      $(this).css('display', 'inline');
-    });
+    $('.restoredMessage').show(time / 2);
     
     scrollDown($('#output1'), time);
     
@@ -509,9 +506,11 @@ function appendOutput(output, number) {
   // It is displayed, only if output1 is the only shown view.
   if (number != 1) {
     // NOTE: Can't change stylesheet rules, so need this for new elements.
-    var hide = 'style=\"display: none;\"';
+    var hide = 'display: none;';
     
-    $('#output1').append('<span class=\"restoredMessage\" ' + (viewMode != 1 ? hide : '') + '>' + 
+    $('#output1').append('<span class=\"restoredMessage\" style=\"display: inline; ' + 
+                    // BUGFIX: jQuery .show() forces inline-block, wrongly.
+                    (viewMode != 1 ? hide : '') + '\">' + 
                     '<b>&lt;' + curTime + '&gt;</b> ' + '<span style=\"' +
                     (output.color  ? 'color: '       + output.color     + ';' : '') +
                     (output.font   ? 'font-family: ' + output.font      + ';' : '') +
