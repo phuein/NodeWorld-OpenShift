@@ -658,7 +658,7 @@ $(document).ready(function() {
     }
   });
   
-  $('#inputBox').on('keydown', commandHistory(e));
+  $('#inputBox').on('keydown', commandHistory(event));
   
   $('#viewChanger').on('click', toggleView);
   
