@@ -88,6 +88,10 @@ div {
   text-decoration: line-through;    /* Commonly known as Strike-through. */
 }
 
+.restoredMessage {
+  display: none;
+}
+
 a         { color: #0B4861; }   /* Default. */
 a:link    { color: #0B4861; }
 a:visited { color: #053341; }

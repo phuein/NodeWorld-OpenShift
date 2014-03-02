@@ -34,17 +34,17 @@ var extraMargin = 6;    // Extra pixels, when resizing main elements.
 
 // Direct messages to outputs.
 var outputs = {
-  'errors':           1,
-  'disconnect':       1,
+  'errors':           2,
+  'disconnect':       2,
   'message':          1,
   'emote':            1,
   'tell':             1,
   'say':              1,
   'warning':          1,
   'info':             1,
-  'events':           1,
-  'welcomeMessage':   1,
-  'clientCommands':   1
+  'events':           3,
+  'welcomeMessage':   2,
+  'clientCommands':   2
 };
 
 // Client-side-only commands, which do not get sent to server.
@@ -176,11 +176,6 @@ function saveCookie(name, value) {
 function toggleView() {
   // Set 1 view mode.
   if (viewMode == 4) {
-    outputs.errors          = 1;
-    outputs.disconnect      = 1;
-    outputs.events          = 1;
-    outputs.clientCommands  = 1;
-
     $('#viewChanger').text('Multiple Views');
     
     viewMode = 1;
@@ -196,6 +191,9 @@ function toggleView() {
       height: '100%'
     }, time);
     
+    // Show messages from other views.
+    $('.restoredMessage').show(time / 2);
+    
     scrollDown($('#output1'), time);
     
     saveCookie('viewMode', viewMode);
@@ -205,11 +203,6 @@ function toggleView() {
   
   // Set 4 view mode.
   if (viewMode == 1) {
-    outputs.errors          = 2;
-    outputs.disconnect      = 2;
-    outputs.events          = 3;
-    outputs.clientCommands  = 2;
-    
     $('#viewChanger').text('Single View');
     
     viewMode = 4;
@@ -241,6 +234,9 @@ function toggleView() {
       width: '50%',
       height: '50%'
     }, time / 2);
+    
+    // Hide messages from other views, in output1.
+    $('.restoredMessage').hide(time / 2);
     
     scrollDown($('#output1'), time);
     scrollDown($('#output2'), time);
@@ -466,9 +462,11 @@ function scrollDown(element, delay) {
 
 // Add Timestamp to messages. Parse message.
 // Scroll down, if not scrolled-up somewhat (avoid badgering user.)
-// Append text to output# or default to output1.
+// Append text to output-number or default to output1.
 function appendOutput(output, number) {
   if (!number) var number = 1;
+  
+  var outputObj = $('#output' + number);
   
   var curDate = new Date();
   // Make sure the format is HH:MM:SS.
@@ -489,26 +487,38 @@ function appendOutput(output, number) {
   }
   
   // Equals 0, if fully scrolled down, or bigger otherwise.
-  var scrolledDown =  $('#output' + number)[0].scrollHeight - 
-                      $('#output' + number).scrollTop() - 
-                      $('#output' + number).height();
+  var scrolledDown =  outputObj[0].scrollHeight - 
+                      outputObj.scrollTop() - 
+                      outputObj.height();
+  
+  // Add the text hidden to output1, for restored display, when viewMode==1.
+  if (number != 1) {
+    $('#output1').append('<b>&lt;' + curTime + '&gt;</b> ' + 
+                    '<span style=\"' +
+                    (output.color  ? 'color: '       + output.color     + ';' : '') +
+                    (output.font   ? 'font-family: ' + output.font      + ';' : '') +
+                    (output.size   ? 'font-size: '   + output.size      + ';' : '') +
+                    '\" class=\"' + 'restoredMessage ' + // Hidden, if viewMode!=1.
+                      (output.italic ? 'i ' : '') + 
+                      (output.bold ? 'b ' : '') + 
+                    '\">' + 
+                    parsedMessage + '</span><br />');
+  }
 
   // Add the text (parsing HTML) with styling arguments.
-  $('#output' + number).append('<b>&lt;' + curTime + '&gt;</b> ' + 
-                      '<span style=\"' + 
-                      (output.color  ? 'color: '       + output.color     + ';' : '') +
-                      (output.font   ? 'font-family: ' + output.font      + ';' : '') +
-                      (output.size   ? 'font-size: '   + output.size      + ';' : '') +
-                      // (italic ? 'font-style: '  + 'italic'  + ';' : '') +
-                      // (bold   ? 'font-weight: ' + 'bold'    + ';' : '') +
-                      '\" class=\"' + 
-                        (output.italic ? 'i ' : '') + 
-                        (output.bold ? 'b ' : '') + 
-                      '\">' + 
-                      parsedMessage + '</span><br />');
+  outputObj.append('<b>&lt;' + curTime + '&gt;</b> ' + 
+                  '<span style=\"' + 
+                  (output.color  ? 'color: '       + output.color     + ';' : '') +
+                  (output.font   ? 'font-family: ' + output.font      + ';' : '') +
+                  (output.size   ? 'font-size: '   + output.size      + ';' : '') +
+                  '\" class=\"' + 
+                    (output.italic ? 'i ' : '') + 
+                    (output.bold ? 'b ' : '') + 
+                  '\">' + 
+                  parsedMessage + '</span><br />');
   
   // Avoid badgering user, if already scrolled up somewhat.
-  if (scrolledDown <= 50) scrollDown($('#output' + number), 1000);
+  if (scrolledDown <= 50) scrollDown(outputObj, 1000);
   
   // Activate title alert.
   if (!alertRunning && !document.hasFocus()) {
@@ -516,7 +526,6 @@ function appendOutput(output, number) {
     
     // Clean most HTML tags from message.
     var cleanMessage = output.message || output;
-    console.log(cleanMessage.match(/<span.*>(.*)<\/span>/gi));
     cleanMessage = cleanMessage.replace(/<\w+>/gi, '').replace(/<span.*>(.*)<\/span>/gi, '$1');
     cleanMessage = cleanMessage.slice(0, 20);
     
@@ -532,8 +541,7 @@ $(document).ready(function() {
   document.title = title;
   
   // Welcome user, and inform of client usage.
-  appendOutput('<span style=\"color: green;\">' + welcomeMessage + '</span><br /><br />', 
-                                                                  outputs.welcomeMessage);
+  appendOutput('<span style=\"color: green;\">' + welcomeMessage + '</span><br />', outputs.welcomeMessage);
   
   // Client-Side Only Cookie Data.
   if (document.cookie) {
