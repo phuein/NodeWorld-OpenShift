@@ -724,10 +724,13 @@ $(document).ready(function() {
       if (viewModeCookie != viewMode) viewModes[viewModeCookie]();
     }
   }
+  
+  // Start socket connection and handling.
+  loadSocket();
 });
 
-// Connect to server, and setup listeners. //
-$(document).ready(function() {
+// Setup & connect to server, and setup event listeners. //
+function loadSocket() {
   // Connect to socket server.
   socket = io.connect('http://diy-phuein.rhcloud.com/', {
     'sync disconnect on unload' : true,           // Send 'disconnect' to server when browser 'beforeunload'.
@@ -870,4 +873,4 @@ $(document).ready(function() {
     
     appendOutput(output, outputs.events);
   });
-});
+}
