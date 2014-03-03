@@ -709,7 +709,7 @@ $(document).ready(function() {
     var cookie = document.cookie.split(';'); // NOTE: cookies{} is the global that holds final data.
     
     for (var i=0; i < cookie.length; i++) {
-      var curElement = cookie[i];
+      var curElement = cookie[i].toString();
       
       var curName = curElement.slice(0, curElement.indexOf('=').trim());
       var curValue = curElement.slice(curElement.indexOf('=')+1);
