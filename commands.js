@@ -1503,7 +1503,7 @@ function handleCommands(message, user) {
   var cmdArray = message.split(" ", 10);
   
   // Get everything as a string.
-  var cmdStr = message.substring(cmdStr.indexOf(" ") + 1); // Remove first (command) word,
+  var cmdStr = message.substring(message.indexOf(" ") + 1); // Remove first (command) word,
                                                            // or return the command word itself.
   
   // Execute help command, if only the command character is received.
