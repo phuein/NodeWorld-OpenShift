@@ -28,6 +28,8 @@ var welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b><
         '_<span class=\"i\">italic</span>_ ' + 
         '-<span class=\"s\">linethrough</span>-';
 
+var cookies = {};     // Holds cookies' names and values.
+
 var availableCommands = [];     // Holds all commands available to the user.
 
 var extraMargin = 6;    // Extra pixels, when resizing main elements.
@@ -605,8 +607,9 @@ $(document).ready(function() {
       // Remember input text history, for scrollback.
       logInput(inputText);
       
-      // Save logins into cookie.
-      if (inputText.indexOf(',login') == '0') saveCookie('login', inputText);
+      // Save logins into cookie, without cmdChar.
+      if (inputText.indexOf(cmdChar + 'login') == '0') saveCookie('login', 
+                                inputText.slice(inputText.indexOf(' ')+1));
       
       $('#inputBox').val(''); // Empty input.
   });
@@ -691,10 +694,7 @@ $(document).ready(function() {
   
   // Client-Side Only Cookie Data.
   if (document.cookie) {
-    var cookie = document.cookie.split(';');
-    
-    // Cookie element names and values.
-    var cookies = {};
+    var cookie = document.cookie.split(';'); // NOTE: cookies{} is the global that holds final data.
     
     for (var i=0; i < cookie.length; i++) {
       var curElement = cookie[i];
@@ -745,11 +745,9 @@ $(document).ready(function() {
     $('#inputBox').focus();
     
     // Attempt to send login command from saved cookie.
-    if (document.cookie) {
-      var cookieValue = document.cookie.match('(^|;) ?' + 'login' + '=([^;]*)(;|$)');
-      if (cookieValue && cookieValue[2]) {
-        socket.emit('message', cookieValue[2]);
-      }
+    if (cookies['login']) {
+      var loginData = cookies.login;
+      socket.emit('command', cmdChar + 'login ' + loginData);
     }
     
     // Request an array of available commands by user access level.
