@@ -51,7 +51,7 @@ var outputs = {
 
 // Client-side-only commands, which do not get sent to server.
 var clientCommands = {
-  ',color': function (argArray) {
+  'color': function (argArray) {
     // Restore default color, if no argument.
     var color = 'black';
     // Otherwise, set new color.
@@ -71,7 +71,7 @@ var clientCommands = {
     appendOutput(output, outputs.clientCommands);
   },
   
-  ',bgcolor': function (argArray) {
+  'bgcolor': function (argArray) {
     // Restore default color, if no argument.
     var color = 'white';
     // Otherwise, set new color.
@@ -89,6 +89,11 @@ var clientCommands = {
     };
     
     appendOutput(output, outputs.clientCommands);
+  },
+  
+  'login': function (argArray) {
+    // Save the login data into cookie.
+    saveCookie('login', argArray.join(' '));
   }
 };
 
@@ -573,6 +578,44 @@ $(document).ready(function() {
   // Welcome user, and inform of client usage.
   appendOutput('<span style=\"color: green;\">' + welcomeMessage + '</span><br />', outputs.welcomeMessage);
   
+  // Send user input to server by Socket.
+  $('#inputForm').on('submit', function(e) {
+      e.preventDefault(); // Stop regular form submission.
+      
+      var inputText = $('#inputBox').val().trim();
+      
+      var inputArray = inputText.split(' '); // Split to words.
+      var first = inputArray[0];             // First word might be a command.
+      
+      if (first.charAt(0) == cmdChar) first = first.slice(1);   // Remove cmdChar.
+      
+      if (clientCommands[first]) {
+        // Client only command.
+        var argArray = inputText.split(' ').trim();
+        argArray.splice(0, 1);                    // Exclude command word.
+        clientCommands[first](argArray);
+        
+      } else if (socket && socket.socket && socket.socket.connected) {
+        // Send input text to socket server.
+        socket.emit('message', inputText);
+        
+      } else {
+        // Do not send, and inform user of disconnection, by blinking inputBox.
+        $('#inputBox').animate({
+            'opacity': 0
+        }, 300, function () {
+            $('#inputBox').animate({
+                'opacity': 1
+            }, 100);
+        });
+      }
+      
+      // Remember input text history, for scrollback.
+      logInput(inputText);
+      
+      $('#inputBox').val(''); // Empty input.
+  });
+  
   // Cleanup title stuff.
   $(window).focus(function() {
     if (alertRunning) {
@@ -581,37 +624,6 @@ $(document).ready(function() {
       
       document.title = title;
     }
-  });
-  
-  // Send user input to server by Socket.
-  $('#inputForm').on('submit', function(e) {
-      e.preventDefault(); // Stop regular form submission.
-      
-      // var inputvalue = $('input[id=input]').val(); WAS USED IN SOCKET.EMIT FOR SOME REASON.
-      var inputText = $('#inputBox').val().trim();
-      
-      // Return the first or word, or the only one word.
-      var firstWord = (inputText.indexOf(' ') >= 0 ? 
-                       inputText.substring(0, inputText.indexOf(' ')) : inputText);
-      
-      if (clientCommands[firstWord]) {
-        // Client only command.
-        var argArray = inputText.split(' ');
-        argArray.splice(0, 1);                    // Exclude command word.
-        clientCommands[firstWord](argArray);
-      } else if (socket && socket.socket && socket.socket.connected) {
-        // Send input text to socket server.
-        socket.emit('message', inputText);
-      }
-      
-      // Remember input text history, for scrollback.
-      logInput(inputText);
-      
-      // Save logins into cookie, without cmdChar.
-      if (inputText.indexOf(cmdChar + 'login') == '0') saveCookie('login', 
-                                inputText.slice(inputText.indexOf(' ')+1));
-      
-      $('#inputBox').val(''); // Empty input.
   });
   
   // Attach event to clickable elements.
@@ -699,7 +711,7 @@ $(document).ready(function() {
     for (var i=0; i < cookie.length; i++) {
       var curElement = cookie[i];
       
-      var curName = curElement.slice(0, curElement.indexOf('='));
+      var curName = curElement.slice(0, curElement.indexOf('=').trim());
       var curValue = curElement.slice(curElement.indexOf('=')+1);
       
       cookies[curName] = curValue;
@@ -748,9 +760,9 @@ function loadSocket() {
     $('#inputBox').focus();
     
     // Attempt to send login command from saved cookie.
-    if (cookies['login']) {
+    if (cookies.login) {
       var loginData = cookies.login;
-      socket.emit('command', cmdChar + 'login ' + loginData);
+      socket.emit('command', 'login ' + loginData);
     }
     
     // Request an array of available commands by user access level.
