@@ -10,7 +10,7 @@ var constructors = {
     'type': 'info',
     
     'message': function (name) {
-      return  '<b>Welcome to Test Game!</b><br />' + 
+      return  '<b>Welcome to Node World!</b><br />' + 
               'Use <span class=\"command\">' + cmdChar +
               'help</span> to list all available commands.<br />' +
               'You are now known as <span class=\"player\">' + name + '</span>.';

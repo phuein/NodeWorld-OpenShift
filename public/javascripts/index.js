@@ -1,7 +1,7 @@
 /* DEFINITIONS */
 
 var viewMode = 1;           // Number of outputs in view.
-var cmdChar = ',';          // Default is a comma.
+var cmdChar = '.';          // Default is a comma.
 var title = 'Node World';
 var welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
 

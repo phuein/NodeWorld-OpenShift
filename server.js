@@ -40,7 +40,7 @@
   //////    The command character is the one character that messages are parsed for.    //////
   //////            It is ignored if the following character is the same!               //////
   //////           If sent by itself, it will reply with the help command.              //////
-  cmdChar = ',';
+  cmdChar = '.';
   
   nl = '\n'; // New line.
   
@@ -378,6 +378,9 @@ io.sockets.on('connection', function (socket) {
     
     // Check for command character.
     if (message.charAt(0) == cmdChar && message.charAt(1) != cmdChar) {
+      // Remove cmdChar from message.
+      message = message.slice(1);
+      
       // Every command message is handled on a new domain.
       var curDomain = new domain.create();
 
@@ -398,7 +401,42 @@ io.sockets.on('connection', function (socket) {
     }
     
     // Default to chat message.
-    command.handleCommands(cmdChar + 'chat ' + message, user);
+    command.handleCommands('chat ' + message, user);
+  });
+
+  // Client emitted a command.
+  socket.on('command', function (message) {
+    // Flood protection.
+    messageCount += 1;
+    
+    if (limitMessages !== null && messageCount >= 1000) {
+      // Limit socket messages to 1000 per minute.
+      socket.emit('error', 'Server command-flooding detected! Your commands are ignored for one minute.');
+      console.log(Timestamp() + 'User ' + command.fullNameID(user) + ' is command-flooding the server!');
+      return;
+    } else if (limitMessages === null) {
+      // Start timer.
+      limitMessages = setTimeout(function () {
+        messageCount = 0;
+        limitMessages = null;
+      }, 60000);
+    }
+    
+    // Every command message is handled on a new domain.
+    var curDomain = new domain.create();
+
+    // Catch error.
+    curDomain.on('error', function (err) {
+      console.log(Timestamp() + err.stack + nl);
+      socket.emit('error', format.bold('Command failed!') + format.newline + err.message + format.newline);
+    });
+
+    // Run the command.
+    curDomain.run(function () {
+      process.nextTick(function () {
+        command.handleCommands(message, user);
+      });
+    });
   });
   
   // When a client socket disconnects.

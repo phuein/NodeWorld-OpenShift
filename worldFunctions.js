@@ -252,7 +252,7 @@ function processRoom(user, state) {
     user.room = world.maps[user.player.map].rooms[strCoord];
     
     // Look command.
-    handleCommands(cmdChar + 'look', user);
+    handleCommands('look', user);
   
     // The map holds the new room,
     // but the user needs to be updated about the maps' new outlook.
@@ -289,7 +289,7 @@ function processRoom(user, state) {
   }
   
   // Look command.
-  handleCommands(cmdChar + 'look', user);
+  handleCommands('look', user);
 }
 
 // Load current room data.

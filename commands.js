@@ -1341,7 +1341,7 @@ commands.user = {
           to: cmdArray[2], // list of receivers
           subject: "Welcome to Node World, " + user.account.username + "!", // Subject line
           // text: "Hello world ✔", // plaintext body
-          html: "<b>✔ Registration is complete!</b><br /><br/>Your password for username <i>" + 
+          html: "<b>✔ Registration is complete!</b><br /><br />Your password for username <i>" + 
                   user.account.username + "</i> is: " + cmdArray[1] // html body
         });
         
@@ -1499,17 +1499,16 @@ commands.user = {
 
 // Handle command requests from player, according to user.account.access level.
 function handleCommands(message, user) {  
-  // Ignore first character and split the message into words.
-  var cmdArray = message.substring(1).split(" ", 10);
+  // Split the message into words.
+  var cmdArray = message.split(" ", 10);
   
-  // Get everything after the command word, as a string.
-  var cmdStr = message.substring(1); // Remove cmdChar
-  cmdStr = cmdStr.substring(cmdStr.indexOf(" ") + 1); // Remove first (command) word,
-                                                      // or return the command word itself.
+  // Get everything as a string.
+  var cmdStr = message.substring(cmdStr.indexOf(" ") + 1); // Remove first (command) word,
+                                                           // or return the command word itself.
   
   // Execute help command, if only the command character is received.
   if (!cmdArray[0]) {
-    handleCommands(cmdChar + 'help', user);
+    handleCommands('help', user);
     return;
   }
   
