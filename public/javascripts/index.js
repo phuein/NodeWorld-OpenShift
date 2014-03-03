@@ -494,9 +494,7 @@ function scrollDown(element, delay) {
     // Animate.
     element.animate({
       'scrollTop': element[0].scrollHeight
-    }, delay, function () {
-      element.scrollTop(element[0].scrollHeight);     // Verify scroll down, after delay.
-    });
+    }, delay);
   } else {
     // Immediate.
     element.scrollTop(element[0].scrollHeight);
@@ -604,10 +602,11 @@ $(document).ready(function() {
       
       var inputText = $('#inputBox').val().trim();
       
-      var argsArray = inputText.split(' '); // Split to words,
-      argsArray.splice(0, 1);  // and remove first word.
+      var inputArray = inputText.split(' '); // Split to words,
       
-      var first = argsArray[0];             // First word might be a command.
+      var first = inputArray[0];             // First word might be a command.
+      
+      var argsArray = inputArray.splice(0, 1);   // Remove first (command) word.
       
       var isCommand = false;
       if (first.charAt(0) == cmdChar) {
@@ -622,7 +621,7 @@ $(document).ready(function() {
       } else if (socket && socket.socket && socket.socket.connected) {
         if (cmdMode) {
           if (isCommand) inputText = inputText.slice(1); // Remove accidental cmdChar in cmdMode.
-          socket.emit('message', inputText);
+          socket.emit('message', cmdChar + inputText);
           return;
         }
         
@@ -659,6 +658,10 @@ $(document).ready(function() {
       
       document.title = title;
     }
+  });
+  
+  $('#outputs > div').scroll(function () {
+    $(this).stop();
   });
   
   // Attach event to clickable elements.
@@ -791,7 +794,7 @@ function loadSocket() {
   
   // Socket connected.
   socket.on('connect', function () {
-    $('#inputBox').prop('placeholder', 'Enter text here...');
+    $('#inputBox').prop('placeholder', 'Enter message here...');
     $('#inputBox').focus();
     
     // Attempt to send login command from saved cookie.
