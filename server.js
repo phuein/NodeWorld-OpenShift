@@ -359,16 +359,18 @@ io.sockets.on('connection', function (socket) {
   command.loadRoom(user);
 
 	// When a client socket emits/sends any message.
+  // NOTE: Parsing user input for commands
+  //       is the sole responsibility of the client.
   socket.on('message', function (message) {
     // Flood protection.
     messageCount += 1;
     
-    if (limitMessages != null && messageCount >= 1000) {
+    if (limitMessages !== null && messageCount >= 1000) {
       // Limit socket messages to 1000 per minute.
       socket.emit('error', 'Server command-flooding detected! Your commands are ignored for one minute.');
       console.log(Timestamp() + 'User ' + command.fullNameID(user) + ' is command-flooding the server!');
       return;
-    } else if (limitMessages == null) {
+    } else if (limitMessages === null) {
       // Start timer.
       limitMessages = setTimeout(function () {
         messageCount = 0;
@@ -402,41 +404,6 @@ io.sockets.on('connection', function (socket) {
     
     // Default to chat message.
     command.handleCommands('chat ' + message, user);
-  });
-
-  // Client emitted a command.
-  socket.on('command', function (message) {
-    // Flood protection.
-    messageCount += 1;
-    
-    if (limitMessages !== null && messageCount >= 1000) {
-      // Limit socket messages to 1000 per minute.
-      socket.emit('error', 'Server command-flooding detected! Your commands are ignored for one minute.');
-      console.log(Timestamp() + 'User ' + command.fullNameID(user) + ' is command-flooding the server!');
-      return;
-    } else if (limitMessages === null) {
-      // Start timer.
-      limitMessages = setTimeout(function () {
-        messageCount = 0;
-        limitMessages = null;
-      }, 60000);
-    }
-    
-    // Every command message is handled on a new domain.
-    var curDomain = new domain.create();
-
-    // Catch error.
-    curDomain.on('error', function (err) {
-      console.log(Timestamp() + err.stack + nl);
-      socket.emit('error', format.bold('Command failed!') + format.newline + err.message + format.newline);
-    });
-
-    // Run the command.
-    curDomain.run(function () {
-      process.nextTick(function () {
-        command.handleCommands(message, user);
-      });
-    });
   });
   
   // When a client socket disconnects.

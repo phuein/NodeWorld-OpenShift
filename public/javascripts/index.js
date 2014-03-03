@@ -1,7 +1,15 @@
 /* DEFINITIONS */
 
+var socket = null;          // Global socket object - makes connection.
+
 var viewMode = 1;           // Number of outputs in view.
-var cmdChar = '.';          // Default is a comma.
+
+var cmdMode = false;        // Automatic adding of cmdChar to user messages.
+var cmdModeChar = 192;      // Key-code to toggle cmdMode.
+                            // http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+
+var cmdChar = '.';          // Marks a user message as a command, for the server.
+
 var title = 'Node World';
 var welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
 
@@ -111,8 +119,6 @@ statusTimerRunning = true;
 /* FUNCTIONS */
 
 function statusCheck() {
-  if (!socket) return;
-  
   if (socket && socket.socket && socket.socket.connected) {
     clearInterval(statusTimer);
     statusTimerRunning = false;
@@ -142,23 +148,37 @@ function titleAlert(message) {
 }
 
 // Using Up or Down arrow keys with input textbox to scroll through command history.
-function commandHistory(e) {
-    if (e.which == 38) { // Up Key - Go back in history.
-      e.preventDefault(); // Don't let the cursor jump around.
+function inputEvents(e) {
+  // COMMAND HISTORY //
+  if (e.which == 38) { // Up Key - Go back in history.
+    e.preventDefault(); // Don't let the cursor jump around.
 
-      if (curCommandIndex > 0) {
-        $('#inputBox').val(sentCommands[curCommandIndex-1]);
-        curCommandIndex -= 1;
-      }
+    if (curCommandIndex > 0) {
+      $('#inputBox').val(sentCommands[curCommandIndex-1]);
+      curCommandIndex -= 1;
     }
-    if (e.which == 40) { // Down Key - Go forward in history.
-      e.preventDefault(); // Don't let the cursor jump around.
+  }
+  if (e.which == 40) { // Down Key - Go forward in history.
+    e.preventDefault(); // Don't let the cursor jump around.
 
-      if (curCommandIndex < sentCommands.length) {
-        $('#inputBox').val(sentCommands[curCommandIndex+1] || ""); // Last press clears the textbox.
-        curCommandIndex += 1;
-      }
+    if (curCommandIndex < sentCommands.length) {
+      $('#inputBox').val(sentCommands[curCommandIndex+1] || ""); // Last press clears the textbox.
+      curCommandIndex += 1;
     }
+  }
+  
+  // COMMAND MODE TOGGLE //
+  if (e.which == cmdModeChar) {
+    e.preventDefault(); // Don't add character to inputBox.
+    
+    cmdMode = !cmdMode;
+    
+    var textColor   = $('#inputBox').css('color');
+    var bgColor     = $('#inputBox').css('background-color');
+    // Switch colors.
+    $('#inputBox').css('color', bgColor);
+    $('#inputBox').css('background-color', textColor);
+  }
 }
 
 // Logs command history.
@@ -584,23 +604,38 @@ $(document).ready(function() {
       
       var inputText = $('#inputBox').val().trim();
       
-      var inputArray = inputText.split(' '); // Split to words.
-      var first = inputArray[0];             // First word might be a command.
+      var argsArray = inputText.split(' '); // Split to words,
+      argsArray = argsArray.splice(0, 1);  // and remove first word.
       
-      if (first.charAt(0) == cmdChar) first = first.slice(1);   // Remove cmdChar.
+      var first = argsArray[0];             // First word might be a command.
+      
+      var isCommand = false;
+      if (first.charAt(0) == cmdChar) {
+        isCommand = true;
+        first = first.slice(1);   // Remove cmdChar from first word.
+      }
       
       if (clientCommands[first]) {
         // Client only command.
-        var argArray = inputText.split(' ').trim();
-        argArray.splice(0, 1);                    // Exclude command word.
-        clientCommands[first](argArray);
+        clientCommands[first](argsArray);
         
       } else if (socket && socket.socket && socket.socket.connected) {
-        // Send input text to socket server.
-        socket.emit('message', inputText);
+        if (cmdMode) {
+          if (isCommand) inputText = inputText.slice(1); // Remove accidental cmdChar in cmdMode.
+          socket.emit('message', inputText);
+          return;
+        }
+        
+        if (isCommand) {
+          // Emit as command.
+          socket.emit('message', inputText);
+        } else {
+          // Default to chat message.
+          socket.emit('message', cmdChar + 'chat ' + inputText);
+        }
         
       } else {
-        // Do not send, and inform user of disconnection, by blinking inputBox.
+        // Inform user of disconnection, by blinking inputBox.
         $('#inputBox').animate({
             'opacity': 0
         }, 300, function () {
@@ -699,7 +734,7 @@ $(document).ready(function() {
   });
   
   $('#inputBox').on('keydown', function (e) {
-     commandHistory(e);
+     inputEvents(e);
   });
   
   $('#viewChanger').on('click', toggleView);
@@ -762,7 +797,7 @@ function loadSocket() {
     // Attempt to send login command from saved cookie.
     if (cookies.login) {
       var loginData = cookies.login;
-      socket.emit('command', 'login ' + loginData);
+      socket.emit('message', cmdChar + 'login ' + loginData);
     }
     
     // Request an array of available commands by user access level.
