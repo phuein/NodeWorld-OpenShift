@@ -660,7 +660,7 @@ $(document).ready(function() {
     }
   });
   
-  $('#outputs > div').scroll(function () {
+  $('#outputs > div').on('mousewheel', function () {
     $(this).stop();
   });
   
