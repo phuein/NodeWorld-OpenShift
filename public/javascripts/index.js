@@ -4,9 +4,12 @@ var socket = null;          // Global socket object - makes connection.
 
 var viewMode = 1;           // Number of outputs in view.
 
+var inputBoxPlaceholder = 'Enter message here...';
+
 var cmdMode = false;        // Automatic adding of cmdChar to user messages.
 var cmdModeChar = 192;      // Key-code to toggle cmdMode.
                             // http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+var cmdModePlaceholder = 'Enter command here...';
 
 var cmdChar = '.';          // Marks a user message as a command, for the server.
 
@@ -113,8 +116,9 @@ alertTimer = null;
 var alertRunning = false;
 
 // Start status timer for inputBox placeholder.
-statusTimer = setInterval(statusCheck, 500);
-statusTimerRunning = true;
+var statusTimerSpeed = 500;
+statusTimer = setInterval(statusCheck, statusTimerSpeed);
+var statusTimerRunning = true;
 
 /* FUNCTIONS */
 
@@ -178,6 +182,11 @@ function inputEvents(e) {
     // Switch colors.
     $('#inputBox').css('color', bgColor);
     $('#inputBox').css('background-color', textColor);
+    
+    var placeholder = $('#inputBox').prop('placeholder');
+    
+    $('#inputBox').prop('placeholder', 
+          (placeholder == inputBoxPlaceholder ? cmdModePlaceholder : inputBoxPlaceholder));
   }
 }
 
@@ -792,7 +801,10 @@ function loadSocket() {
   
   // Socket connected.
   socket.on('connect', function () {
-    $('#inputBox').prop('placeholder', 'Enter message here...');
+    var placeholder = $('#inputBox').prop('placeholder');
+    $('#inputBox').prop('placeholder', 
+          (placeholder == inputBoxPlaceholder ? cmdModePlaceholder : inputBoxPlaceholder));
+    
     $('#inputBox').focus();
     
     // Attempt to send login command from saved cookie.
@@ -803,6 +815,8 @@ function loadSocket() {
     
     // Request an array of available commands by user access level.
     socket.emit('message', cmdChar + 'help getAvailableCommandsOnly');
+    
+    // And statusTimer is stopped at statusCheck().
   });
   
   // Socket Events //
@@ -818,7 +832,7 @@ function loadSocket() {
   });
   
   socket.on('disconnect', function () {
-    appendOutput('<i>Lost connection to server!</i>', outputs.disconnect);
+    appendOutput('<span class=\"b i\">Lost connection to server!</span>', outputs.disconnect);
     
     if (socket && socket.socket && !socket.socket.reconnecting) {
       $('#inputBox').prop('placeholder', "Not connected to server...");
@@ -826,7 +840,7 @@ function loadSocket() {
     }
     
     if (!statusTimerRunning) {
-      statusTimer = setInterval(statusCheck, 100);
+      statusTimer = setInterval(statusCheck, statusTimerSpeed);
       statusTimerRunning = true;
     }
   });
