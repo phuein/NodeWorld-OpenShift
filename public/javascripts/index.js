@@ -605,7 +605,7 @@ $(document).ready(function() {
       var inputText = $('#inputBox').val().trim();
       
       var argsArray = inputText.split(' '); // Split to words,
-      argsArray = argsArray.splice(0, 1);  // and remove first word.
+      argsArray.splice(0, 1);  // and remove first word.
       
       var first = argsArray[0];             // First word might be a command.
       
