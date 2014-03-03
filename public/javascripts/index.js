@@ -620,13 +620,11 @@ $(document).ready(function() {
         
       } else if (socket && socket.socket && socket.socket.connected) {
         if (cmdMode) {
+          // All input is recognized as command.
           if (isCommand) inputText = inputText.slice(1); // Remove accidental cmdChar in cmdMode.
           socket.emit('message', cmdChar + inputText);
-          return;
-        }
-        
-        if (isCommand) {
-          // Emit as command.
+        } else if (isCommand) {
+          // Send as command message.
           socket.emit('message', inputText);
         } else {
           // Default to chat message.
@@ -660,7 +658,7 @@ $(document).ready(function() {
     }
   });
   
-  $('#outputs > div').on('mousewheel', function () {
+  $('#outputs > div').on('DOMMouseScroll mousewheel', function () {
     $(this).stop();
   });
   
