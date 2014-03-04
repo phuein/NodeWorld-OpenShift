@@ -14,7 +14,7 @@ var cmdModePlaceholder = 'Enter command here...';
 var cmdChar = '.';          // Marks a user message as a command, for the server.
 
 var title = 'Node World';
-var welcomeMessage = '<u><b style=\"font-size: 150%\">Client-Only Commands:</b></u><br />' + 
+var welcomeMessage = '<span class=\"b u\" style=\"font-size: 150%\">Client-Only Commands:</span><br />' + 
 
         '<span class=\"command\">' + cmdChar + 'color</span> (COLORNAME)<br />' + 
         '<span class=\"command\">' + cmdChar + 'bgcolor</span> (COLORNAME)<br />' + 
@@ -558,8 +558,8 @@ function appendOutput(output, number) {
                     (output.font   ? 'font-family: ' + output.font      + ';' : '') +
                     (output.size   ? 'font-size: '   + output.size      + ';' : '') +
                     '\" class=\"' + 
-                      (output.italic ? 'i ' : '') + 
-                      (output.bold ? 'b ' : '') + 
+                      (output.i ? 'i ' : '') + 
+                      (output.b ? 'b ' : '') + 
                     '\">' + 
                     parsedMessage + '</span><br /></span>');
     
@@ -574,8 +574,8 @@ function appendOutput(output, number) {
                   (output.font   ? 'font-family: ' + output.font      + ';' : '') +
                   (output.size   ? 'font-size: '   + output.size      + ';' : '') +
                   '\" class=\"' + 
-                    (output.italic ? 'i ' : '') + 
-                    (output.bold ? 'b ' : '') + 
+                    (output.i ? 'i ' : '') + 
+                    (output.b ? 'b ' : '') + 
                   '\">' + 
                   parsedMessage + '</span><br />');
   
@@ -589,7 +589,7 @@ function appendOutput(output, number) {
     // Clean most HTML tags from message.
     var cleanMessage = output.message || output;
     cleanMessage = cleanMessage.replace(/<\w+>/gi, '').replace(/<span.*>(.*)<\/span>/gi, '$1');
-    cleanMessage = cleanMessage.slice(0, 20);
+    cleanMessage = cleanMessage.slice(0, 40);
     
     // Blink title text & message, if unfocused.
     alertTimer = setInterval(titleAlert, 1000, cleanMessage);
@@ -847,12 +847,12 @@ function loadSocket() {
   
   /* Formatting: Only 'message' is required - the rest is optional.
     {
-     'message' : message, 
-     'color'   : colorName,
-     'font'    : fontName, 
-     'size'    : size, 
-     'italic'  : boolean, 
-     'bold'    : boolean
+     'message'  : message, 
+     'color'    : colorName,
+     'font'     : fontName, 
+     'size'     : size, 
+     'i'        : boolean,      // Italic
+     'b'        : boolean       // Bold
     }
    */
   
