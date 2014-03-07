@@ -686,6 +686,7 @@ function acceptFromTarget(user, target, offer) {
 }
 
 //*** EXPORTS ***//
+  exports.availableHand     =   availableHand;
   exports.holdTarget        =   holdTarget;
   exports.dropTarget        =   dropTarget;
   exports.wearTarget        =   wearTarget;
