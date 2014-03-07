@@ -191,7 +191,6 @@ function inputEvents(e) {
   if (e.which == cmdModeChar) {
     // Repeating cmdChar becomes a normal message, and not a command.
     if ($('#inputBox').val() === '' && cmdMode === true) {
-      $('#inputBox').val('..');
       toggleCmdMode();
       return;
     }
