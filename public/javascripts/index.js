@@ -7,7 +7,7 @@ var viewMode = 1;           // Number of outputs in view.
 var inputBoxPlaceholder = 'Enter message here...';
 
 var cmdMode = false;        // Automatic adding of cmdChar to user messages.
-var cmdModeChar = 192;      // Key-code to toggle cmdMode.
+var cmdModeChar = 190;      // Key-code to toggle cmdMode. Default to '.'
                             // http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
 var cmdModePlaceholder = 'Enter command here...';
 
@@ -151,6 +151,22 @@ function titleAlert(message) {
   }
 }
 
+// Toggles the inputBox cmdMode.
+function toggleCmdMode() {
+  cmdMode = !cmdMode;
+  
+  var textColor   = $('#inputBox').css('color');
+  var bgColor     = $('#inputBox').css('background-color');
+  // Switch colors.
+  $('#inputBox').css('color', bgColor);
+  $('#inputBox').css('background-color', textColor);
+  
+  var placeholder = $('#inputBox').prop('placeholder');
+  
+  $('#inputBox').prop('placeholder', 
+        (placeholder == inputBoxPlaceholder ? cmdModePlaceholder : inputBoxPlaceholder));
+}
+
 // Using Up or Down arrow keys with input textbox to scroll through command history.
 function inputEvents(e) {
   // COMMAND HISTORY //
@@ -173,20 +189,19 @@ function inputEvents(e) {
   
   // COMMAND MODE TOGGLE //
   if (e.which == cmdModeChar) {
+    // Repeating cmdChar becomes a normal message, and not a command.
+    if ($('#inputBox').val() === '' && cmdMode === true) {
+      $('#inputBox').val('..');
+      toggleCmdMode();
+      return;
+    }
+    
+    // Only for empty inputBox.
+    if ($('#inputBox').val() !== '') return;
+    
     e.preventDefault(); // Don't add character to inputBox.
     
-    cmdMode = !cmdMode;
-    
-    var textColor   = $('#inputBox').css('color');
-    var bgColor     = $('#inputBox').css('background-color');
-    // Switch colors.
-    $('#inputBox').css('color', bgColor);
-    $('#inputBox').css('background-color', textColor);
-    
-    var placeholder = $('#inputBox').prop('placeholder');
-    
-    $('#inputBox').prop('placeholder', 
-          (placeholder == inputBoxPlaceholder ? cmdModePlaceholder : inputBoxPlaceholder));
+    toggleCmdMode();
   }
 }
 

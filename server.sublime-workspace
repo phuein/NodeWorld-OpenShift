@@ -4,6 +4,30 @@
 		"selected_items":
 		[
 			[
+				"arg",
+				"argArray"
+			],
+			[
+				"text",
+				"textColor"
+			],
+			[
+				"cmdM",
+				"cmdMode"
+			],
+			[
+				"cmdMo",
+				"cmdModeChar"
+			],
+			[
+				"inpu",
+				"inputArray"
+			],
+			[
+				"vie",
+				"viewMode"
+			],
+			[
 				"pree",
 				"prettyBornDate"
 			],
@@ -215,7 +239,7 @@
 			"file": "server.js",
 			"settings":
 			{
-				"buffer_size": 14058,
+				"buffer_size": 14225,
 				"line_ending": "Windows"
 			}
 		},
@@ -223,7 +247,7 @@
 			"file": "commands.js",
 			"settings":
 			{
-				"buffer_size": 54064,
+				"buffer_size": 53947,
 				"line_ending": "Windows"
 			}
 		},
@@ -231,7 +255,7 @@
 			"file": "constructors.js",
 			"settings":
 			{
-				"buffer_size": 13395,
+				"buffer_size": 13396,
 				"line_ending": "Windows"
 			}
 		},
@@ -263,7 +287,7 @@
 			"file": "worldFunctions.js",
 			"settings":
 			{
-				"buffer_size": 18174,
+				"buffer_size": 18154,
 				"line_ending": "Windows"
 			}
 		},
@@ -279,7 +303,7 @@
 			"file": "views/index.html",
 			"settings":
 			{
-				"buffer_size": 1119,
+				"buffer_size": 1049,
 				"line_ending": "Windows"
 			}
 		},
@@ -287,7 +311,7 @@
 			"file": "public/javascripts/index.js",
 			"settings":
 			{
-				"buffer_size": 26147,
+				"buffer_size": 30014,
 				"line_ending": "Windows"
 			}
 		},
@@ -295,25 +319,8 @@
 			"file": "public/stylesheets/index.css",
 			"settings":
 			{
-				"buffer_size": 1703,
+				"buffer_size": 1739,
 				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/Phuein/AppData/Roaming/HexChat/addons/bubbles.py",
-			"settings":
-			{
-				"buffer_size": 4079,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/Phuein/Desktop/wx.py",
-			"settings":
-			{
-				"buffer_size": 9,
-				"line_ending": "Windows",
-				"name": "import wx"
 			}
 		},
 		{
@@ -328,7 +335,7 @@
 			"file": "/C/Users/Phuein/Desktop/gamenotes.txt",
 			"settings":
 			{
-				"buffer_size": 828,
+				"buffer_size": 802,
 				"line_ending": "Windows"
 			}
 		}
@@ -382,6 +389,9 @@
 	},
 	"file_history":
 	[
+		"/C/Users/Phuein/Desktop/bubbles.pl",
+		"/C/Users/Phuein/AppData/Roaming/HexChat/addons/bubbles.py",
+		"/C/Users/Phuein/Desktop/wx.py",
 		"/C/Python27/Lib/site-packages/wx-3.0-msw/wx/__init__.py",
 		"/C/Users/Phuein/Desktop/bubbles.py",
 		"/C/Users/Phuein/Desktop/balloons.py",
@@ -507,6 +517,18 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"struct",
+			"time",
+			"bold",
+			"statusCheck",
+			"commandHistory",
+			"$('#inputBox').on",
+			"socket.emit('comm",
+			"cmdChar",
+			"handleCommands",
+			"<br",
+			".on(",
+			"toggleView",
 			"hicon",
 			"__getitem__",
 			"locationEmpty",
@@ -622,19 +644,7 @@
 			"function(",
 			"function (",
 			"function",
-			"current.play",
-			"players.length",
-			"options",
-			".watch",
-			".players",
-			"world.users",
-			"].socket",
-			".socket",
-			".players[",
-			"var strO",
-			"world.users",
-			"roomsdb",
-			"world.maps"
+			"current.play"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -664,7 +674,7 @@
 	"groups":
 	[
 		{
-			"selected": 12,
+			"selected": 10,
 			"sheets":
 			[
 				{
@@ -673,15 +683,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 14058,
+						"buffer_size": 14225,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								12769,
-								12769
+								11517,
+								11517
 							]
 						],
 						"settings":
@@ -795,7 +805,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 162.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -806,15 +816,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 54064,
+						"buffer_size": 53947,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								37692,
-								37692
+								51800,
+								51800
 							]
 						],
 						"settings":
@@ -928,7 +938,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2405.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -939,15 +949,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13395,
+						"buffer_size": 13396,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4088,
-								4088
+								4310,
+								4310
 							]
 						],
 						"settings":
@@ -956,7 +966,7 @@
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 648.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -974,8 +984,8 @@
 						"selection":
 						[
 							[
-								13437,
-								13437
+								112,
+								112
 							]
 						],
 						"settings":
@@ -1089,7 +1099,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1992.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1107,8 +1117,8 @@
 						"selection":
 						[
 							[
-								2135,
-								2135
+								2,
+								2
 							]
 						],
 						"settings":
@@ -1160,15 +1170,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 18174,
+						"buffer_size": 18154,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7961,
-								7961
+								4967,
+								4967
 							]
 						],
 						"settings":
@@ -1218,15 +1228,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1119,
+						"buffer_size": 1049,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								331,
-								331
+								932,
+								932
 							]
 						],
 						"settings":
@@ -1341,7 +1351,7 @@
 							"word_wrap": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 54.0,
+						"translation.y": 108.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1352,15 +1362,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 26147,
+						"buffer_size": 30014,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1889,
-								1889
+								1766,
+								1770
 							]
 						],
 						"settings":
@@ -1381,15 +1391,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1703,
+						"buffer_size": 1739,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								791,
-								791
+								1196,
+								1196
 							]
 						],
 						"settings":
@@ -1501,64 +1511,7 @@
 							"syntax": "Packages/CSS/CSS.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1134.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "/C/Users/Phuein/AppData/Roaming/HexChat/addons/bubbles.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4079,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3439,
-								3439
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 150.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "/C/Users/Phuein/Desktop/wx.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9,
-								9
-							]
-						],
-						"settings":
-						{
-							"auto_name": "import wx",
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1242.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1570,7 +1523,7 @@
 			"sheets":
 			[
 				{
-					"buffer": 13,
+					"buffer": 11,
 					"file": "codenotes",
 					"semi_transient": false,
 					"settings":
@@ -1600,20 +1553,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 12,
 					"file": "/C/Users/Phuein/Desktop/gamenotes.txt",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 828,
+						"buffer_size": 802,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								828,
-								828
+								629,
+								629
 							]
 						],
 						"settings":
