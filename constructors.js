@@ -223,23 +223,23 @@ var constructors = {
         'pre'         :   'Kind',                 // Comes before the name.
         'post'        :   'the Commoner',         // Comes after the name.
         'worn'        :   {
-          'head'             :     {},
-          'face'             :     {},
-          'neck'             :     {},
-          'shoulders'        :     {},
-          'arms'             :     {},
+          'head'             :     [],
+          'face'             :     [],
+          'neck'             :     [],
+          'shoulders'        :     [],
+          'arms'             :     [],
           'hands'            :     {
-            'left'              :     {},
-            'right'             :     {}
+            'left'              :     [],
+            'right'             :     []
           },
-          'fingers'          :     {},
-          'torso'            :     {},
-          'back'             :     {},
-          'waist'            :     {},
-          'loins'            :     {},
-          'legs'             :     {},
-          'shins'            :     {},
-          'feet'             :     {}
+          'fingers'          :     [],
+          'torso'            :     [],
+          'back'             :     [],
+          'waist'            :     [],
+          'loins'            :     [],
+          'legs'             :     [],
+          'shins'            :     [],
+          'feet'             :     []
         },
         'offers'      :   []               // Offers I made to others.
       }

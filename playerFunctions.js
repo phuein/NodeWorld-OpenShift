@@ -8,7 +8,7 @@ function availableHand(user) {
     var curHand = user.player.worn.hands[handName];
     
     // Choose whichever hand is empty, randomly.
-    if (JSON.stringify(curHand) == '{}') {
+    if (JSON.stringify(curHand) == '[]') {
       return handName;
     }
   }
